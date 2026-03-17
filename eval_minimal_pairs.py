@@ -251,8 +251,21 @@ def parse_args():
 
 
 def main():
-    args   = parse_args()
-    device = torch.device(f"cuda:{args.gpu}" if torch.cuda.is_available() else "cpu")
+    args = parse_args()
+
+    if torch.cuda.is_available():
+        n_visible = torch.cuda.device_count()
+        if args.gpu >= n_visible:
+            raise RuntimeError(
+                f"--gpu {args.gpu} is out of range: only {n_visible} GPU(s) visible "
+                f"(CUDA_VISIBLE_DEVICES={os.environ.get('CUDA_VISIBLE_DEVICES', 'unset')}). "
+                f"If launching via launch_all.sh with CUDA_VISIBLE_DEVICES set per process, "
+                f"pass --gpu 0 and let the env var do the device mapping."
+            )
+        device = torch.device(f"cuda:{args.gpu}")
+    else:
+        device = torch.device("cpu")
+
     os.makedirs(args.output_dir, exist_ok=True)
 
     old_factory = logging.getLogRecordFactory()
