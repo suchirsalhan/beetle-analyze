@@ -61,8 +61,10 @@ if [[ "${MODE}" == "local" ]]; then
       gpu=$rank
       log="${LOG_DIR}/${benchmark}_gpu${gpu}.log"
 
+      # CUDA_VISIBLE_DEVICES=${gpu} already restricts this process to one GPU,
+      # which CUDA renumbers as cuda:0. Always pass --gpu 0 here.
       cmd="python ${SCRIPT_DIR}/${SCRIPT_ARGS} \
-          --gpu ${gpu} \
+          --gpu 0 \
           --rank ${rank} \
           --world_size ${N_GPUS} \
           --output_dir ${OUTPUT_DIR} \
