@@ -25,10 +25,6 @@ Usage — one slice of models on GPU N out of 8
       --rank 3 --world_size 8 \\
       --output_dir results/
 
-The script is designed to be launched in parallel by launch_all.sh.
-Each process independently picks up models[rank::world_size] so there is
-no inter-process communication needed.
-
 Resume support: already-evaluated (model, checkpoint, language) triples are
 skipped automatically so you can re-run after a crash without duplicates.
 """
@@ -40,8 +36,7 @@ import sys
 from typing import Dict, List, Tuple
 
 import torch
-from datasets import load_dataset
-from tqdm import tqdm
+from datasets import load_dataset, get_dataset_config_names
 
 sys.path.insert(0, os.path.dirname(__file__))
 from models import ALL_MODELS, MODEL_GROUPS, get_bilingual_type, get_lang_pair
@@ -50,7 +45,6 @@ from utils  import (
     minimal_pair_accuracy, append_result, already_done,
 )
 
-# ── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
     level  = logging.INFO,
     format = "[%(asctime)s] [GPU%(gpu)s] %(levelname)s %(message)s",
@@ -60,6 +54,24 @@ logger = logging.getLogger(__name__)
 
 
 # ── Benchmark configs ─────────────────────────────────────────────────────────
+#
+# config_mode controls how load_pairs() fetches data:
+#
+#   "per_lang"      — load_dataset(hf_id, lang_code, split="train")
+#                     Used by MultiBLiMP which has one HF config per language.
+#
+#   "all_configs"   — fetch every named config, concat all pairs.
+#                     Used by BLiMP-NL and ZhoBLiMP whose configs are phenomena
+#                     (e.g. 'verb_second', 'BA_verb_le_b') with no top-level
+#                     'train' split.
+#
+#   "split_per_lang" — load_dataset(hf_id, split=lang_split_map[lang_code])
+#                     Used by XCOMPs whose splits are named 'comps_fr',
+#                     'comps_de', 'comps_uk', 'comps_zh', 'comps_fa'.
+#                     Requires a "lang_split_map" key in the config dict.
+#
+#   "single"        — load_dataset(hf_id, split="train")
+#                     Used by BLiMP-eng which has a flat single-config layout.
 
 BENCHMARK_CFG: Dict[str, dict] = {
 
@@ -69,7 +81,6 @@ BENCHMARK_CFG: Dict[str, dict] = {
         config_mode     = "per_lang",
         good_col        = "sen",
         bad_col         = "wrong_sen",
-        split           = "train",
         langs           = {
             "nld": "Dutch",
             "deu": "German",
@@ -84,75 +95,65 @@ BENCHMARK_CFG: Dict[str, dict] = {
             "fas": ["fas"],
             "bul": ["bul"],
         },
-        extra_fields    = {},
     ),
 
     # ── BLiMP (English) ────────────────────────────────────────────────────
-    # FIXED: removed duplicate relevant_groups key; added missing closing ')'
+    # Flat layout: one config, split="train"
     "blimp_eng": dict(
         hf_id           = "nyu-mll/blimp",
         config_mode     = "single",
         good_col        = "sentence_good",
         bad_col         = "sentence_bad",
-        split           = "train",
         langs           = {"eng": "English"},
         relevant_groups = {"eng": ["eng"]},
-        extra_fields    = {
-            "field"              : "field",
-            "linguistics_term"   : "linguistics_term",
-            "UID"                : "UID",
-            "simple_LM_method"   : "simple_LM_method",
-            "one_prefix_method"  : "one_prefix_method",
-            "two_prefix_method"  : "two_prefix_method",
-            "lexically_identical": "lexically_identical",
-            "pair_id"            : "pair_id",
-        },
     ),
 
     # ── ZhoBLiMP ───────────────────────────────────────────────────────────
+    # Configs are phenomenon names (BA_verb_le_b, passive_suo, …).
+    # We load ALL configs and concatenate — this gives the full benchmark.
     "zhoblimp": dict(
         hf_id           = "Junrui1202/zhoblimp",
-        config_mode     = "single",
+        config_mode     = "all_configs",
         good_col        = "sentence_good",
         bad_col         = "sentence_bad",
-        split           = "train",
         langs           = {"zho": "Chinese"},
         relevant_groups = {"zho": ["zho"]},
-        extra_fields    = {},
     ),
 
     # ── BLiMP-NL ───────────────────────────────────────────────────────────
-    # FIXED: removed duplicate relevant_groups key
+    # Configs are phenomenon names (adpositional_phrases, verb_second, …).
+    # We load ALL configs and concatenate.
     "blimp_nl": dict(
         hf_id           = "juletxara/blimp-nl",
-        config_mode     = "single",
+        config_mode     = "all_configs",
         good_col        = "sentence_good",
         bad_col         = "sentence_bad",
-        split           = "train",
         langs           = {"nld": "Dutch"},
         relevant_groups = {"nld": ["nld"]},
-        extra_fields    = {
-            "phenomenon"   : "linguistic_phenomenon",
-            "paradigm"     : "paradigm",
-            "item_id"      : "item_id",
-            "critical_word": "critical_word",
-            "cue_word"     : "cue_word",
-        },
     ),
 
     # ── XCOMPs ─────────────────────────────────────────────────────────────
+    # Splits are named comps_fr, comps_de, comps_uk, comps_zh, comps_fa.
+    # There is no "train" split at the top level.
     "xcomps": dict(
         hf_id           = "fpadovani/xcomps-dataset",
-        config_mode     = "single",
+        config_mode     = "split_per_lang",
         good_col        = "acceptable_sent",
         bad_col         = "unacceptable_sent",
-        split           = "train",
         langs           = {
             "fra": "French",
             "deu": "German",
             "ukr": "Ukrainian",
             "zho": "Chinese",
             "fas": "Persian",
+        },
+        # Maps our ISO code → the actual HF split name for this dataset
+        lang_split_map  = {
+            "fra": "comps_fr",
+            "deu": "comps_de",
+            "ukr": "comps_uk",
+            "zho": "comps_zh",
+            "fas": "comps_fa",
         },
         relevant_groups = {
             "fra": ["fra"],
@@ -161,7 +162,6 @@ BENCHMARK_CFG: Dict[str, dict] = {
             "zho": ["zho"],
             "fas": ["fas"],
         },
-        extra_fields    = {},
     ),
 }
 
@@ -169,28 +169,59 @@ BENCHMARK_CFG: Dict[str, dict] = {
 # ── Dataset loading ───────────────────────────────────────────────────────────
 
 def load_pairs(cfg: dict, lang: str) -> List[Tuple[str, str]]:
-    """Load minimal pairs for a benchmark × language combination."""
+    """
+    Load minimal pairs for a benchmark × language combination.
+    Handles all four config_mode values described in BENCHMARK_CFG.
+    """
     hf_id    = cfg["hf_id"]
     mode     = cfg["config_mode"]
     good_col = cfg["good_col"]
     bad_col  = cfg["bad_col"]
-    split    = cfg["split"]
 
+    # ── per_lang: one HF config per ISO language code ─────────────────────
     if mode == "per_lang":
-        ds = load_dataset(hf_id, lang, split=split)
-    else:
-        ds = load_dataset(hf_id, split=split)
+        ds = load_dataset(hf_id, lang, split="train")
+        return list(zip(ds[good_col], ds[bad_col]))
 
-    return list(zip(ds[good_col], ds[bad_col]))
+    # ── single: flat dataset, single "train" split ────────────────────────
+    elif mode == "single":
+        ds = load_dataset(hf_id, split="train")
+        return list(zip(ds[good_col], ds[bad_col]))
+
+    # ── all_configs: phenomenon-per-config layout — concat everything ──────
+    elif mode == "all_configs":
+        config_names = get_dataset_config_names(hf_id)
+        pairs = []
+        for cfg_name in config_names:
+            try:
+                # Some phenomenon configs only have a default split
+                try:
+                    ds = load_dataset(hf_id, cfg_name, split="train")
+                except Exception:
+                    # fall back: take first available split
+                    ds_dict = load_dataset(hf_id, cfg_name)
+                    first_split = list(ds_dict.keys())[0]
+                    ds = ds_dict[first_split]
+                pairs.extend(zip(ds[good_col], ds[bad_col]))
+            except Exception as e:
+                logger.warning(f"    Skipping config '{cfg_name}': {e}")
+        logger.info(f"  all_configs: loaded {len(pairs):,} pairs from "
+                    f"{len(config_names)} configs")
+        return pairs
+
+    # ── split_per_lang: each language is a named split ────────────────────
+    elif mode == "split_per_lang":
+        split_name = cfg["lang_split_map"][lang]
+        ds = load_dataset(hf_id, split=split_name)
+        return list(zip(ds[good_col], ds[bad_col]))
+
+    else:
+        raise ValueError(f"Unknown config_mode: {mode!r}")
 
 
 # ── Model selection ───────────────────────────────────────────────────────────
 
 def models_for_benchmark(cfg: dict, rank: int, world_size: int) -> List[str]:
-    """
-    Collect all model repos relevant to any language in this benchmark,
-    deduplicate, then return the slice assigned to this rank.
-    """
     seen  = set()
     repos = []
     for lang, groups in cfg["relevant_groups"].items():
@@ -209,20 +240,13 @@ def parse_args():
     p.add_argument("--benchmark",  required=True,
                    choices=list(BENCHMARK_CFG.keys()),
                    help="Which benchmark to run")
-    p.add_argument("--gpu",        type=int, default=0,
-                   help="Which GPU index to use")
-    p.add_argument("--rank",       type=int, default=0,
-                   help="This process's rank (0-indexed)")
-    p.add_argument("--world_size", type=int, default=1,
-                   help="Total number of parallel processes (= number of GPUs)")
-    p.add_argument("--output_dir", default="results",
-                   help="Directory to write CSV files")
-    p.add_argument("--batch_size", type=int, default=64,
-                   help="Tokenisation batch size (reduce if OOM)")
-    p.add_argument("--hf_token",   default=None,
-                   help="HuggingFace token for gated repos")
-    p.add_argument("--resume",     action="store_true", default=True,
-                   help="Skip already-completed (model, checkpoint, lang) triples")
+    p.add_argument("--gpu",        type=int, default=0)
+    p.add_argument("--rank",       type=int, default=0)
+    p.add_argument("--world_size", type=int, default=1)
+    p.add_argument("--output_dir", default="results")
+    p.add_argument("--batch_size", type=int, default=64)
+    p.add_argument("--hf_token",   default=None)
+    p.add_argument("--resume",     action="store_true", default=True)
     return p.parse_args()
 
 
