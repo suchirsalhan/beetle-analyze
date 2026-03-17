@@ -76,9 +76,8 @@ def load_xnli(lang_code: str) -> List[Tuple[str, str, int]]:
     """
     Returns list of (premise, hypothesis, label) where
     label: 0=entailment, 1=neutral, 2=contradiction.
-    We load the validation split (test split has no labels).
     """
-    ds = load_dataset("facebook/xnli", lang_code, split="validation")
+    ds = load_dataset("facebook/xnli", lang_code, split="test")
     return [(r["premise"], r["hypothesis"], r["label"]) for r in ds]
 
 
