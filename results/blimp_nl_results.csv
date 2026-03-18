@@ -309,3 +309,14 @@ blimp_nl,BeetleLM/beetlelm_eng-nld_balanced,eng-nld,balanced,step-15284,Dutch,0.
 blimp_nl,BeetleLM/beetlelm_nld-bul_balanced,nld-bul,balanced,step-14664,Dutch,0.663222,5969,9000
 blimp_nl,BeetleLM/beetlelm_nld-fra_heritage,nld-fra,heritage,step-13000,Dutch,0.662333,5961,9000
 blimp_nl,BeetleLM/beetlelm_nld_L1-eng_L2_simultaneous,nld_L1-eng_L2,simultaneous,step-25000,Dutch,0.751667,6765,9000
+blimp_nl,BeetleLM/beetlelm_nld-fra_heritage,nld-fra,heritage,step-14000,Dutch,0.662778,5965,9000
+blimp_nl,BeetleLM/beetlelm_nld-fra_heritage,nld-fra,heritage,step-15000,Dutch,0.667,6003,9000
+blimp_nl,BeetleLM/beetlelm_nld-bul_balanced,nld-bul,balanced,step-15000,Dutch,0.676889,6092,9000
+blimp_nl,BeetleLM/beetlelm_nld-fra_heritage,nld-fra,heritage,step-16000,Dutch,0.662111,5959,9000
+blimp_nl,BeetleLM/beetlelm_nld-bul_balanced,nld-bul,balanced,step-15275,Dutch,0.661111,5950,9000
+blimp_nl,BeetleLM/beetlelm_zho-nld_balanced,zho-nld,balanced,step-512,Dutch,0.485,4365,9000
+blimp_nl,BeetleLM/beetlelm_nld-bul_balanced,nld-bul,balanced,step-15284,Dutch,0.660667,5946,9000
+blimp_nl,BeetleLM/beetlelm_zho-nld_balanced,zho-nld,balanced,step-611,Dutch,0.484889,4364,9000
+blimp_nl,BeetleLM/beetlelm_nld-bul_balanced,nld-bul,balanced,step-15886,Dutch,0.671,6039,9000
+blimp_nl,BeetleLM/beetlelm_zho-nld_balanced,zho-nld,balanced,step-1000,Dutch,0.488,4392,9000
+blimp_nl,BeetleLM/beetlelm_nld-bul_balanced,nld-bul,balanced,step-16000,Dutch,0.668111,6013,9000
