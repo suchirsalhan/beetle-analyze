@@ -146,3 +146,12 @@ zhoblimp,BeetleLM/beetlelm_zho_mono,zho,mono,step-16000,Chinese,0.619944,21946,3
 zhoblimp,BeetleLM/beetlelm_zho-fas_late,zho-fas,late,step-2000,Chinese,0.573701,20309,35400
 zhoblimp,BeetleLM/beetlelm_zho-ukr_balanced,zho-ukr,balanced,step-3056,Chinese,0.579944,20530,35400
 zhoblimp,BeetleLM/beetlelm_zho-deu_balanced,zho-deu,balanced,step-3000,Chinese,0.550876,19501,35400
+zhoblimp,BeetleLM/beetlelm_zho-ukr_balanced,zho-ukr,balanced,step-3666,Chinese,0.587881,20811,35400
+zhoblimp,BeetleLM/beetlelm_zho-ind_late,zho-ind,late,step-1000,Chinese,0.563277,19940,35400
+zhoblimp,BeetleLM/beetlelm_zho-ukr_balanced,zho-ukr,balanced,step-4000,Chinese,0.588418,20830,35400
+zhoblimp,BeetleLM/beetlelm_zho-ukr_balanced,zho-ukr,balanced,step-4277,Chinese,0.585056,20711,35400
+zhoblimp,BeetleLM/beetlelm_zho-ind_late,zho-ind,late,step-2000,Chinese,0.566921,20069,35400
+zhoblimp,BeetleLM/beetlelm_zho-ukr_balanced,zho-ukr,balanced,step-4888,Chinese,0.575311,20366,35400
+zhoblimp,BeetleLM/beetlelm_zho-ind_late,zho-ind,late,step-3000,Chinese,0.580876,20563,35400
+zhoblimp,BeetleLM/beetlelm_zho-ukr_balanced,zho-ukr,balanced,step-5000,Chinese,0.573672,20308,35400
+zhoblimp,BeetleLM/beetlelm_zho-ind_late,zho-ind,late,step-4000,Chinese,0.589407,20865,35400
