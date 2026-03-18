@@ -1,155 +1,229 @@
 #!/usr/bin/env bash
 # =============================================================================
-# launch_all.sh — Fan out all BeetleLM evaluations across 8 A100s
+# launch_all.sh — Launch BeetleLM evaluation sweep across 8 A100s.
 #
-# Two modes (uncomment the one that matches your cluster setup):
-#   MODE=slurm    — submit via sbatch (each benchmark is one job, 8 tasks/GPUs)
-#   MODE=local    — bare-metal: background processes, one per GPU
+# Each GPU process runs eval_model.py on its model slice (ALL_MODELS[rank::8]).
+# Models are evaluated one at a time — only one model ever in RAM per GPU.
+# After every model, results are committed and pushed to:
+#     git@github.com:suchirsalhan/beetle-analyze.git
 #
 # Usage:
-#   bash launch_all.sh
-#   bash launch_all.sh --mode local
-#   bash launch_all.sh --mode slurm
+#   cd /path/to/beetle-analyze
+#   bash eval/launch_all.sh                  # local, 8 GPUs
+#   bash eval/launch_all.sh --mode slurm     # SLURM
+#   bash eval/launch_all.sh --no_push        # skip git push (debug)
+#   bash eval/launch_all.sh --world_size 4   # use 4 GPUs only
 # =============================================================================
 
 set -euo pipefail
 
 # ── Defaults ──────────────────────────────────────────────────────────────────
-MODE="${MODE:-local}"               # override with --mode flag or env var
+MODE="${MODE:-local}"
 N_GPUS=8
-BATCH_SIZE=64                       # safe for A100 80 GB; bump to 128 if needed
-OUTPUT_DIR="$(pwd)/results"
+BATCH_SIZE=64
+NO_PUSH_FLAG=""
+
+# The repo root is wherever this script is called FROM (beetle-analyze/).
+# results/ will be created inside it.
+REPO_ROOT="$(pwd)"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LOG_DIR="${OUTPUT_DIR}/logs"
-HF_TOKEN="${HF_TOKEN:-}"            # export HF_TOKEN=hf_xxx before running
+LOG_DIR="${REPO_ROOT}/results/logs"
+HF_TOKEN="${HF_TOKEN:-}"
 
-# Benchmarks and their eval scripts
-declare -A BENCHMARKS
-BENCHMARKS["multiblimp"]="eval_minimal_pairs.py --benchmark multiblimp"
-BENCHMARKS["zhoblimp"]="eval_minimal_pairs.py --benchmark zhoblimp"
-BENCHMARKS["blimp_nl"]="eval_minimal_pairs.py --benchmark blimp_nl"
-BENCHMARKS["xcomps"]="eval_minimal_pairs.py --benchmark xcomps"
-BENCHMARKS["xnli"]="eval_xnli.py"
-
-# ── Parse args ────────────────────────────────────────────────────────────────
+# ── Parse flags ───────────────────────────────────────────────────────────────
 for arg in "$@"; do
   case $arg in
-    --mode=*) MODE="${arg#*=}" ;;
-    --mode)   shift; MODE="$1" ;;
+    --mode=*)       MODE="${arg#*=}"        ;;
+    --mode)         shift; MODE="$1"        ;;
+    --no_push)      NO_PUSH_FLAG="--no_push" ;;
+    --world_size=*) N_GPUS="${arg#*=}"      ;;
+    --world_size)   shift; N_GPUS="$1"      ;;
   esac
 done
 
-mkdir -p "${OUTPUT_DIR}" "${LOG_DIR}"
+mkdir -p "${REPO_ROOT}/results" "${LOG_DIR}"
 
-echo "=================================================="
-echo "  BeetleLM Evaluation Launch"
+# ── Git sanity check ──────────────────────────────────────────────────────────
+echo "Checking git remote …"
+if ! git -C "${REPO_ROOT}" remote get-url origin &>/dev/null; then
+  echo "ERROR: no git remote 'origin' found in ${REPO_ROOT}."
+  echo "       Run: git remote add origin git@github.com:suchirsalhan/beetle-analyze.git"
+  exit 1
+fi
+REMOTE_URL="$(git -C "${REPO_ROOT}" remote get-url origin)"
+echo "  Remote : ${REMOTE_URL}"
+
+# Pull latest so we start clean and avoid immediate push conflicts
+if [[ -z "${NO_PUSH_FLAG}" ]]; then
+  echo "  Pulling latest from origin/main …"
+  git -C "${REPO_ROOT}" pull --rebase origin main 2>/dev/null || true
+fi
+echo ""
+
+# ── Shared HF dataset cache ───────────────────────────────────────────────────
+# All 8 processes read from one directory — prevents concurrent writes to
+# ~/.cache/huggingface which causes cache file corruption under high concurrency.
+HF_DATASETS_CACHE="${REPO_ROOT}/results/.hf_cache"
+export HF_DATASETS_CACHE
+mkdir -p "${HF_DATASETS_CACHE}"
+
+# ── Pre-download multi-config datasets ONCE ───────────────────────────────────
+# zhoblimp (~110 configs) and blimp_nl (~22 configs) need hundreds of HTTP
+# requests each. Doing this BEFORE spawning 8 processes means only one process
+# hits HF Hub. All 8 workers then read from the local cache instantly.
+echo "Pre-downloading multi-config datasets (zhoblimp + blimp_nl) …"
+HF_DATASETS_CACHE="${HF_DATASETS_CACHE}" python3 - << 'PYEOF'
+import os, time
+from datasets import load_dataset, get_dataset_config_names
+
+for hf_id in ("Junrui1202/zhoblimp", "juletxara/blimp-nl"):
+    print(f"  {hf_id}", flush=True)
+    try:
+        configs = get_dataset_config_names(hf_id)
+    except Exception as e:
+        print(f"    ERROR listing configs: {e}", flush=True)
+        continue
+    n_ok = 0
+    for i, cfg in enumerate(configs):
+        if i > 0:
+            time.sleep(0.1)
+        for attempt in range(3):
+            try:
+                try:
+                    load_dataset(hf_id, cfg, split="train")
+                except Exception:
+                    load_dataset(hf_id, cfg)
+                n_ok += 1
+                break
+            except Exception as e:
+                if "429" in str(e) and attempt < 2:
+                    wait = 30 * (attempt + 1)
+                    print(f"    429 on '{cfg}', waiting {wait}s …", flush=True)
+                    time.sleep(wait)
+                else:
+                    print(f"    warn: {cfg}: {e}", flush=True)
+                    break
+    print(f"    {n_ok}/{len(configs)} configs cached", flush=True)
+
+print("Pre-download complete.", flush=True)
+PYEOF
+echo ""
+
+echo "================================================================"
+echo "  BeetleLM evaluation — model-at-a-time, ${N_GPUS} GPUs"
 echo "  Mode       : ${MODE}"
-echo "  GPUs       : ${N_GPUS}"
-echo "  Output dir : ${OUTPUT_DIR}"
-echo "=================================================="
+echo "  Repo root  : ${REPO_ROOT}"
+echo "  Results    : ${REPO_ROOT}/results/"
+echo "================================================================"
+echo ""
 
 # =============================================================================
-# LOCAL MODE — spawn one background process per GPU × benchmark
+# LOCAL MODE — one background process per GPU
 # =============================================================================
 if [[ "${MODE}" == "local" ]]; then
 
   PIDS=()
-  for benchmark in "${!BENCHMARKS[@]}"; do
-    SCRIPT_ARGS="${BENCHMARKS[$benchmark]}"
 
-    for (( rank=0; rank<N_GPUS; rank++ )); do
-      gpu=$rank
-      log="${LOG_DIR}/${benchmark}_gpu${gpu}.log"
+  for (( rank=0; rank<N_GPUS; rank++ )); do
+    log="${LOG_DIR}/rank${rank}.log"
 
-      # CUDA_VISIBLE_DEVICES=${gpu} already restricts this process to one GPU,
-      # which CUDA renumbers as cuda:0. Always pass --gpu 0 here.
-      cmd="python ${SCRIPT_DIR}/${SCRIPT_ARGS} \
-          --gpu 0 \
-          --rank ${rank} \
-          --world_size ${N_GPUS} \
-          --output_dir ${OUTPUT_DIR} \
-          --batch_size ${BATCH_SIZE} \
-          --resume"
+    # Build command as an array (no word-splitting issues)
+    CMD=(
+      python3 "${SCRIPT_DIR}/eval_model.py"
+        --rank        "${rank}"
+        --world_size  "${N_GPUS}"
+        --output_dir  "${REPO_ROOT}"
+        --batch_size  "${BATCH_SIZE}"
+        --resume
+    )
+    [[ -n "${NO_PUSH_FLAG}" ]] && CMD+=(--no_push)
+    [[ -n "${HF_TOKEN}"     ]] && CMD+=(--hf_token "${HF_TOKEN}")
 
-      if [[ -n "${HF_TOKEN}" ]]; then
-        cmd="${cmd} --hf_token ${HF_TOKEN}"
-      fi
+    echo "  Launching rank=${rank} → ${log}"
 
-      echo "  Launching [${benchmark}] rank=${rank} gpu=${gpu} → ${log}"
-      CUDA_VISIBLE_DEVICES=${gpu} ${cmd} > "${log}" 2>&1 &
-      PIDS+=($!)
-    done
+    # CUDA_VISIBLE_DEVICES restricts this process to one physical GPU.
+    # CUDA renumbers it as cuda:0 inside the process, so eval_model.py
+    # always uses cuda:0 — no out-of-range GPU index errors.
+    CUDA_VISIBLE_DEVICES="${rank}" \
+    HF_DATASETS_CACHE="${HF_DATASETS_CACHE}" \
+      "${CMD[@]}" > "${log}" 2>&1 &
+
+    PIDS+=($!)
+
+    # Stagger: 4s between each rank launch so they don't all hit the HF
+    # Hub for the same first model at exactly the same millisecond.
+    (( rank < N_GPUS - 1 )) && sleep 4
   done
 
   echo ""
-  echo "All ${#PIDS[@]} processes launched. Waiting …"
-  echo "(tail -f ${LOG_DIR}/*.log  to monitor)"
+  echo "All ${#PIDS[@]} processes running."
+  echo ""
+  echo "  Monitor live:   tail -f ${LOG_DIR}/rank*.log"
+  echo "  Count results:  watch -n 10 'wc -l ${REPO_ROOT}/results/*.csv 2>/dev/null'"
   echo ""
 
-  # Wait for all and report failures
   FAIL=0
   for pid in "${PIDS[@]}"; do
     if ! wait "${pid}"; then
-      echo "WARNING: process ${pid} exited with non-zero status"
+      echo "WARNING: PID ${pid} exited non-zero"
       FAIL=1
     fi
   done
 
-  if [[ $FAIL -eq 0 ]]; then
+  if [[ "${FAIL}" -eq 0 ]]; then
     echo "All evaluations completed successfully."
   else
-    echo "Some evaluations failed — check logs in ${LOG_DIR}/"
+    echo "Some processes failed. Check logs in ${LOG_DIR}/"
     exit 1
   fi
 
 # =============================================================================
-# SLURM MODE — one sbatch job per benchmark, 8 GPU tasks per job
+# SLURM MODE — single job, 8 tasks
 # =============================================================================
 elif [[ "${MODE}" == "slurm" ]]; then
 
-  for benchmark in "${!BENCHMARKS[@]}"; do
-    SCRIPT_ARGS="${BENCHMARKS[$benchmark]}"
-    jobscript="${LOG_DIR}/job_${benchmark}.sh"
+  jobscript="${LOG_DIR}/job_beetlelm.sh"
 
-    cat > "${jobscript}" <<SLURM
+  cat > "${jobscript}" << SLURM
 #!/usr/bin/env bash
-#SBATCH --job-name=beetle_${benchmark}
+#SBATCH --job-name=beetlelm
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=${N_GPUS}
 #SBATCH --gres=gpu:${N_GPUS}
 #SBATCH --cpus-per-task=4
 #SBATCH --mem=256G
-#SBATCH --time=48:00:00
-#SBATCH --output=${LOG_DIR}/${benchmark}_%j_%t.log
-#SBATCH --error=${LOG_DIR}/${benchmark}_%j_%t.err
+#SBATCH --time=72:00:00
+#SBATCH --output=${LOG_DIR}/slurm_%j_%t.log
+#SBATCH --error=${LOG_DIR}/slurm_%j_%t.err
 
 module load cuda/12.1
-source activate beetlelm   # replace with your conda/venv activation
+source activate beetlelm    # ← update to match your environment
 
 export HF_TOKEN="${HF_TOKEN}"
+export HF_DATASETS_CACHE="${HF_DATASETS_CACHE}"
 
-srun --ntasks=${N_GPUS} --ntasks-per-node=${N_GPUS} \\
-  bash -c "
-    rank=\${SLURM_LOCALID}
-    CUDA_VISIBLE_DEVICES=\${rank} python ${SCRIPT_DIR}/${SCRIPT_ARGS} \\
-        --gpu 0 \\
-        --rank \${rank} \\
-        --world_size ${N_GPUS} \\
-        --output_dir ${OUTPUT_DIR} \\
-        --batch_size ${BATCH_SIZE} \\
-        --resume \\
-        \$([ -n '${HF_TOKEN}' ] && echo '--hf_token ${HF_TOKEN}')
-  "
+srun --ntasks=${N_GPUS} --ntasks-per-node=${N_GPUS} bash -c "
+  rank=\${SLURM_LOCALID}
+  sleep \$((rank * 4))
+  CUDA_VISIBLE_DEVICES=\${rank} \\
+  HF_DATASETS_CACHE='${HF_DATASETS_CACHE}' \\
+  python3 '${SCRIPT_DIR}/eval_model.py' \\
+    --rank \${rank} \\
+    --world_size ${N_GPUS} \\
+    --output_dir '${REPO_ROOT}' \\
+    --batch_size ${BATCH_SIZE} \\
+    --resume \\
+    ${NO_PUSH_FLAG} \\
+    \$([ -n '${HF_TOKEN}' ] && echo '--hf_token ${HF_TOKEN}')
+"
 SLURM
 
-    job_id=$(sbatch --parsable "${jobscript}")
-    echo "  Submitted [${benchmark}] → job ${job_id}"
-  done
-
-  echo ""
-  echo "All jobs submitted. Monitor with: squeue -u \$USER"
+  job_id=$(sbatch --parsable "${jobscript}")
+  echo "Submitted → job ${job_id}"
+  echo "Monitor:  squeue -u \$USER"
+  echo "Logs:     ${LOG_DIR}/slurm_${job_id}_*.log"
 
 else
-  echo "Unknown MODE='${MODE}'. Use --mode local  or  --mode slurm"
+  echo "Unknown MODE='${MODE}'. Use: local | slurm"
   exit 1
 fi
