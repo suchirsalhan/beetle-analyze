@@ -1,3 +1,5 @@
 venvs/
 configs/*.py
 results/
+venvs/
+configs/*.py
