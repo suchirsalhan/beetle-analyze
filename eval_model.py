@@ -31,12 +31,17 @@ Usage
   # one slice on GPU N of 8 (called by launch_all.sh)
   CUDA_VISIBLE_DEVICES=N python eval_model.py \\
       --rank N --world_size 8 --output_dir /path/to/beetle-analyze
+
+  # evaluate only the highest step-N checkpoint per model
+  CUDA_VISIBLE_DEVICES=N python eval_model.py \\
+      --rank N --world_size 8 --output_dir /path/to/beetle-analyze --latest_only
 """
 
 import argparse
 import gc
 import logging
 import os
+import re
 import subprocess
 import sys
 import time
@@ -307,6 +312,40 @@ def preload_all_datasets(logger_) -> Dict[str, Dict[str, list]]:
 
 
 # ═════════════════════════════════════════════════════════════════════════════
+# CHECKPOINT SELECTION
+# ═════════════════════════════════════════════════════════════════════════════
+
+def _step_number(name: str) -> Optional[int]:
+    """Return the integer from a 'step-N' branch name, or None."""
+    m = re.match(r"^step-(\d+)$", name)
+    return int(m.group(1)) if m else None
+
+
+def select_checkpoints(all_ckpts: List[str], latest_only: bool) -> List[str]:
+    """
+    If latest_only is True, return a single-element list containing only the
+    checkpoint with the highest step number.  Falls back to ['main'] when no
+    step-N branches exist.
+
+    If latest_only is False, return all_ckpts unchanged (original behaviour).
+    """
+    if not latest_only:
+        return all_ckpts
+
+    step_ckpts = [(name, _step_number(name)) for name in all_ckpts
+                  if _step_number(name) is not None]
+
+    if not step_ckpts:
+        logger.warning("  --latest_only: no step-N branches found, falling back to 'main'.")
+        return ["main"]
+
+    best = max(step_ckpts, key=lambda t: t[1])
+    logger.info(f"  --latest_only: selected {best[0]} (step {best[1]:,}) "
+                f"from {len(step_ckpts)} step checkpoints.")
+    return [best[0]]
+
+
+# ═════════════════════════════════════════════════════════════════════════════
 # SCORING
 # ═════════════════════════════════════════════════════════════════════════════
 
@@ -361,17 +400,20 @@ def run_xnli(model, tokenizer, triples: List[Tuple[str, str, int]],
 # ═════════════════════════════════════════════════════════════════════════════
 # GIT PUSH
 # Each GPU process pushes independently after finishing one model.
-# We run from the REPO ROOT (not from results/) so git add paths are correct.
+# Only *.csv files are staged — the pkl/HF caches are never touched by git,
+# so git never has to read or object-pack gigabytes of binary cache data.
 # ═════════════════════════════════════════════════════════════════════════════
 
 def git_push(repo_root: str, model_name: str, rank: int) -> None:
     """
     From repo_root:
-        git add results/          (stage everything in the results folder)
+        git add results/*.csv     (ONLY the CSV result files — not the caches)
         git commit -m "…"
         git push origin main      (retry up to 5× on non-fast-forward)
 
-    Runs from repo_root so all paths are resolved correctly.
+    Staging only CSVs prevents git from reading the pickle / HF cache
+    directories into its object store, which previously caused an OOM crash.
+
     Multiple parallel processes may call this concurrently; git's remote
     ref-lock serialises the actual push. We handle the race with rebase+retry.
     """
@@ -382,8 +424,18 @@ def git_push(repo_root: str, model_name: str, rank: int) -> None:
                               text=True, check=check)
 
     try:
-        # Stage the entire results/ directory (correct from repo root)
-        run(["git", "add", "results/"])
+        # Stage ONLY the CSV result files.
+        # Using shell glob expansion via subprocess requires shell=True, which
+        # is a security risk; instead we enumerate the files in Python and pass
+        # them explicitly so no shell is involved.
+        import glob
+        csv_files = glob.glob(os.path.join(repo_root, "results", "*.csv"))
+        if not csv_files:
+            logger.info(f"  git [{rank}]: no CSV files found to stage for {short}")
+            return
+
+        # git add takes multiple paths in one call — efficient and atomic.
+        run(["git", "add", "--"] + csv_files)
 
         # Nothing staged? Nothing to do.
         if run(["git", "diff", "--cached", "--quiet"], check=False).returncode == 0:
@@ -417,18 +469,22 @@ def git_push(repo_root: str, model_name: str, rank: int) -> None:
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
-    p.add_argument("--rank",       type=int, default=0,
+    p.add_argument("--rank",        type=int, default=0,
                    help="Index of this process (0-indexed)")
-    p.add_argument("--world_size", type=int, default=1,
+    p.add_argument("--world_size",  type=int, default=1,
                    help="Total number of parallel processes")
-    p.add_argument("--output_dir", required=True,
+    p.add_argument("--output_dir",  required=True,
                    help="Absolute path to the beetle-analyze repo root "
                         "(results/ will be created inside it)")
-    p.add_argument("--batch_size", type=int, default=64)
-    p.add_argument("--hf_token",   default=None)
-    p.add_argument("--resume",     action="store_true", default=True)
-    p.add_argument("--no_push",    action="store_true",
+    p.add_argument("--batch_size",  type=int, default=64)
+    p.add_argument("--hf_token",    default=None)
+    p.add_argument("--resume",      action="store_true", default=True)
+    p.add_argument("--no_push",     action="store_true",
                    help="Skip git push (useful for dry runs)")
+    p.add_argument("--latest_only", action="store_true",
+                   help="Evaluate only the single highest step-N checkpoint per "
+                        "model, instead of all checkpoints. Falls back to 'main' "
+                        "when no step-N branches exist.")
     return p.parse_args()
 
 
@@ -467,6 +523,7 @@ def main() -> None:
     logger.info(f"Device       : {device}")
     logger.info(f"Repo root    : {repo_root}")
     logger.info(f"Results dir  : {result_dir}")
+    logger.info(f"Latest only  : {args.latest_only}")
 
     # ── Model slice for this rank ─────────────────────────────────────────
     my_models = ALL_MODELS[args.rank :: args.world_size]
@@ -495,7 +552,10 @@ def main() -> None:
     # OUTER LOOP — one model repo at a time
     # ══════════════════════════════════════════════════════════════════════
     for repo in my_models:
-        checkpoints = list_checkpoints(repo, args.hf_token)
+        all_checkpoints = list_checkpoints(repo, args.hf_token)
+        # ── Optionally restrict to the single highest step-N checkpoint ───
+        checkpoints = select_checkpoints(all_checkpoints, args.latest_only)
+
         bil_type    = get_bilingual_type(repo)
         lang_pair   = get_lang_pair(repo)
         tasks       = applicable(repo)
@@ -503,7 +563,9 @@ def main() -> None:
         logger.info(f"{'='*60}")
         logger.info(f"Model    : {repo}")
         logger.info(f"Type     : {bil_type}  pair: {lang_pair}")
-        logger.info(f"Ckpts    : {len(checkpoints)}  tasks: {len(tasks)}")
+        logger.info(f"Ckpts    : {len(checkpoints)} "
+                    f"({'of ' + str(len(all_checkpoints)) + ' total' if args.latest_only else 'total'})"
+                    f"  tasks: {len(tasks)}")
 
         if not tasks:
             logger.warning("  No applicable benchmarks — skipping.")
