@@ -67,46 +67,16 @@ HF_DATASETS_CACHE="${REPO_ROOT}/results/.hf_cache"
 export HF_DATASETS_CACHE
 mkdir -p "${HF_DATASETS_CACHE}"
 
-# ── Pre-download multi-config datasets ONCE ───────────────────────────────────
-# zhoblimp (~110 configs) and blimp_nl (~22 configs) need hundreds of HTTP
-# requests each. Doing this BEFORE spawning 8 processes means only one process
-# hits HF Hub. All 8 workers then read from the local cache instantly.
-echo "Pre-downloading multi-config datasets (zhoblimp + blimp_nl) …"
-HF_DATASETS_CACHE="${HF_DATASETS_CACHE}" python3 - << 'PYEOF'
-import os, time
-from datasets import load_dataset, get_dataset_config_names
+# ── Pre-fetch all_configs datasets and save to .pkl ────────────────────────
+# Instead of relying on the HF datasets cache (unreliable under 8 concurrent
+# processes), we download each multi-config dataset ONCE here and save pairs
+# as a plain pickle file.  Workers load the .pkl directly — zero HTTP
+# requests during evaluation, no cache misses, no 429s.
+PKL_DIR="${REPO_ROOT}/results/.pkl_cache"
+mkdir -p "${PKL_DIR}"
 
-for hf_id in ("Junrui1202/zhoblimp", "juletxara/blimp-nl", "nyu-mll/blimp"):
-    print(f"  {hf_id}", flush=True)
-    try:
-        configs = get_dataset_config_names(hf_id)
-    except Exception as e:
-        print(f"    ERROR listing configs: {e}", flush=True)
-        continue
-    n_ok = 0
-    for i, cfg in enumerate(configs):
-        if i > 0:
-            time.sleep(0.1)
-        for attempt in range(3):
-            try:
-                try:
-                    load_dataset(hf_id, cfg, split="train")
-                except Exception:
-                    load_dataset(hf_id, cfg)
-                n_ok += 1
-                break
-            except Exception as e:
-                if "429" in str(e) and attempt < 2:
-                    wait = 30 * (attempt + 1)
-                    print(f"    429 on '{cfg}', waiting {wait}s …", flush=True)
-                    time.sleep(wait)
-                else:
-                    print(f"    warn: {cfg}: {e}", flush=True)
-                    break
-    print(f"    {n_ok}/{len(configs)} configs cached", flush=True)
-
-print("Pre-download complete.", flush=True)
-PYEOF
+echo "Pre-fetching all_configs datasets → ${PKL_DIR} ..."
+PKL_DIR="${PKL_DIR}" python3 "${SCRIPT_DIR}/prefetch_datasets.py"
 echo ""
 
 echo "================================================================"
