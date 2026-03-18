@@ -76,7 +76,7 @@ HF_DATASETS_CACHE="${HF_DATASETS_CACHE}" python3 - << 'PYEOF'
 import os, time
 from datasets import load_dataset, get_dataset_config_names
 
-for hf_id in ("Junrui1202/zhoblimp", "juletxara/blimp-nl"):
+for hf_id in ("Junrui1202/zhoblimp", "juletxara/blimp-nl", "nyu-mll/blimp"):
     print(f"  {hf_id}", flush=True)
     try:
         configs = get_dataset_config_names(hf_id)
