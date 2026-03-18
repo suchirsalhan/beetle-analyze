@@ -13,6 +13,7 @@
 #   bash eval/launch_all.sh --mode slurm     # SLURM
 #   bash eval/launch_all.sh --no_push        # skip git push (debug)
 #   bash eval/launch_all.sh --world_size 4   # use 4 GPUs only
+#   bash eval/launch_all.sh --latest_only    # evaluate only the highest step-N ckpt
 # =============================================================================
 
 set -euo pipefail
@@ -22,6 +23,7 @@ MODE="${MODE:-local}"
 N_GPUS=8
 BATCH_SIZE=64
 NO_PUSH_FLAG=""
+LATEST_ONLY_FLAG=""
 
 # The repo root is wherever this script is called FROM (beetle-analyze/).
 # results/ will be created inside it.
@@ -36,6 +38,7 @@ for arg in "$@"; do
     --mode=*)       MODE="${arg#*=}"        ;;
     --mode)         shift; MODE="$1"        ;;
     --no_push)      NO_PUSH_FLAG="--no_push" ;;
+    --latest_only)  LATEST_ONLY_FLAG="--latest_only" ;;
     --world_size=*) N_GPUS="${arg#*=}"      ;;
     --world_size)   shift; N_GPUS="$1"      ;;
   esac
@@ -84,6 +87,8 @@ echo "  BeetleLM evaluation — model-at-a-time, ${N_GPUS} GPUs"
 echo "  Mode       : ${MODE}"
 echo "  Repo root  : ${REPO_ROOT}"
 echo "  Results    : ${REPO_ROOT}/results/"
+[[ -n "${LATEST_ONLY_FLAG}" ]] && \
+echo "  Checkpoints: latest step-N only"
 echo "================================================================"
 echo ""
 
@@ -106,8 +111,9 @@ if [[ "${MODE}" == "local" ]]; then
         --batch_size  "${BATCH_SIZE}"
         --resume
     )
-    [[ -n "${NO_PUSH_FLAG}" ]] && CMD+=(--no_push)
-    [[ -n "${HF_TOKEN}"     ]] && CMD+=(--hf_token "${HF_TOKEN}")
+    [[ -n "${NO_PUSH_FLAG}"     ]] && CMD+=(--no_push)
+    [[ -n "${LATEST_ONLY_FLAG}" ]] && CMD+=(--latest_only)
+    [[ -n "${HF_TOKEN}"         ]] && CMD+=(--hf_token "${HF_TOKEN}")
 
     echo "  Launching rank=${rank} → ${log}"
 
@@ -184,6 +190,7 @@ srun --ntasks=${N_GPUS} --ntasks-per-node=${N_GPUS} bash -c "
     --batch_size ${BATCH_SIZE} \\
     --resume \\
     ${NO_PUSH_FLAG} \\
+    ${LATEST_ONLY_FLAG} \\
     \$([ -n '${HF_TOKEN}' ] && echo '--hf_token ${HF_TOKEN}')
 "
 SLURM
