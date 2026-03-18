@@ -42,6 +42,20 @@ import sys
 import time
 from typing import Dict, List, Optional, Tuple
 
+# ── Pin HF cache BEFORE any HuggingFace import ───────────────────────────────
+# datasets reads HF_DATASETS_CACHE at import time, not at load_dataset() time.
+# We set it here from --output_dir so it is always consistent, regardless of
+# whether the parent shell exported HF_DATASETS_CACHE correctly.
+def _pin_hf_cache() -> None:
+    for i, arg in enumerate(sys.argv):
+        if arg == "--output_dir" and i + 1 < len(sys.argv):
+            cache = os.path.join(sys.argv[i + 1], "results", ".hf_cache")
+            os.makedirs(cache, exist_ok=True)
+            os.environ["HF_DATASETS_CACHE"] = cache
+            os.environ["HF_HOME"]           = cache
+            return
+_pin_hf_cache()
+
 import torch
 import torch.nn.functional as F
 from datasets import get_dataset_config_names, load_dataset
