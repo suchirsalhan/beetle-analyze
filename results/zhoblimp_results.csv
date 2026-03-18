@@ -423,3 +423,6 @@ zhoblimp,BeetleLM/beetlelm_zho-fra_heritage,zho-fra,heritage,step-10000,Chinese,
 zhoblimp,BeetleLM/beetlelm_zho-bul_balanced,zho-bul,balanced,step-0,Chinese,0.569661,20166,35400
 zhoblimp,BeetleLM/beetlelm_zho-fra_heritage,zho-fra,heritage,step-11000,Chinese,0.597373,21147,35400
 zhoblimp,BeetleLM/beetlelm_zho-bul_balanced,zho-bul,balanced,step-1,Chinese,0.569661,20166,35400
+zhoblimp,BeetleLM/beetlelm_zho-fra_heritage,zho-fra,heritage,step-16000,Chinese,0.591017,20922,35400
+zhoblimp,BeetleLM/beetlelm_zho-bul_balanced,zho-bul,balanced,step-30569,Chinese,0.648305,22950,35400
+zhoblimp,BeetleLM/beetlelm_zho-fas_heritage,zho-fas,heritage,step-20000,Chinese,0.639407,22635,35400
