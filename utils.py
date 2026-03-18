@@ -1,29 +1,27 @@
 """
-utils.py — Shared utilities for BeetleLM evaluation:
-  - Model loading / cleanup
-  - Batched log-probability scoring
-  - Checkpoint enumeration from HF Hub
-  - Thread-safe CSV appending
+utils.py — Shared utilities for BeetleLM evaluation.
+
+  list_checkpoints()   enumerate step-N branches + main from HF Hub
+  append_result()      thread-safe CSV append (flock); header written inside lock
+  already_done()       in-memory resume cache — reads CSV at most once per process
 """
 
-import re
-import os
 import csv
 import fcntl
+import gc
 import logging
-import torch
-import torch.nn.functional as F
+import re
 from pathlib import Path
-from typing import List, Tuple, Optional
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from typing import List, Optional
+
 from huggingface_hub import HfApi
 
 logger = logging.getLogger(__name__)
 
-# ── HF API (singleton) ────────────────────────────────────────────────────────
+# ── HF API singleton ──────────────────────────────────────────────────────────
 _api: Optional[HfApi] = None
 
-def get_api(token: Optional[str] = None) -> HfApi:
+def _get_api(token: Optional[str] = None) -> HfApi:
     global _api
     if _api is None:
         _api = HfApi(token=token)
@@ -34,167 +32,104 @@ def get_api(token: Optional[str] = None) -> HfApi:
 
 def list_checkpoints(repo: str, token: Optional[str] = None) -> List[str]:
     """
-    Return ordered list of branches to evaluate:
-      step-100, step-200, ..., main
-    Falls back to ['main'] if branch listing fails.
+    Return [step-100, step-200, …, main] sorted numerically.
+    Falls back to ['main'] on any error.
     """
-    api = get_api(token)
     try:
+        api   = _get_api(token)
         refs  = api.list_repo_refs(repo_id=repo, token=token)
         names = [b.name for b in refs.branches]
         steps = sorted(
             [n for n in names if re.match(r"^step-\d+$", n)],
-            key=lambda n: int(n.split("-")[1])
+            key=lambda n: int(n.split("-")[1]),
         )
         ordered = steps + (["main"] if "main" in names else [])
-        return ordered if ordered else ["main"]
+        return ordered or ["main"]
     except Exception as e:
         logger.warning(f"Could not list branches for {repo}: {e}. Using 'main'.")
         return ["main"]
 
 
-# ── Model loading / cleanup ───────────────────────────────────────────────────
-
-def load_model_and_tokenizer(
-    repo: str,
-    branch: str,
-    device: torch.device,
-    token: Optional[str] = None,
-):
-    """Load a causal LM and its tokenizer onto `device`."""
-    kwargs = dict(
-        revision         = branch,
-        trust_remote_code = True,
-        torch_dtype      = torch.float16,   # bf16 on A100 is also fine
-        token            = token,
-    )
-    model = (
-        AutoModelForCausalLM
-        .from_pretrained(repo, **kwargs)
-        .to(device)
-        .eval()
-    )
-    tokenizer = AutoTokenizer.from_pretrained(repo, **kwargs)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    return model, tokenizer
-
-
-def release(model, tokenizer, device: torch.device):
-    """Delete model + tokenizer and free GPU memory."""
-    del model, tokenizer
-    if device.type == "cuda":
-        torch.cuda.empty_cache()
-
-
-# ── Scoring ───────────────────────────────────────────────────────────────────
-
-@torch.no_grad()
-def score_sentences(
-    model,
-    tokenizer,
-    sentences: List[str],
-    device: torch.device,
-    batch_size: int = 64,
-) -> torch.Tensor:
-    """
-    Returns a 1-D tensor of total log-probabilities for each sentence.
-    Handles arbitrary-length lists via internal batching.
-    """
-    all_scores = []
-    for i in range(0, len(sentences), batch_size):
-        batch = sentences[i : i + batch_size]
-        enc   = tokenizer(
-            batch,
-            padding        = True,
-            truncation     = True,
-            max_length     = 512,
-            return_tensors = "pt",
-        )
-        input_ids      = enc["input_ids"].to(device)
-        attention_mask = enc["attention_mask"].to(device)
-
-        # clamp to valid vocab range (safety)
-        input_ids = input_ids.clamp(0, model.config.vocab_size - 1)
-
-        outputs   = model(input_ids=input_ids, attention_mask=attention_mask)
-        log_probs = F.log_softmax(outputs.logits, dim=-1)          # [B, T, V]
-
-        # shift: predict token t from token t-1
-        lp_shifted  = log_probs[:, :-1, :]                         # [B, T-1, V]
-        ids_shifted = input_ids[:, 1:]                             # [B, T-1]
-        mask_shifted= attention_mask[:, 1:].float()                # [B, T-1]
-
-        token_lp = lp_shifted.gather(-1, ids_shifted.unsqueeze(-1)).squeeze(-1)
-        # sum only over real (non-padding) tokens
-        sentence_lp = (token_lp * mask_shifted).sum(dim=-1)       # [B]
-        all_scores.append(sentence_lp.cpu())
-
-    return torch.cat(all_scores)
-
-
-def minimal_pair_accuracy(
-    model,
-    tokenizer,
-    pairs: List[Tuple[str, str]],
-    device: torch.device,
-    batch_size: int = 64,
-) -> Tuple[float, int, int]:
-    """
-    Evaluate minimal-pair accuracy.
-    Returns (accuracy, n_correct, n_total).
-    """
-    good_sents = [p[0] for p in pairs]
-    bad_sents  = [p[1] for p in pairs]
-
-    scores_good = score_sentences(model, tokenizer, good_sents, device, batch_size)
-    scores_bad  = score_sentences(model, tokenizer, bad_sents,  device, batch_size)
-
-    n_correct = int((scores_good > scores_bad).sum().item())
-    n_total   = len(pairs)
-    accuracy  = n_correct / n_total if n_total > 0 else 0.0
-    return accuracy, n_correct, n_total
-
-
-# ── Thread-safe CSV writing ───────────────────────────────────────────────────
+# ── Thread-safe CSV append ────────────────────────────────────────────────────
 
 RESULT_FIELDS = [
     "benchmark", "model", "lang_pair", "bilingual_type",
     "checkpoint", "eval_language", "accuracy", "n_correct", "n_total",
 ]
 
-def append_result(csv_path: str, row: dict):
+def append_result(csv_path: str, row: dict) -> None:
     """
-    Append a single result row to a CSV file.
-    Uses flock so multiple GPU processes can write to the same file safely.
-    """
-    path   = Path(csv_path)
-    is_new = not path.exists()
-    with open(path, "a", newline="") as f:
-        fcntl.flock(f, fcntl.LOCK_EX)
-        writer = csv.DictWriter(f, fieldnames=RESULT_FIELDS, extrasaction="ignore")
-        if is_new:
-            writer.writeheader()
-        writer.writerow(row)
-        fcntl.flock(f, fcntl.LOCK_UN)
+    Append one row to a CSV file.
 
-
-def already_done(csv_path: str, model: str, checkpoint: str, eval_language: str,
-                 benchmark: str) -> bool:
-    """
-    Check if a (model, checkpoint, eval_language, benchmark) combination
-    is already in the CSV — lets you resume interrupted runs without
-    re-evaluating.
+    Thread-safety: flock (exclusive) is held for the entire open→write→close
+    sequence. The 'write header?' decision (is_new) is made INSIDE the lock
+    using f.tell()==0 so two processes racing on an empty file cannot both
+    write a header row.
     """
     path = Path(csv_path)
-    if not path.exists():
-        return False
-    import pandas as pd
-    df = pd.read_csv(path)
-    mask = (
-        (df["model"]         == model)       &
-        (df["checkpoint"]    == checkpoint)  &
-        (df["eval_language"] == eval_language) &
-        (df["benchmark"]     == benchmark)
+    path.parent.mkdir(parents=True, exist_ok=True)
+
+    with open(path, "a", newline="") as f:
+        fcntl.flock(f, fcntl.LOCK_EX)
+        try:
+            writer = csv.DictWriter(f, fieldnames=RESULT_FIELDS, extrasaction="ignore")
+            if f.tell() == 0:          # empty file → write header first
+                writer.writeheader()
+            writer.writerow(row)
+        finally:
+            fcntl.flock(f, fcntl.LOCK_UN)
+
+    # Keep the in-memory cache consistent so subsequent already_done() calls
+    # reflect this write without re-reading the file.
+    _mark_done(
+        benchmark=row.get("benchmark", ""),
+        model=row["model"],
+        checkpoint=row["checkpoint"],
+        eval_language=row["eval_language"],
+        csv_path=csv_path,
     )
-    return bool(mask.any())
+
+
+# ── In-memory resume cache ────────────────────────────────────────────────────
+# Keyed by csv_path so the cache is per-file.
+# Value: set of (benchmark, model, checkpoint, eval_language) tuples.
+
+_done_cache: dict = {}   # csv_path -> set[tuple]
+
+
+def _load_cache(csv_path: str) -> None:
+    """Read the CSV once and populate _done_cache[csv_path]."""
+    path = Path(csv_path)
+    _done_cache[csv_path] = set()
+    if not path.exists():
+        return
+    with open(path, newline="") as f:
+        for row in csv.DictReader(f):
+            _done_cache[csv_path].add((
+                row.get("benchmark", ""),
+                row.get("model", ""),
+                row.get("checkpoint", ""),
+                row.get("eval_language", ""),
+            ))
+
+
+def already_done(csv_path: str, model: str, checkpoint: str,
+                 eval_language: str, benchmark: str) -> bool:
+    """
+    Return True if this (benchmark, model, checkpoint, eval_language)
+    combination is already recorded in the CSV.
+
+    The CSV is read at most ONCE per process per file; all subsequent lookups
+    hit the in-memory set. New rows written via append_result() update the
+    cache immediately, so no re-reads are ever needed.
+    """
+    if csv_path not in _done_cache:
+        _load_cache(csv_path)
+    return (benchmark, model, checkpoint, eval_language) in _done_cache[csv_path]
+
+
+def _mark_done(benchmark: str, model: str, checkpoint: str,
+               eval_language: str, csv_path: str) -> None:
+    if csv_path not in _done_cache:
+        _load_cache(csv_path)
+    _done_cache[csv_path].add((benchmark, model, checkpoint, eval_language))
