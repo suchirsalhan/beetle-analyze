@@ -85,7 +85,7 @@ BENCHMARKS: Dict[str, dict] = {
     "blimp_eng": dict(
         type            = "minimal_pair",
         hf_id           = "nyu-mll/blimp",
-        config_mode     = "single",        # load_dataset(hf_id, split="train")
+        config_mode     = "all_configs",   # one config per phenomenon, same as zhoblimp/blimp_nl
         good_col        = "sentence_good",
         bad_col         = "sentence_bad",
         langs           = {"eng": "English"},
