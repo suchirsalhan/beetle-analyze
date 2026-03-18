@@ -53,6 +53,10 @@ def _pin_hf_cache() -> None:
             os.makedirs(cache, exist_ok=True)
             os.environ["HF_DATASETS_CACHE"] = cache
             os.environ["HF_HOME"]           = cache
+            # Also expose the pkl cache dir so loaders can find it
+            os.environ["PKL_DIR"] = os.path.join(
+                sys.argv[i + 1], "results", ".pkl_cache"
+            )
             return
 _pin_hf_cache()
 
@@ -178,18 +182,45 @@ def _load_pairs_per_lang(hf_id: str, lang: str, good: str, bad: str,
     return pairs
 
 
+# Maps hf_id → pkl filename written by prefetch_datasets.py
+_PKL_MAP = {
+    "Junrui1202/zhoblimp" : "zhoblimp.pkl",
+    "juletxara/blimp-nl"  : "blimp_nl.pkl",
+    "nyu-mll/blimp"       : "blimp_eng.pkl",
+}
+
+
 def _load_pairs_all_configs(hf_id: str, good: str, bad: str) -> List[Tuple[str, str]]:
     """
-    Load every phenomenon config and concatenate.
-    Throttled at 0.1s/config to stay under HF rate limits.
-    Arrow table for each config is freed immediately after pair extraction.
+    Load from a pre-fetched pickle file if available (preferred — zero HTTP),
+    otherwise fall back to live HF download with throttling.
+
+    The pickle files are created by prefetch_datasets.py which is called once
+    by launch_all.sh before any worker process starts.
     """
+    import pickle
+
+    pkl_dir  = os.environ.get("PKL_DIR", "")
+    pkl_file = _PKL_MAP.get(hf_id, "")
+    pkl_path = os.path.join(pkl_dir, pkl_file) if pkl_dir and pkl_file else ""
+
+    if pkl_path and os.path.exists(pkl_path):
+        with open(pkl_path, "rb") as fh:
+            pairs = pickle.load(fh)
+        logger.info(f"  Loaded {len(pairs):,} pairs from pkl cache ({pkl_file})")
+        return pairs
+
+    # ── Fallback: live download (should not normally be reached) ──────────
+    logger.warning(
+        f"  pkl cache not found for {hf_id} — falling back to live HF download. "
+        f"Expected: {pkl_path or 'PKL_DIR not set'}"
+    )
     configs = get_dataset_config_names(hf_id)
     pairs: List[Tuple[str, str]] = []
     for i, cfg_name in enumerate(configs):
         if i > 0:
-            time.sleep(0.1)
-        for attempt in range(3):
+            time.sleep(0.15)
+        for attempt in range(4):
             try:
                 try:
                     ds = load_dataset(hf_id, cfg_name, split="train")
@@ -200,12 +231,12 @@ def _load_pairs_all_configs(hf_id: str, good: str, bad: str) -> List[Tuple[str, 
                 del ds
                 break
             except Exception as e:
-                if "429" in str(e) and attempt < 2:
-                    wait = 30 * (attempt + 1)
-                    logger.warning(f"  429 on '{cfg_name}' — waiting {wait}s")
+                if "429" in str(e) and attempt < 3:
+                    wait = 30 * (2 ** attempt)
+                    logger.warning(f"    429 on '{cfg_name}' — waiting {wait}s")
                     time.sleep(wait)
                 else:
-                    logger.warning(f"  Skipping config '{cfg_name}': {e}")
+                    logger.warning(f"    Skipping config '{cfg_name}': {e}")
                     break
         if (i + 1) % 25 == 0:
             logger.info(f"  … {i+1}/{len(configs)} configs loaded")
