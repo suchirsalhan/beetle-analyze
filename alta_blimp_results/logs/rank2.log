@@ -1,0 +1,310 @@
+[11:10:10] [rank2] INFO Rank 2/8 — device: cuda:0
+[11:10:10] [rank2] INFO This rank evaluates 3 model(s): ['RA-ALTA/pl-en-advanced', 'RA-ALTA/ar-en-beginner', 'RA-ALTA/zh-en-fluent']
+[11:10:10] [rank2] INFO Rank 2: waiting for rank-0 to write BLiMP cache …
+[11:11:03] [rank2] INFO Loading BLiMP pairs from cache: /root/beetle-analyze/alta_blimp_results/.blimp_cache.pkl
+[11:11:03] [rank2] INFO Evaluating on 67 BLiMP phenomena.
+
+[11:11:03] [rank2] INFO ============================================================
+[11:11:03] [rank2] INFO Model: RA-ALTA/pl-en-advanced
+[11:11:03] [rank2] INFO   67/67 phenomena to evaluate.
+[11:11:04] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+[11:11:04] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-advanced/ca71b50cc9ad56230601bec5ac6994340973a3b8/config.json "HTTP/1.1 200 OK"
+[11:11:04] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-advanced/ca71b50cc9ad56230601bec5ac6994340973a3b8/config.json "HTTP/1.1 200 OK"
+`torch_dtype` is deprecated! Use `dtype` instead!
+[11:11:04] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[11:11:04] [rank2] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/pl-en-advanced/xet-read-token/ca71b50cc9ad56230601bec5ac6994340973a3b8 "HTTP/1.1 200 OK"
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 4390.95it/s]
+[11:11:13] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+[11:11:13] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-advanced/ca71b50cc9ad56230601bec5ac6994340973a3b8/generation_config.json "HTTP/1.1 200 OK"
+[11:11:13] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-advanced/ca71b50cc9ad56230601bec5ac6994340973a3b8/generation_config.json "HTTP/1.1 200 OK"
+[11:11:13] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+[11:11:14] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+[11:11:14] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-advanced/ca71b50cc9ad56230601bec5ac6994340973a3b8/config.json "HTTP/1.1 200 OK"
+[11:11:15] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+[11:11:15] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-advanced/ca71b50cc9ad56230601bec5ac6994340973a3b8/tokenizer_config.json "HTTP/1.1 200 OK"
+[11:11:15] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-advanced/ca71b50cc9ad56230601bec5ac6994340973a3b8/tokenizer_config.json "HTTP/1.1 200 OK"
+[11:11:15] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+[11:11:15] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-advanced/ca71b50cc9ad56230601bec5ac6994340973a3b8/tokenizer_config.json "HTTP/1.1 200 OK"
+[11:11:15] [rank2] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/pl-en-advanced/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+[11:11:15] [rank2] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/pl-en-advanced/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+[11:11:15] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+[11:11:15] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-advanced/ca71b50cc9ad56230601bec5ac6994340973a3b8/tokenizer.json "HTTP/1.1 200 OK"
+[11:11:16] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-advanced/ca71b50cc9ad56230601bec5ac6994340973a3b8/tokenizer.json "HTTP/1.1 200 OK"
+[11:11:16] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/tokenizer.model "HTTP/1.1 404 Not Found"
+[11:11:16] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+[11:11:16] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
+[11:11:16] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-advanced/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[11:11:16] [rank2] WARNING Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[11:11:17] [rank2] INFO   Model loaded.
+[11:11:19] [rank2] INFO   adjunct_island                                 acc=0.7980  (798/1000)
+[11:11:20] [rank2] INFO   anaphor_gender_agreement                       acc=0.7470  (747/1000)
+[11:11:21] [rank2] INFO   anaphor_number_agreement                       acc=0.8680  (868/1000)
+[11:11:23] [rank2] INFO   animate_subject_passive                        acc=0.7120  (712/1000)
+[11:11:24] [rank2] INFO   animate_subject_trans                          acc=0.8840  (884/1000)
+[11:11:25] [rank2] INFO   causative                                      acc=0.6330  (633/1000)
+[11:11:27] [rank2] INFO   complex_NP_island                              acc=0.4720  (472/1000)
+[11:11:28] [rank2] INFO   coordinate_structure_constraint_complex_left_branch  acc=0.4400  (440/1000)
+[11:11:29] [rank2] INFO   coordinate_structure_constraint_object_extraction  acc=0.8350  (835/1000)
+[11:11:31] [rank2] INFO   determiner_noun_agreement_1                    acc=0.9440  (944/1000)
+[11:11:32] [rank2] INFO   determiner_noun_agreement_2                    acc=0.9230  (923/1000)
+[11:11:33] [rank2] INFO   determiner_noun_agreement_irregular_1          acc=0.8610  (861/1000)
+[11:11:34] [rank2] INFO   determiner_noun_agreement_irregular_2          acc=0.9030  (903/1000)
+[11:11:36] [rank2] INFO   determiner_noun_agreement_with_adj_2           acc=0.8880  (888/1000)
+[11:11:37] [rank2] INFO   determiner_noun_agreement_with_adj_irregular_1  acc=0.7950  (795/1000)
+[11:11:38] [rank2] INFO   determiner_noun_agreement_with_adj_irregular_2  acc=0.8600  (860/1000)
+[11:11:40] [rank2] INFO   determiner_noun_agreement_with_adjective_1     acc=0.8840  (884/1000)
+[11:11:41] [rank2] INFO   distractor_agreement_relational_noun           acc=0.7230  (723/1000)
+[11:11:42] [rank2] INFO   distractor_agreement_relative_clause           acc=0.5140  (514/1000)
+[11:11:44] [rank2] INFO   drop_argument                                  acc=0.7330  (733/1000)
+[11:11:45] [rank2] INFO   ellipsis_n_bar_1                               acc=0.6970  (697/1000)
+[11:11:46] [rank2] INFO   ellipsis_n_bar_2                               acc=0.8290  (829/1000)
+[11:11:48] [rank2] INFO   existential_there_object_raising               acc=0.7930  (793/1000)
+[11:11:49] [rank2] INFO   existential_there_quantifiers_1                acc=0.9720  (972/1000)
+[11:11:50] [rank2] INFO   existential_there_quantifiers_2                acc=0.2380  (238/1000)
+[11:11:52] [rank2] INFO   existential_there_subject_raising              acc=0.7920  (792/1000)
+[11:11:53] [rank2] INFO   expletive_it_object_raising                    acc=0.7410  (741/1000)
+[11:11:54] [rank2] INFO   inchoative                                     acc=0.5390  (539/1000)
+[11:11:56] [rank2] INFO   intransitive                                   acc=0.6450  (645/1000)
+[11:11:57] [rank2] INFO   irregular_past_participle_adjectives           acc=0.9590  (959/1000)
+[11:11:58] [rank2] INFO   irregular_past_participle_verbs                acc=0.8410  (841/1000)
+[11:12:00] [rank2] INFO   irregular_plural_subject_verb_agreement_1      acc=0.8130  (813/1000)
+[11:12:01] [rank2] INFO   irregular_plural_subject_verb_agreement_2      acc=0.8300  (830/1000)
+[11:12:02] [rank2] INFO   left_branch_island_echo_question               acc=0.4870  (487/1000)
+[11:12:03] [rank2] INFO   left_branch_island_simple_question             acc=0.4850  (485/1000)
+[11:12:05] [rank2] INFO   matrix_question_npi_licensor_present           acc=0.0810  (81/1000)
+[11:12:06] [rank2] INFO   npi_present_1                                  acc=0.4090  (409/1000)
+[11:12:07] [rank2] INFO   npi_present_2                                  acc=0.5090  (509/1000)
+[11:12:09] [rank2] INFO   only_npi_licensor_present                      acc=0.2540  (254/1000)
+[11:12:10] [rank2] INFO   only_npi_scope                                 acc=0.1330  (133/1000)
+[11:12:11] [rank2] INFO   passive_1                                      acc=0.8770  (877/1000)
+[11:12:13] [rank2] INFO   passive_2                                      acc=0.8880  (888/1000)
+[11:12:14] [rank2] INFO   principle_A_c_command                          acc=0.6160  (616/1000)
+[11:12:15] [rank2] INFO   principle_A_case_1                             acc=0.9990  (999/1000)
+[11:12:17] [rank2] INFO   principle_A_case_2                             acc=0.8570  (857/1000)
+[11:12:18] [rank2] INFO   principle_A_domain_1                           acc=0.9030  (903/1000)
+[11:12:19] [rank2] INFO   principle_A_domain_2                           acc=0.7410  (741/1000)
+[11:12:21] [rank2] INFO   principle_A_domain_3                           acc=0.5960  (596/1000)
+[11:12:22] [rank2] INFO   principle_A_reconstruction                     acc=0.3520  (352/1000)
+[11:12:23] [rank2] INFO   regular_plural_subject_verb_agreement_1        acc=0.8120  (812/1000)
+[11:12:24] [rank2] INFO   regular_plural_subject_verb_agreement_2        acc=0.7990  (799/1000)
+[11:12:26] [rank2] INFO   sentential_negation_npi_licensor_present       acc=0.9990  (999/1000)
+[11:12:27] [rank2] INFO   sentential_negation_npi_scope                  acc=0.3240  (324/1000)
+[11:12:29] [rank2] INFO   sentential_subject_island                      acc=0.3760  (376/1000)
+[11:12:30] [rank2] INFO   superlative_quantifiers_1                      acc=0.5620  (562/1000)
+[11:12:31] [rank2] INFO   superlative_quantifiers_2                      acc=0.8670  (867/1000)
+[11:12:32] [rank2] INFO   tough_vs_raising_1                             acc=0.4150  (415/1000)
+[11:12:34] [rank2] INFO   tough_vs_raising_2                             acc=0.8550  (855/1000)
+[11:12:35] [rank2] INFO   transitive                                     acc=0.8060  (806/1000)
+[11:12:36] [rank2] INFO   wh_island                                      acc=0.6030  (603/1000)
+[11:12:38] [rank2] INFO   wh_questions_object_gap                        acc=0.6050  (605/1000)
+[11:12:39] [rank2] INFO   wh_questions_subject_gap                       acc=0.8660  (866/1000)
+[11:12:40] [rank2] INFO   wh_questions_subject_gap_long_distance         acc=0.8760  (876/1000)
+[11:12:42] [rank2] INFO   wh_vs_that_no_gap                              acc=0.9500  (950/1000)
+[11:12:43] [rank2] INFO   wh_vs_that_no_gap_long_distance                acc=0.9550  (955/1000)
+[11:12:44] [rank2] INFO   wh_vs_that_with_gap                            acc=0.3350  (335/1000)
+[11:12:45] [rank2] INFO   wh_vs_that_with_gap_long_distance              acc=0.1830  (183/1000)
+[11:12:45] [rank2] INFO   ── Mean BLiMP accuracy across 67 phenomena: 0.6937
+[11:12:46] [rank2] INFO   Model freed.
+
+[11:12:46] [rank2] INFO ============================================================
+[11:12:46] [rank2] INFO Model: RA-ALTA/ar-en-beginner
+[11:12:46] [rank2] INFO   67/67 phenomena to evaluate.
+[11:12:46] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+[11:12:46] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/ar-en-beginner/d67ee396b9c31eb9e01ec117f207a1b3d55d1b1c/config.json "HTTP/1.1 200 OK"
+[11:12:46] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/ar-en-beginner/d67ee396b9c31eb9e01ec117f207a1b3d55d1b1c/config.json "HTTP/1.1 200 OK"
+[11:12:46] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[11:12:46] [rank2] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/ar-en-beginner/xet-read-token/d67ee396b9c31eb9e01ec117f207a1b3d55d1b1c "HTTP/1.1 200 OK"
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 4645.52it/s]
+[11:12:55] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+[11:12:55] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/ar-en-beginner/d67ee396b9c31eb9e01ec117f207a1b3d55d1b1c/generation_config.json "HTTP/1.1 200 OK"
+[11:12:55] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/ar-en-beginner/d67ee396b9c31eb9e01ec117f207a1b3d55d1b1c/generation_config.json "HTTP/1.1 200 OK"
+[11:12:55] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+[11:12:55] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+[11:12:55] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/ar-en-beginner/d67ee396b9c31eb9e01ec117f207a1b3d55d1b1c/config.json "HTTP/1.1 200 OK"
+[11:12:55] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+[11:12:55] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/ar-en-beginner/d67ee396b9c31eb9e01ec117f207a1b3d55d1b1c/tokenizer_config.json "HTTP/1.1 200 OK"
+[11:12:55] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/ar-en-beginner/d67ee396b9c31eb9e01ec117f207a1b3d55d1b1c/tokenizer_config.json "HTTP/1.1 200 OK"
+[11:12:56] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+[11:12:56] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/ar-en-beginner/d67ee396b9c31eb9e01ec117f207a1b3d55d1b1c/tokenizer_config.json "HTTP/1.1 200 OK"
+[11:12:56] [rank2] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/ar-en-beginner/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+[11:12:56] [rank2] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/ar-en-beginner/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+[11:12:56] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+[11:12:56] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/ar-en-beginner/d67ee396b9c31eb9e01ec117f207a1b3d55d1b1c/tokenizer.json "HTTP/1.1 200 OK"
+[11:12:56] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/ar-en-beginner/d67ee396b9c31eb9e01ec117f207a1b3d55d1b1c/tokenizer.json "HTTP/1.1 200 OK"
+[11:12:57] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/tokenizer.model "HTTP/1.1 404 Not Found"
+[11:12:57] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+[11:12:57] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
+[11:12:57] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/ar-en-beginner/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+[11:12:57] [rank2] INFO   Model loaded.
+[11:12:58] [rank2] INFO   adjunct_island                                 acc=0.6540  (654/1000)
+[11:13:00] [rank2] INFO   anaphor_gender_agreement                       acc=0.4700  (470/1000)
+[11:13:01] [rank2] INFO   anaphor_number_agreement                       acc=0.8550  (855/1000)
+[11:13:02] [rank2] INFO   animate_subject_passive                        acc=0.7010  (701/1000)
+[11:13:04] [rank2] INFO   animate_subject_trans                          acc=0.8470  (847/1000)
+[11:13:05] [rank2] INFO   causative                                      acc=0.5990  (599/1000)
+[11:13:06] [rank2] INFO   complex_NP_island                              acc=0.5570  (557/1000)
+[11:13:08] [rank2] INFO   coordinate_structure_constraint_complex_left_branch  acc=0.1530  (153/1000)
+[11:13:09] [rank2] INFO   coordinate_structure_constraint_object_extraction  acc=0.7300  (730/1000)
+[11:13:10] [rank2] INFO   determiner_noun_agreement_1                    acc=0.9380  (938/1000)
+[11:13:12] [rank2] INFO   determiner_noun_agreement_2                    acc=0.9530  (953/1000)
+[11:13:13] [rank2] INFO   determiner_noun_agreement_irregular_1          acc=0.8160  (816/1000)
+[11:13:14] [rank2] INFO   determiner_noun_agreement_irregular_2          acc=0.9000  (900/1000)
+[11:13:16] [rank2] INFO   determiner_noun_agreement_with_adj_2           acc=0.9050  (905/1000)
+[11:13:17] [rank2] INFO   determiner_noun_agreement_with_adj_irregular_1  acc=0.7760  (776/1000)
+[11:13:18] [rank2] INFO   determiner_noun_agreement_with_adj_irregular_2  acc=0.8680  (868/1000)
+[11:13:20] [rank2] INFO   determiner_noun_agreement_with_adjective_1     acc=0.8710  (871/1000)
+[11:13:21] [rank2] INFO   distractor_agreement_relational_noun           acc=0.5630  (563/1000)
+[11:13:22] [rank2] INFO   distractor_agreement_relative_clause           acc=0.4310  (431/1000)
+[11:13:24] [rank2] INFO   drop_argument                                  acc=0.7620  (762/1000)
+[11:13:25] [rank2] INFO   ellipsis_n_bar_1                               acc=0.6990  (699/1000)
+[11:13:26] [rank2] INFO   ellipsis_n_bar_2                               acc=0.8130  (813/1000)
+[11:13:28] [rank2] INFO   existential_there_object_raising               acc=0.8050  (805/1000)
+[11:13:29] [rank2] INFO   existential_there_quantifiers_1                acc=0.9480  (948/1000)
+[11:13:30] [rank2] INFO   existential_there_quantifiers_2                acc=0.3550  (355/1000)
+[11:13:32] [rank2] INFO   existential_there_subject_raising              acc=0.8320  (832/1000)
+[11:13:33] [rank2] INFO   expletive_it_object_raising                    acc=0.7480  (748/1000)
+[11:13:34] [rank2] INFO   inchoative                                     acc=0.5260  (526/1000)
+[11:13:36] [rank2] INFO   intransitive                                   acc=0.6770  (677/1000)
+[11:13:37] [rank2] INFO   irregular_past_participle_adjectives           acc=0.9960  (996/1000)
+[11:13:38] [rank2] INFO   irregular_past_participle_verbs                acc=0.8260  (826/1000)
+[11:13:40] [rank2] INFO   irregular_plural_subject_verb_agreement_1      acc=0.8240  (824/1000)
+[11:13:41] [rank2] INFO   irregular_plural_subject_verb_agreement_2      acc=0.8810  (881/1000)
+[11:13:42] [rank2] INFO   left_branch_island_echo_question               acc=0.4420  (442/1000)
+[11:13:44] [rank2] INFO   left_branch_island_simple_question             acc=0.1620  (162/1000)
+[11:13:45] [rank2] INFO   matrix_question_npi_licensor_present           acc=0.1260  (126/1000)
+[11:13:46] [rank2] INFO   npi_present_1                                  acc=0.4880  (488/1000)
+[11:13:47] [rank2] INFO   npi_present_2                                  acc=0.5310  (531/1000)
+[11:13:49] [rank2] INFO   only_npi_licensor_present                      acc=0.5400  (540/1000)
+[11:13:50] [rank2] INFO   only_npi_scope                                 acc=0.6300  (630/1000)
+[11:13:51] [rank2] INFO   passive_1                                      acc=0.8470  (847/1000)
+[11:13:53] [rank2] INFO   passive_2                                      acc=0.8320  (832/1000)
+[11:13:54] [rank2] INFO   principle_A_c_command                          acc=0.6660  (666/1000)
+[11:13:55] [rank2] INFO   principle_A_case_1                             acc=1.0000  (1000/1000)
+[11:13:57] [rank2] INFO   principle_A_case_2                             acc=0.7520  (752/1000)
+[11:13:58] [rank2] INFO   principle_A_domain_1                           acc=0.9510  (951/1000)
+[11:13:59] [rank2] INFO   principle_A_domain_2                           acc=0.7410  (741/1000)
+[11:14:01] [rank2] INFO   principle_A_domain_3                           acc=0.4830  (483/1000)
+[11:14:02] [rank2] INFO   principle_A_reconstruction                     acc=0.2660  (266/1000)
+[11:14:03] [rank2] INFO   regular_plural_subject_verb_agreement_1        acc=0.7870  (787/1000)
+[11:14:05] [rank2] INFO   regular_plural_subject_verb_agreement_2        acc=0.8170  (817/1000)
+[11:14:06] [rank2] INFO   sentential_negation_npi_licensor_present       acc=1.0000  (1000/1000)
+[11:14:07] [rank2] INFO   sentential_negation_npi_scope                  acc=0.3410  (341/1000)
+[11:14:09] [rank2] INFO   sentential_subject_island                      acc=0.3170  (317/1000)
+[11:14:10] [rank2] INFO   superlative_quantifiers_1                      acc=0.5710  (571/1000)
+[11:14:11] [rank2] INFO   superlative_quantifiers_2                      acc=0.7160  (716/1000)
+[11:14:13] [rank2] INFO   tough_vs_raising_1                             acc=0.3480  (348/1000)
+[11:14:14] [rank2] INFO   tough_vs_raising_2                             acc=0.8360  (836/1000)
+[11:14:15] [rank2] INFO   transitive                                     acc=0.7970  (797/1000)
+[11:14:17] [rank2] INFO   wh_island                                      acc=0.4370  (437/1000)
+[11:14:18] [rank2] INFO   wh_questions_object_gap                        acc=0.5900  (590/1000)
+[11:14:19] [rank2] INFO   wh_questions_subject_gap                       acc=0.8370  (837/1000)
+[11:14:21] [rank2] INFO   wh_questions_subject_gap_long_distance         acc=0.8800  (880/1000)
+[11:14:22] [rank2] INFO   wh_vs_that_no_gap                              acc=0.9650  (965/1000)
+[11:14:23] [rank2] INFO   wh_vs_that_no_gap_long_distance                acc=0.9830  (983/1000)
+[11:14:24] [rank2] INFO   wh_vs_that_with_gap                            acc=0.2930  (293/1000)
+[11:14:26] [rank2] INFO   wh_vs_that_with_gap_long_distance              acc=0.0960  (96/1000)
+[11:14:26] [rank2] INFO   ── Mean BLiMP accuracy across 67 phenomena: 0.6768
+[11:14:26] [rank2] INFO   Model freed.
+
+[11:14:26] [rank2] INFO ============================================================
+[11:14:26] [rank2] INFO Model: RA-ALTA/zh-en-fluent
+[11:14:26] [rank2] INFO   67/67 phenomena to evaluate.
+[11:14:27] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+[11:14:27] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-fluent/8c44a17340e4ba96f60fb71b3231361eefac191d/config.json "HTTP/1.1 200 OK"
+[11:14:27] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-fluent/8c44a17340e4ba96f60fb71b3231361eefac191d/config.json "HTTP/1.1 200 OK"
+[11:14:27] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[11:14:27] [rank2] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/zh-en-fluent/xet-read-token/8c44a17340e4ba96f60fb71b3231361eefac191d "HTTP/1.1 200 OK"
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 5181.07it/s]
+[11:14:34] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+[11:14:34] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-fluent/8c44a17340e4ba96f60fb71b3231361eefac191d/generation_config.json "HTTP/1.1 200 OK"
+[11:14:35] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-fluent/8c44a17340e4ba96f60fb71b3231361eefac191d/generation_config.json "HTTP/1.1 200 OK"
+[11:14:35] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+[11:14:35] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+[11:14:35] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-fluent/8c44a17340e4ba96f60fb71b3231361eefac191d/config.json "HTTP/1.1 200 OK"
+[11:14:35] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+[11:14:35] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-fluent/8c44a17340e4ba96f60fb71b3231361eefac191d/tokenizer_config.json "HTTP/1.1 200 OK"
+[11:14:35] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-fluent/8c44a17340e4ba96f60fb71b3231361eefac191d/tokenizer_config.json "HTTP/1.1 200 OK"
+[11:14:35] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+[11:14:35] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-fluent/8c44a17340e4ba96f60fb71b3231361eefac191d/tokenizer_config.json "HTTP/1.1 200 OK"
+[11:14:36] [rank2] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/zh-en-fluent/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+[11:14:36] [rank2] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/zh-en-fluent/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+[11:14:36] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+[11:14:36] [rank2] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-fluent/8c44a17340e4ba96f60fb71b3231361eefac191d/tokenizer.json "HTTP/1.1 200 OK"
+[11:14:36] [rank2] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-fluent/8c44a17340e4ba96f60fb71b3231361eefac191d/tokenizer.json "HTTP/1.1 200 OK"
+[11:14:36] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/tokenizer.model "HTTP/1.1 404 Not Found"
+[11:14:36] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+[11:14:36] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
+[11:14:37] [rank2] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-fluent/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+[11:14:37] [rank2] INFO   Model loaded.
+[11:14:38] [rank2] INFO   adjunct_island                                 acc=0.8110  (811/1000)
+[11:14:39] [rank2] INFO   anaphor_gender_agreement                       acc=0.7400  (740/1000)
+[11:14:40] [rank2] INFO   anaphor_number_agreement                       acc=0.9040  (904/1000)
+[11:14:41] [rank2] INFO   animate_subject_passive                        acc=0.7580  (758/1000)
+[11:14:42] [rank2] INFO   animate_subject_trans                          acc=0.8520  (852/1000)
+[11:14:43] [rank2] INFO   causative                                      acc=0.6840  (684/1000)
+[11:14:44] [rank2] INFO   complex_NP_island                              acc=0.5340  (534/1000)
+[11:14:45] [rank2] INFO   coordinate_structure_constraint_complex_left_branch  acc=0.3650  (365/1000)
+[11:14:46] [rank2] INFO   coordinate_structure_constraint_object_extraction  acc=0.8010  (801/1000)
+[11:14:47] [rank2] INFO   determiner_noun_agreement_1                    acc=0.9710  (971/1000)
+[11:14:48] [rank2] INFO   determiner_noun_agreement_2                    acc=0.9650  (965/1000)
+[11:14:49] [rank2] INFO   determiner_noun_agreement_irregular_1          acc=0.9090  (909/1000)
+[11:14:50] [rank2] INFO   determiner_noun_agreement_irregular_2          acc=0.9410  (941/1000)
+[11:14:52] [rank2] INFO   determiner_noun_agreement_with_adj_2           acc=0.9200  (920/1000)
+[11:14:53] [rank2] INFO   determiner_noun_agreement_with_adj_irregular_1  acc=0.8410  (841/1000)
+[11:14:54] [rank2] INFO   determiner_noun_agreement_with_adj_irregular_2  acc=0.9140  (914/1000)
+[11:14:55] [rank2] INFO   determiner_noun_agreement_with_adjective_1     acc=0.9160  (916/1000)
+[11:14:56] [rank2] INFO   distractor_agreement_relational_noun           acc=0.8090  (809/1000)
+[11:14:57] [rank2] INFO   distractor_agreement_relative_clause           acc=0.5710  (571/1000)
+[11:14:58] [rank2] INFO   drop_argument                                  acc=0.7510  (751/1000)
+[11:14:59] [rank2] INFO   ellipsis_n_bar_1                               acc=0.8030  (803/1000)
+[11:15:00] [rank2] INFO   ellipsis_n_bar_2                               acc=0.8740  (874/1000)
+[11:15:01] [rank2] INFO   existential_there_object_raising               acc=0.8210  (821/1000)
+[11:15:02] [rank2] INFO   existential_there_quantifiers_1                acc=0.9530  (953/1000)
+[11:15:03] [rank2] INFO   existential_there_quantifiers_2                acc=0.4850  (485/1000)
+[11:15:04] [rank2] INFO   existential_there_subject_raising              acc=0.8530  (853/1000)
+[11:15:06] [rank2] INFO   expletive_it_object_raising                    acc=0.7570  (757/1000)
+[11:15:07] [rank2] INFO   inchoative                                     acc=0.6320  (632/1000)
+[11:15:08] [rank2] INFO   intransitive                                   acc=0.7370  (737/1000)
+[11:15:09] [rank2] INFO   irregular_past_participle_adjectives           acc=0.9660  (966/1000)
+[11:15:10] [rank2] INFO   irregular_past_participle_verbs                acc=0.8070  (807/1000)
+[11:15:11] [rank2] INFO   irregular_plural_subject_verb_agreement_1      acc=0.8810  (881/1000)
+[11:15:12] [rank2] INFO   irregular_plural_subject_verb_agreement_2      acc=0.9140  (914/1000)
+[11:15:13] [rank2] INFO   left_branch_island_echo_question               acc=0.3970  (397/1000)
+[11:15:14] [rank2] INFO   left_branch_island_simple_question             acc=0.3870  (387/1000)
+[11:15:15] [rank2] INFO   matrix_question_npi_licensor_present           acc=0.2580  (258/1000)
+[11:15:16] [rank2] INFO   npi_present_1                                  acc=0.4940  (494/1000)
+[11:15:17] [rank2] INFO   npi_present_2                                  acc=0.5580  (558/1000)
+[11:15:18] [rank2] INFO   only_npi_licensor_present                      acc=0.6200  (620/1000)
+[11:15:19] [rank2] INFO   only_npi_scope                                 acc=0.5830  (583/1000)
+[11:15:21] [rank2] INFO   passive_1                                      acc=0.8950  (895/1000)
+[11:15:22] [rank2] INFO   passive_2                                      acc=0.9030  (903/1000)
+[11:15:23] [rank2] INFO   principle_A_c_command                          acc=0.6300  (630/1000)
+[11:15:24] [rank2] INFO   principle_A_case_1                             acc=1.0000  (1000/1000)
+[11:15:25] [rank2] INFO   principle_A_case_2                             acc=0.9160  (916/1000)
+[11:15:26] [rank2] INFO   principle_A_domain_1                           acc=0.9700  (970/1000)
+[11:15:27] [rank2] INFO   principle_A_domain_2                           acc=0.7920  (792/1000)
+[11:15:28] [rank2] INFO   principle_A_domain_3                           acc=0.4740  (474/1000)
+[11:15:29] [rank2] INFO   principle_A_reconstruction                     acc=0.2420  (242/1000)
+[11:15:30] [rank2] INFO   regular_plural_subject_verb_agreement_1        acc=0.8300  (830/1000)
+[11:15:31] [rank2] INFO   regular_plural_subject_verb_agreement_2        acc=0.9100  (910/1000)
+[11:15:32] [rank2] INFO   sentential_negation_npi_licensor_present       acc=0.9910  (991/1000)
+[11:15:33] [rank2] INFO   sentential_negation_npi_scope                  acc=0.4060  (406/1000)
+[11:15:34] [rank2] INFO   sentential_subject_island                      acc=0.3890  (389/1000)
+[11:15:35] [rank2] INFO   superlative_quantifiers_1                      acc=0.6340  (634/1000)
+[11:15:37] [rank2] INFO   superlative_quantifiers_2                      acc=0.6900  (690/1000)
+[11:15:38] [rank2] INFO   tough_vs_raising_1                             acc=0.4400  (440/1000)
+[11:15:39] [rank2] INFO   tough_vs_raising_2                             acc=0.9050  (905/1000)
+[11:15:40] [rank2] INFO   transitive                                     acc=0.8350  (835/1000)
+[11:15:41] [rank2] INFO   wh_island                                      acc=0.7370  (737/1000)
+[11:15:42] [rank2] INFO   wh_questions_object_gap                        acc=0.6740  (674/1000)
+[11:15:43] [rank2] INFO   wh_questions_subject_gap                       acc=0.8880  (888/1000)
+[11:15:44] [rank2] INFO   wh_questions_subject_gap_long_distance         acc=0.8260  (826/1000)
+[11:15:45] [rank2] INFO   wh_vs_that_no_gap                              acc=0.9510  (951/1000)
+[11:15:46] [rank2] INFO   wh_vs_that_no_gap_long_distance                acc=0.9530  (953/1000)
+[11:15:47] [rank2] INFO   wh_vs_that_with_gap                            acc=0.5330  (533/1000)
+[11:15:48] [rank2] INFO   wh_vs_that_with_gap_long_distance              acc=0.2940  (294/1000)
+[11:15:48] [rank2] INFO   ── Mean BLiMP accuracy across 67 phenomena: 0.7380
+[11:15:48] [rank2] INFO   Model freed.
+
+[11:15:48] [rank2] INFO Done. Results written to: /root/beetle-analyze/alta_blimp_results/blimp_results_alta.csv
