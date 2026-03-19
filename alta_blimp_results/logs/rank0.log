@@ -1,930 +1,209 @@
-[11:09:58] [rank0] INFO Rank 0/8 — device: cuda:0
-[11:09:58] [rank0] INFO This rank evaluates 3 model(s): ['RA-ALTA/pl-en-beginner', 'RA-ALTA/tr-en-fluent', 'RA-ALTA/zh-en-intermediate']
-[11:09:58] [rank0] INFO Downloading BLiMP from HuggingFace (this happens once) …
-[11:09:59] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[11:09:59] [rank0] WARNING Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
-[11:09:59] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:09:59] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:00] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:00] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/revision/877fba0801ffb7cbd8c39c1ff314a46f053f6036 "HTTP/1.1 200 OK"
-[11:10:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:01] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:01] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/adjunct_island?recursive=true&expand=false "HTTP/1.1 200 OK"
-[11:10:01] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036?recursive=false&expand=false "HTTP/1.1 200 OK"
-[11:10:01] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:01] [rank0] INFO   67 phenomena found.
-[11:10:01] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:01] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:01] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:01] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:02] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:02] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:02] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 247524.58 examples/s]
-[11:10:02] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:02] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:02] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:02] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:03] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:03] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:03] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:03] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/anaphor_gender_agreement?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 351812.11 examples/s]
-[11:10:03] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:03] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:03] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:03] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:03] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:03] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:04] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:04] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/anaphor_number_agreement?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 388109.93 examples/s]
-[11:10:04] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:04] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:04] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:04] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:04] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:04] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:04] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:05] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/animate_subject_passive?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 365198.43 examples/s]
-[11:10:05] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:05] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:05] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:05] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:05] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:05] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:05] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:05] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/animate_subject_trans?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 340917.17 examples/s]
-[11:10:06] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:06] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:06] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:06] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:06] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:06] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:06] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:06] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/causative?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 327936.20 examples/s]
-[11:10:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:07] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:07] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:07] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/complex_NP_island?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 291331.81 examples/s]
-[11:10:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:08] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:08] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:08] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:08] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:08] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:08] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:08] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/coordinate_structure_constraint_complex_left_branch?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 315859.93 examples/s]
-[11:10:08] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:08] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:08] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:09] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:09] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:09] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:09] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:09] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/coordinate_structure_constraint_object_extraction?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 332011.72 examples/s]
-[11:10:09] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:09] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:09] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:10] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:10] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:10] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:10] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:10] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/determiner_noun_agreement_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 342252.47 examples/s]
-[11:10:10] [rank0] INFO   … 10/67 phenomena loaded
-[11:10:10] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:10] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:10] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:10] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:11] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:11] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:11] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:11] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/determiner_noun_agreement_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 231358.82 examples/s]
-[11:10:11] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:11] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:11] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:11] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:12] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:12] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:12] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:12] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/determiner_noun_agreement_irregular_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 227740.89 examples/s]
-[11:10:12] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:12] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:12] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:12] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:13] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:13] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/determiner_noun_agreement_irregular_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 310666.17 examples/s]
-[11:10:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:13] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:14] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:14] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:14] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/determiner_noun_agreement_with_adj_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 313311.72 examples/s]
-[11:10:14] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:14] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:14] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:14] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:14] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:14] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:15] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:15] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/determiner_noun_agreement_with_adj_irregular_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 332327.39 examples/s]
-[11:10:15] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:15] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:15] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:15] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:15] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:15] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:16] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:16] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/determiner_noun_agreement_with_adj_irregular_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 293595.41 examples/s]
-[11:10:16] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:16] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:16] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:16] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:16] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:16] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:17] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:17] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/determiner_noun_agreement_with_adjective_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 320689.96 examples/s]
-[11:10:17] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:17] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:17] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:17] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:17] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:17] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:18] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:18] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/distractor_agreement_relational_noun?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 299635.95 examples/s]
-[11:10:18] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:18] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:18] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:18] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:18] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:18] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:18] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:19] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/distractor_agreement_relative_clause?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 304907.24 examples/s]
-[11:10:19] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:19] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:19] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:19] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:19] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:19] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:19] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:19] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/drop_argument?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 334180.86 examples/s]
-[11:10:19] [rank0] INFO   … 20/67 phenomena loaded
-[11:10:20] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:20] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:20] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:20] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:20] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:20] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:20] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:20] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/ellipsis_n_bar_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 252061.54 examples/s]
-[11:10:21] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:21] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:21] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:21] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:21] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:21] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:21] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:21] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/ellipsis_n_bar_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 296794.79 examples/s]
-[11:10:21] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:22] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:22] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:22] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:22] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:22] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:22] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:22] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/existential_there_object_raising?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 331303.63 examples/s]
-[11:10:22] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:22] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:22] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:23] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:23] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:23] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:23] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:23] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/existential_there_quantifiers_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 323709.50 examples/s]
-[11:10:23] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:23] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:23] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:23] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:24] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:24] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:24] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:24] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/existential_there_quantifiers_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 358028.51 examples/s]
-[11:10:24] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:24] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:24] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:24] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:25] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:25] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:25] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:25] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/existential_there_subject_raising?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 337433.95 examples/s]
-[11:10:25] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:25] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:25] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:25] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:26] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:26] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:26] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:26] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/expletive_it_object_raising?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 317437.68 examples/s]
-[11:10:26] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:26] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:26] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:26] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:26] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:27] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:27] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:27] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/inchoative?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 235278.17 examples/s]
-[11:10:27] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:27] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:27] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:27] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:27] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:28] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:28] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:28] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/intransitive?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 329249.08 examples/s]
-[11:10:28] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:28] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:28] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:28] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:28] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:28] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:29] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:29] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/irregular_past_participle_adjectives?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 321058.18 examples/s]
-[11:10:29] [rank0] INFO   … 30/67 phenomena loaded
-[11:10:29] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:29] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:29] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:29] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:29] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:29] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:29] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:30] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/irregular_past_participle_verbs?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 351694.11 examples/s]
-[11:10:30] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:30] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:30] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:30] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:30] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:30] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:30] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:30] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/irregular_plural_subject_verb_agreement_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 352521.77 examples/s]
-[11:10:30] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:31] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:31] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:31] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:31] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:31] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:31] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:31] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/irregular_plural_subject_verb_agreement_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 367792.35 examples/s]
-[11:10:31] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:32] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:32] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:32] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:32] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:32] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:32] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:32] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/left_branch_island_echo_question?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 375463.61 examples/s]
-[11:10:32] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:32] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:33] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:33] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:33] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:33] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:33] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:33] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/left_branch_island_simple_question?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 374324.32 examples/s]
-[11:10:33] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:33] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:34] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:34] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:34] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:34] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:34] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:34] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/matrix_question_npi_licensor_present?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 393609.61 examples/s]
-[11:10:34] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:34] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:34] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:34] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:35] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:35] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:35] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:35] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/npi_present_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 340308.64 examples/s]
-[11:10:35] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:35] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:35] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:35] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:36] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:36] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:36] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:36] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/npi_present_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 359779.04 examples/s]
-[11:10:36] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:36] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:36] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:36] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:37] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:37] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:37] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:37] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/only_npi_licensor_present?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 334527.36 examples/s]
-[11:10:37] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:37] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:37] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:37] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:37] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:38] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:38] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:38] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/only_npi_scope?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 340308.64 examples/s]
-[11:10:38] [rank0] INFO   … 40/67 phenomena loaded
-[11:10:38] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:38] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:38] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:38] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:38] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:39] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:39] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:39] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/passive_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 334474.00 examples/s]
-[11:10:39] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:39] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:39] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:39] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:39] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:39] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:40] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/passive_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 369705.07 examples/s]
-[11:10:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:40] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:40] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:41] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/principle_A_c_command?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 368082.84 examples/s]
-[11:10:41] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:41] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:41] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:41] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:41] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:41] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:41] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:41] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/principle_A_case_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 362954.66 examples/s]
-[11:10:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:42] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:42] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:42] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/principle_A_case_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 331827.85 examples/s]
-[11:10:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:43] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:43] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:43] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/principle_A_domain_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 385293.40 examples/s]
-[11:10:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:44] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:44] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:44] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/principle_A_domain_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 376474.64 examples/s]
-[11:10:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:44] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:45] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:45] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:45] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:45] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/principle_A_domain_3?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 343879.97 examples/s]
-[11:10:45] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:45] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:45] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:45] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:46] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:46] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:46] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:46] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/principle_A_reconstruction?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 329094.08 examples/s]
-[11:10:46] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:46] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:46] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:46] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:47] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:47] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:47] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:47] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/regular_plural_subject_verb_agreement_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 380470.25 examples/s]
-[11:10:47] [rank0] INFO   … 50/67 phenomena loaded
-[11:10:47] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:47] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:47] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:47] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:47] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:48] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:48] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:48] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/regular_plural_subject_verb_agreement_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 323709.50 examples/s]
-[11:10:48] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:48] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:48] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:48] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:48] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:49] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:49] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:49] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/sentential_negation_npi_licensor_present?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 279378.14 examples/s]
-[11:10:49] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:49] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:49] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:49] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:49] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:50] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:50] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:50] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/sentential_negation_npi_scope?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 311358.03 examples/s]
-[11:10:50] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:50] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:50] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:50] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:50] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:51] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:51] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:51] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/sentential_subject_island?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 391150.24 examples/s]
-[11:10:51] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:51] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:51] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:51] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:51] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:51] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:51] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:52] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/superlative_quantifiers_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 343317.02 examples/s]
-[11:10:52] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:52] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:52] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:52] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:52] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:52] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:52] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:52] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/superlative_quantifiers_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 407293.07 examples/s]
-[11:10:53] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:53] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:53] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:53] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:53] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:53] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:53] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:53] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/tough_vs_raising_1?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 390095.24 examples/s]
-[11:10:53] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:53] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:54] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:54] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:54] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:54] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:54] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:54] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/tough_vs_raising_2?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 310023.21 examples/s]
-[11:10:54] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:54] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:55] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:55] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:55] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:55] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:55] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:55] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/transitive?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 347239.34 examples/s]
-[11:10:55] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:55] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:55] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:55] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:56] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:56] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:56] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:56] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/wh_island?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 333463.51 examples/s]
-[11:10:56] [rank0] INFO   … 60/67 phenomena loaded
-[11:10:56] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:56] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:56] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:56] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:57] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:57] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:57] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:57] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/wh_questions_object_gap?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 320886.24 examples/s]
-[11:10:57] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:57] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:57] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:57] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:58] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:58] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/wh_questions_subject_gap?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 324611.41 examples/s]
-[11:10:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:58] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:59] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:10:59] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:10:59] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/wh_questions_subject_gap_long_distance?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 298995.15 examples/s]
-[11:10:59] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:10:59] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:10:59] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:59] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:10:59] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:10:59] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:11:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:11:00] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/wh_vs_that_no_gap?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 321501.15 examples/s]
-[11:11:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:11:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:11:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:11:00] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:11:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:11:00] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:11:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:11:01] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/wh_vs_that_no_gap_long_distance?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 323859.47 examples/s]
-[11:11:01] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:11:01] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:11:01] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:11:01] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:11:01] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:11:01] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:11:02] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:11:02] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/wh_vs_that_with_gap?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 336594.49 examples/s]
-[11:11:02] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/main/README.md "HTTP/1.1 307 Temporary Redirect"
-[11:11:02] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/datasets/nyu-mll/blimp/877fba0801ffb7cbd8c39c1ff314a46f053f6036/README.md "HTTP/1.1 200 OK"
-[11:11:02] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/blimp.py "HTTP/1.1 404 Not Found"
-[11:11:02] [rank0] INFO HTTP Request: HEAD https://s3.amazonaws.com/datasets.huggingface.co/datasets/datasets/nyu-mll/blimp/nyu-mll/blimp.py "HTTP/1.1 404 Not Found"
-[11:11:02] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/.huggingface.yaml "HTTP/1.1 404 Not Found"
-[11:11:02] [rank0] INFO HTTP Request: GET https://datasets-server.huggingface.co/info?dataset=nyu-mll/blimp "HTTP/1.1 200 OK"
-[11:11:02] [rank0] INFO HTTP Request: HEAD https://huggingface.co/datasets/nyu-mll/blimp/resolve/877fba0801ffb7cbd8c39c1ff314a46f053f6036/dataset_infos.json "HTTP/1.1 404 Not Found"
-[11:11:02] [rank0] INFO HTTP Request: GET https://huggingface.co/api/datasets/nyu-mll/blimp/tree/877fba0801ffb7cbd8c39c1ff314a46f053f6036/wh_vs_that_with_gap_long_distance?recursive=true&expand=false "HTTP/1.1 200 OK"
-Generating train split:   0%|          | 0/1000 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 1000/1000 [00:00<00:00, 336243.71 examples/s]
-[11:11:03] [rank0] INFO   Cached to /root/beetle-analyze/alta_blimp_results/.blimp_cache.pkl
-[11:11:03] [rank0] INFO BLiMP ready: 67 phenomena, 67,000 pairs total.
-[11:11:03] [rank0] INFO Evaluating on 67 BLiMP phenomena.
+[07:50:55] [rank0] INFO Rank 0/8 — device: cuda:0
+[07:50:55] [rank0] INFO This rank evaluates 2 model(s): ['RA-ALTA/pl-en-phase1-final', 'RA-ALTA/fr-en-intermediate']
+[07:50:55] [rank0] INFO Loading BLiMP pairs from cache: /root/beetle-analyze/alta_blimp_results/.blimp_cache.pkl
+[07:50:55] [rank0] INFO Evaluating on 67 BLiMP phenomena.
 
-[11:11:03] [rank0] INFO ============================================================
-[11:11:03] [rank0] INFO Model: RA-ALTA/pl-en-beginner
-[11:11:03] [rank0] INFO   67/67 phenomena to evaluate.
-[11:11:03] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
-[11:11:03] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-beginner/0d95d839fe174b5baccb5501cfdf9ad3b4e58e14/config.json "HTTP/1.1 200 OK"
-[11:11:03] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-beginner/0d95d839fe174b5baccb5501cfdf9ad3b4e58e14/config.json "HTTP/1.1 200 OK"
+[07:50:55] [rank0] INFO ============================================================
+[07:50:55] [rank0] INFO Model: RA-ALTA/pl-en-phase1-final
+[07:50:56] [rank0] INFO   67/67 phenomena to evaluate.
+[07:50:56] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+[07:50:56] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-phase1-final/97c5cb53f11c85651f9643916d88720b15e8fa95/config.json "HTTP/1.1 200 OK"
+[07:50:56] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-phase1-final/97c5cb53f11c85651f9643916d88720b15e8fa95/config.json "HTTP/1.1 200 OK"
 `torch_dtype` is deprecated! Use `dtype` instead!
-[11:11:03] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/model.safetensors "HTTP/1.1 302 Found"
-[11:11:03] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/pl-en-beginner/xet-read-token/0d95d839fe174b5baccb5501cfdf9ad3b4e58e14 "HTTP/1.1 200 OK"
-Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 4271.30it/s]
-[11:11:12] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
-[11:11:12] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-beginner/0d95d839fe174b5baccb5501cfdf9ad3b4e58e14/generation_config.json "HTTP/1.1 200 OK"
-[11:11:12] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-beginner/0d95d839fe174b5baccb5501cfdf9ad3b4e58e14/generation_config.json "HTTP/1.1 200 OK"
-[11:11:12] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
-[11:11:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
-[11:11:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-beginner/0d95d839fe174b5baccb5501cfdf9ad3b4e58e14/config.json "HTTP/1.1 200 OK"
-[11:11:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
-[11:11:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-beginner/0d95d839fe174b5baccb5501cfdf9ad3b4e58e14/tokenizer_config.json "HTTP/1.1 200 OK"
-[11:11:13] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-beginner/0d95d839fe174b5baccb5501cfdf9ad3b4e58e14/tokenizer_config.json "HTTP/1.1 200 OK"
-[11:11:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
-[11:11:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-beginner/0d95d839fe174b5baccb5501cfdf9ad3b4e58e14/tokenizer_config.json "HTTP/1.1 200 OK"
-[11:11:13] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/pl-en-beginner/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
-[11:11:13] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/pl-en-beginner/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
-[11:11:13] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
-[11:11:14] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-beginner/0d95d839fe174b5baccb5501cfdf9ad3b4e58e14/tokenizer.json "HTTP/1.1 200 OK"
-[11:11:14] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-beginner/0d95d839fe174b5baccb5501cfdf9ad3b4e58e14/tokenizer.json "HTTP/1.1 200 OK"
-[11:11:14] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/tokenizer.model "HTTP/1.1 404 Not Found"
-[11:11:14] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
-[11:11:14] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
-[11:11:14] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-beginner/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
-[11:11:14] [rank0] INFO   Model loaded.
-[11:11:16] [rank0] INFO   adjunct_island                                 acc=0.8170  (817/1000)
-[11:11:17] [rank0] INFO   anaphor_gender_agreement                       acc=0.5820  (582/1000)
-[11:11:18] [rank0] INFO   anaphor_number_agreement                       acc=0.7940  (794/1000)
-[11:11:19] [rank0] INFO   animate_subject_passive                        acc=0.6910  (691/1000)
-[11:11:21] [rank0] INFO   animate_subject_trans                          acc=0.8780  (878/1000)
-[11:11:22] [rank0] INFO   causative                                      acc=0.6250  (625/1000)
-[11:11:23] [rank0] INFO   complex_NP_island                              acc=0.4700  (470/1000)
-[11:11:25] [rank0] INFO   coordinate_structure_constraint_complex_left_branch  acc=0.2360  (236/1000)
-[11:11:26] [rank0] INFO   coordinate_structure_constraint_object_extraction  acc=0.7880  (788/1000)
-[11:11:27] [rank0] INFO   determiner_noun_agreement_1                    acc=0.9350  (935/1000)
-[11:11:29] [rank0] INFO   determiner_noun_agreement_2                    acc=0.9470  (947/1000)
-[11:11:30] [rank0] INFO   determiner_noun_agreement_irregular_1          acc=0.8120  (812/1000)
-[11:11:31] [rank0] INFO   determiner_noun_agreement_irregular_2          acc=0.9190  (919/1000)
-[11:11:33] [rank0] INFO   determiner_noun_agreement_with_adj_2           acc=0.8900  (890/1000)
-[11:11:34] [rank0] INFO   determiner_noun_agreement_with_adj_irregular_1  acc=0.7610  (761/1000)
-[11:11:35] [rank0] INFO   determiner_noun_agreement_with_adj_irregular_2  acc=0.8570  (857/1000)
-[11:11:37] [rank0] INFO   determiner_noun_agreement_with_adjective_1     acc=0.8610  (861/1000)
-[11:11:38] [rank0] INFO   distractor_agreement_relational_noun           acc=0.5640  (564/1000)
-[11:11:39] [rank0] INFO   distractor_agreement_relative_clause           acc=0.4270  (427/1000)
-[11:11:41] [rank0] INFO   drop_argument                                  acc=0.7340  (734/1000)
-[11:11:42] [rank0] INFO   ellipsis_n_bar_1                               acc=0.6820  (682/1000)
-[11:11:43] [rank0] INFO   ellipsis_n_bar_2                               acc=0.8010  (801/1000)
-[11:11:45] [rank0] INFO   existential_there_object_raising               acc=0.7620  (762/1000)
-[11:11:46] [rank0] INFO   existential_there_quantifiers_1                acc=0.9720  (972/1000)
-[11:11:47] [rank0] INFO   existential_there_quantifiers_2                acc=0.1410  (141/1000)
-[11:11:49] [rank0] INFO   existential_there_subject_raising              acc=0.8180  (818/1000)
-[11:11:50] [rank0] INFO   expletive_it_object_raising                    acc=0.6950  (695/1000)
-[11:11:51] [rank0] INFO   inchoative                                     acc=0.5420  (542/1000)
-[11:11:53] [rank0] INFO   intransitive                                   acc=0.6540  (654/1000)
-[11:11:54] [rank0] INFO   irregular_past_participle_adjectives           acc=0.9310  (931/1000)
-[11:11:55] [rank0] INFO   irregular_past_participle_verbs                acc=0.8310  (831/1000)
-[11:11:57] [rank0] INFO   irregular_plural_subject_verb_agreement_1      acc=0.8120  (812/1000)
-[11:11:58] [rank0] INFO   irregular_plural_subject_verb_agreement_2      acc=0.8640  (864/1000)
-[11:11:59] [rank0] INFO   left_branch_island_echo_question               acc=0.4560  (456/1000)
-[11:12:01] [rank0] INFO   left_branch_island_simple_question             acc=0.2950  (295/1000)
-[11:12:02] [rank0] INFO   matrix_question_npi_licensor_present           acc=0.0260  (26/1000)
-[11:12:03] [rank0] INFO   npi_present_1                                  acc=0.4220  (422/1000)
-[11:12:05] [rank0] INFO   npi_present_2                                  acc=0.5090  (509/1000)
-[11:12:06] [rank0] INFO   only_npi_licensor_present                      acc=0.2530  (253/1000)
-[11:12:07] [rank0] INFO   only_npi_scope                                 acc=0.1900  (190/1000)
-[11:12:09] [rank0] INFO   passive_1                                      acc=0.8640  (864/1000)
-[11:12:10] [rank0] INFO   passive_2                                      acc=0.8690  (869/1000)
-[11:12:11] [rank0] INFO   principle_A_c_command                          acc=0.6530  (653/1000)
-[11:12:13] [rank0] INFO   principle_A_case_1                             acc=1.0000  (1000/1000)
-[11:12:14] [rank0] INFO   principle_A_case_2                             acc=0.8300  (830/1000)
-[11:12:15] [rank0] INFO   principle_A_domain_1                           acc=0.9060  (906/1000)
-[11:12:16] [rank0] INFO   principle_A_domain_2                           acc=0.7020  (702/1000)
-[11:12:18] [rank0] INFO   principle_A_domain_3                           acc=0.5400  (540/1000)
-[11:12:19] [rank0] INFO   principle_A_reconstruction                     acc=0.4310  (431/1000)
-[11:12:20] [rank0] INFO   regular_plural_subject_verb_agreement_1        acc=0.8230  (823/1000)
-[11:12:22] [rank0] INFO   regular_plural_subject_verb_agreement_2        acc=0.8130  (813/1000)
-[11:12:23] [rank0] INFO   sentential_negation_npi_licensor_present       acc=0.9980  (998/1000)
-[11:12:24] [rank0] INFO   sentential_negation_npi_scope                  acc=0.3060  (306/1000)
-[11:12:26] [rank0] INFO   sentential_subject_island                      acc=0.3320  (332/1000)
-[11:12:27] [rank0] INFO   superlative_quantifiers_1                      acc=0.6460  (646/1000)
-[11:12:28] [rank0] INFO   superlative_quantifiers_2                      acc=0.9050  (905/1000)
-[11:12:30] [rank0] INFO   tough_vs_raising_1                             acc=0.3590  (359/1000)
-[11:12:31] [rank0] INFO   tough_vs_raising_2                             acc=0.8400  (840/1000)
-[11:12:32] [rank0] INFO   transitive                                     acc=0.7820  (782/1000)
-[11:12:34] [rank0] INFO   wh_island                                      acc=0.5570  (557/1000)
-[11:12:35] [rank0] INFO   wh_questions_object_gap                        acc=0.5210  (521/1000)
-[11:12:36] [rank0] INFO   wh_questions_subject_gap                       acc=0.8320  (832/1000)
-[11:12:38] [rank0] INFO   wh_questions_subject_gap_long_distance         acc=0.8820  (882/1000)
-[11:12:39] [rank0] INFO   wh_vs_that_no_gap                              acc=0.9360  (936/1000)
-[11:12:40] [rank0] INFO   wh_vs_that_no_gap_long_distance                acc=0.9620  (962/1000)
-[11:12:42] [rank0] INFO   wh_vs_that_with_gap                            acc=0.3090  (309/1000)
-[11:12:43] [rank0] INFO   wh_vs_that_with_gap_long_distance              acc=0.1750  (175/1000)
-[11:12:43] [rank0] INFO   ── Mean BLiMP accuracy across 67 phenomena: 0.6719
-[11:12:43] [rank0] INFO   Model freed.
+[07:50:57] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[07:50:57] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/pl-en-phase1-final/xet-read-token/97c5cb53f11c85651f9643916d88720b15e8fa95 "HTTP/1.1 200 OK"
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 4835.16it/s]
+[07:51:05] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+[07:51:05] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-phase1-final/97c5cb53f11c85651f9643916d88720b15e8fa95/generation_config.json "HTTP/1.1 200 OK"
+[07:51:05] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-phase1-final/97c5cb53f11c85651f9643916d88720b15e8fa95/generation_config.json "HTTP/1.1 200 OK"
+[07:51:05] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+[07:51:06] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+[07:51:06] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-phase1-final/97c5cb53f11c85651f9643916d88720b15e8fa95/config.json "HTTP/1.1 200 OK"
+[07:51:06] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+[07:51:06] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-phase1-final/97c5cb53f11c85651f9643916d88720b15e8fa95/tokenizer_config.json "HTTP/1.1 200 OK"
+[07:51:06] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-phase1-final/97c5cb53f11c85651f9643916d88720b15e8fa95/tokenizer_config.json "HTTP/1.1 200 OK"
+[07:51:06] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+[07:51:06] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-phase1-final/97c5cb53f11c85651f9643916d88720b15e8fa95/tokenizer_config.json "HTTP/1.1 200 OK"
+[07:51:06] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/pl-en-phase1-final/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+[07:51:07] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/pl-en-phase1-final/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+[07:51:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+[07:51:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-phase1-final/97c5cb53f11c85651f9643916d88720b15e8fa95/tokenizer.json "HTTP/1.1 200 OK"
+[07:51:07] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/pl-en-phase1-final/97c5cb53f11c85651f9643916d88720b15e8fa95/tokenizer.json "HTTP/1.1 200 OK"
+[07:51:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/tokenizer.model "HTTP/1.1 404 Not Found"
+[07:51:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[07:51:07] [rank0] WARNING Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[07:51:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
+[07:51:07] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/pl-en-phase1-final/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+[07:51:08] [rank0] INFO   Model loaded.
+[07:51:09] [rank0] INFO   adjunct_island                                 acc=0.6300  (630/1000)
+[07:51:10] [rank0] INFO   anaphor_gender_agreement                       acc=0.2200  (220/1000)
+[07:51:11] [rank0] INFO   anaphor_number_agreement                       acc=0.4280  (428/1000)
+[07:51:12] [rank0] INFO   animate_subject_passive                        acc=0.5960  (596/1000)
+[07:51:13] [rank0] INFO   animate_subject_trans                          acc=0.8200  (820/1000)
+[07:51:14] [rank0] INFO   causative                                      acc=0.4830  (483/1000)
+[07:51:15] [rank0] INFO   complex_NP_island                              acc=0.4440  (444/1000)
+[07:51:16] [rank0] INFO   coordinate_structure_constraint_complex_left_branch  acc=0.2480  (248/1000)
+[07:51:17] [rank0] INFO   coordinate_structure_constraint_object_extraction  acc=0.5880  (588/1000)
+[07:51:18] [rank0] INFO   determiner_noun_agreement_1                    acc=0.5530  (553/1000)
+[07:51:19] [rank0] INFO   determiner_noun_agreement_2                    acc=0.5310  (531/1000)
+[07:51:20] [rank0] INFO   determiner_noun_agreement_irregular_1          acc=0.4950  (495/1000)
+[07:51:22] [rank0] INFO   determiner_noun_agreement_irregular_2          acc=0.5380  (538/1000)
+[07:51:23] [rank0] INFO   determiner_noun_agreement_with_adj_2           acc=0.4850  (485/1000)
+[07:51:24] [rank0] INFO   determiner_noun_agreement_with_adj_irregular_1  acc=0.4780  (478/1000)
+[07:51:25] [rank0] INFO   determiner_noun_agreement_with_adj_irregular_2  acc=0.5320  (532/1000)
+[07:51:26] [rank0] INFO   determiner_noun_agreement_with_adjective_1     acc=0.5130  (513/1000)
+[07:51:28] [rank0] INFO   distractor_agreement_relational_noun           acc=0.3920  (392/1000)
+[07:51:29] [rank0] INFO   distractor_agreement_relative_clause           acc=0.4130  (413/1000)
+[07:51:30] [rank0] INFO   drop_argument                                  acc=0.7420  (742/1000)
+[07:51:31] [rank0] INFO   ellipsis_n_bar_1                               acc=0.2120  (212/1000)
+[07:51:33] [rank0] INFO   ellipsis_n_bar_2                               acc=0.5900  (590/1000)
+[07:51:34] [rank0] INFO   existential_there_object_raising               acc=0.7410  (741/1000)
+[07:51:35] [rank0] INFO   existential_there_quantifiers_1                acc=0.8050  (805/1000)
+[07:51:37] [rank0] INFO   existential_there_quantifiers_2                acc=0.1340  (134/1000)
+[07:51:38] [rank0] INFO   existential_there_subject_raising              acc=0.4470  (447/1000)
+[07:51:39] [rank0] INFO   expletive_it_object_raising                    acc=0.6910  (691/1000)
+[07:51:41] [rank0] INFO   inchoative                                     acc=0.3920  (392/1000)
+[07:51:42] [rank0] INFO   intransitive                                   acc=0.5830  (583/1000)
+[07:51:43] [rank0] INFO   irregular_past_participle_adjectives           acc=0.7410  (741/1000)
+[07:51:45] [rank0] INFO   irregular_past_participle_verbs                acc=0.5130  (513/1000)
+[07:51:46] [rank0] INFO   irregular_plural_subject_verb_agreement_1      acc=0.4940  (494/1000)
+[07:51:47] [rank0] INFO   irregular_plural_subject_verb_agreement_2      acc=0.5370  (537/1000)
+[07:51:49] [rank0] INFO   left_branch_island_echo_question               acc=0.8500  (850/1000)
+[07:51:50] [rank0] INFO   left_branch_island_simple_question             acc=0.2070  (207/1000)
+[07:51:51] [rank0] INFO   matrix_question_npi_licensor_present           acc=0.0460  (46/1000)
+[07:51:53] [rank0] INFO   npi_present_1                                  acc=0.6080  (608/1000)
+[07:51:54] [rank0] INFO   npi_present_2                                  acc=0.5690  (569/1000)
+[07:51:55] [rank0] INFO   only_npi_licensor_present                      acc=0.9270  (927/1000)
+[07:51:56] [rank0] INFO   only_npi_scope                                 acc=0.2570  (257/1000)
+[07:51:58] [rank0] INFO   passive_1                                      acc=0.6990  (699/1000)
+[07:51:59] [rank0] INFO   passive_2                                      acc=0.6860  (686/1000)
+[07:52:00] [rank0] INFO   principle_A_c_command                          acc=0.6650  (665/1000)
+[07:52:02] [rank0] INFO   principle_A_case_1                             acc=0.9970  (997/1000)
+[07:52:03] [rank0] INFO   principle_A_case_2                             acc=0.4780  (478/1000)
+[07:52:04] [rank0] INFO   principle_A_domain_1                           acc=0.9830  (983/1000)
+[07:52:06] [rank0] INFO   principle_A_domain_2                           acc=0.5950  (595/1000)
+[07:52:07] [rank0] INFO   principle_A_domain_3                           acc=0.5080  (508/1000)
+[07:52:08] [rank0] INFO   principle_A_reconstruction                     acc=0.1590  (159/1000)
+[07:52:10] [rank0] INFO   regular_plural_subject_verb_agreement_1        acc=0.6440  (644/1000)
+[07:52:11] [rank0] INFO   regular_plural_subject_verb_agreement_2        acc=0.5180  (518/1000)
+[07:52:12] [rank0] INFO   sentential_negation_npi_licensor_present       acc=0.9580  (958/1000)
+[07:52:14] [rank0] INFO   sentential_negation_npi_scope                  acc=0.4920  (492/1000)
+[07:52:15] [rank0] INFO   sentential_subject_island                      acc=0.3410  (341/1000)
+[07:52:16] [rank0] INFO   superlative_quantifiers_1                      acc=0.5360  (536/1000)
+[07:52:18] [rank0] INFO   superlative_quantifiers_2                      acc=0.6740  (674/1000)
+[07:52:19] [rank0] INFO   tough_vs_raising_1                             acc=0.4630  (463/1000)
+[07:52:20] [rank0] INFO   tough_vs_raising_2                             acc=0.5810  (581/1000)
+[07:52:22] [rank0] INFO   transitive                                     acc=0.6640  (664/1000)
+[07:52:23] [rank0] INFO   wh_island                                      acc=0.3210  (321/1000)
+[07:52:24] [rank0] INFO   wh_questions_object_gap                        acc=0.5450  (545/1000)
+[07:52:25] [rank0] INFO   wh_questions_subject_gap                       acc=0.9650  (965/1000)
+[07:52:27] [rank0] INFO   wh_questions_subject_gap_long_distance         acc=0.9280  (928/1000)
+[07:52:28] [rank0] INFO   wh_vs_that_no_gap                              acc=0.9670  (967/1000)
+[07:52:29] [rank0] INFO   wh_vs_that_no_gap_long_distance                acc=0.9710  (971/1000)
+[07:52:31] [rank0] INFO   wh_vs_that_with_gap                            acc=0.0320  (32/1000)
+[07:52:32] [rank0] INFO   wh_vs_that_with_gap_long_distance              acc=0.0300  (30/1000)
+[07:52:32] [rank0] INFO   ── Mean BLiMP accuracy across 67 phenomena: 0.5503
+[07:52:32] [rank0] INFO   Model freed.
 
-[11:12:43] [rank0] INFO ============================================================
-[11:12:43] [rank0] INFO Model: RA-ALTA/tr-en-fluent
-[11:12:43] [rank0] INFO   67/67 phenomena to evaluate.
-[11:12:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
-[11:12:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/tr-en-fluent/603e8855c2152940cf60948c32c920401935af0d/config.json "HTTP/1.1 200 OK"
-[11:12:44] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/tr-en-fluent/603e8855c2152940cf60948c32c920401935af0d/config.json "HTTP/1.1 200 OK"
-[11:12:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/model.safetensors "HTTP/1.1 302 Found"
-[11:12:44] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/tr-en-fluent/xet-read-token/603e8855c2152940cf60948c32c920401935af0d "HTTP/1.1 200 OK"
-Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 4424.44it/s]
-[11:12:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
-[11:12:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/tr-en-fluent/603e8855c2152940cf60948c32c920401935af0d/generation_config.json "HTTP/1.1 200 OK"
-[11:12:58] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/tr-en-fluent/603e8855c2152940cf60948c32c920401935af0d/generation_config.json "HTTP/1.1 200 OK"
-[11:12:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
-[11:12:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
-[11:12:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/tr-en-fluent/603e8855c2152940cf60948c32c920401935af0d/config.json "HTTP/1.1 200 OK"
-[11:12:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
-[11:12:58] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/tr-en-fluent/603e8855c2152940cf60948c32c920401935af0d/tokenizer_config.json "HTTP/1.1 200 OK"
-[11:12:59] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/tr-en-fluent/603e8855c2152940cf60948c32c920401935af0d/tokenizer_config.json "HTTP/1.1 200 OK"
-[11:12:59] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
-[11:12:59] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/tr-en-fluent/603e8855c2152940cf60948c32c920401935af0d/tokenizer_config.json "HTTP/1.1 200 OK"
-[11:12:59] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/tr-en-fluent/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
-[11:12:59] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/tr-en-fluent/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
-[11:12:59] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
-[11:13:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/tr-en-fluent/603e8855c2152940cf60948c32c920401935af0d/tokenizer.json "HTTP/1.1 200 OK"
-[11:13:00] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/tr-en-fluent/603e8855c2152940cf60948c32c920401935af0d/tokenizer.json "HTTP/1.1 200 OK"
-[11:13:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/tokenizer.model "HTTP/1.1 404 Not Found"
-[11:13:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
-[11:13:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
-[11:13:00] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/tr-en-fluent/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
-[11:13:01] [rank0] INFO   Model loaded.
-[11:13:02] [rank0] INFO   adjunct_island                                 acc=0.8030  (803/1000)
-[11:13:03] [rank0] INFO   anaphor_gender_agreement                       acc=0.6640  (664/1000)
-[11:13:05] [rank0] INFO   anaphor_number_agreement                       acc=0.9260  (926/1000)
-[11:13:06] [rank0] INFO   animate_subject_passive                        acc=0.7390  (739/1000)
-[11:13:07] [rank0] INFO   animate_subject_trans                          acc=0.8040  (804/1000)
-[11:13:09] [rank0] INFO   causative                                      acc=0.6600  (660/1000)
-[11:13:10] [rank0] INFO   complex_NP_island                              acc=0.6020  (602/1000)
-[11:13:11] [rank0] INFO   coordinate_structure_constraint_complex_left_branch  acc=0.4290  (429/1000)
-[11:13:13] [rank0] INFO   coordinate_structure_constraint_object_extraction  acc=0.7940  (794/1000)
-[11:13:14] [rank0] INFO   determiner_noun_agreement_1                    acc=0.9570  (957/1000)
-[11:13:15] [rank0] INFO   determiner_noun_agreement_2                    acc=0.9260  (926/1000)
-[11:13:17] [rank0] INFO   determiner_noun_agreement_irregular_1          acc=0.8650  (865/1000)
-[11:13:18] [rank0] INFO   determiner_noun_agreement_irregular_2          acc=0.8700  (870/1000)
-[11:13:19] [rank0] INFO   determiner_noun_agreement_with_adj_2           acc=0.8520  (852/1000)
-[11:13:21] [rank0] INFO   determiner_noun_agreement_with_adj_irregular_1  acc=0.8620  (862/1000)
-[11:13:22] [rank0] INFO   determiner_noun_agreement_with_adj_irregular_2  acc=0.8040  (804/1000)
-[11:13:24] [rank0] INFO   determiner_noun_agreement_with_adjective_1     acc=0.9130  (913/1000)
-[11:13:25] [rank0] INFO   distractor_agreement_relational_noun           acc=0.6560  (656/1000)
-[11:13:26] [rank0] INFO   distractor_agreement_relative_clause           acc=0.4430  (443/1000)
-[11:13:28] [rank0] INFO   drop_argument                                  acc=0.7100  (710/1000)
-[11:13:29] [rank0] INFO   ellipsis_n_bar_1                               acc=0.6960  (696/1000)
-[11:13:30] [rank0] INFO   ellipsis_n_bar_2                               acc=0.8310  (831/1000)
-[11:13:32] [rank0] INFO   existential_there_object_raising               acc=0.7770  (777/1000)
-[11:13:33] [rank0] INFO   existential_there_quantifiers_1                acc=0.9800  (980/1000)
-[11:13:34] [rank0] INFO   existential_there_quantifiers_2                acc=0.1590  (159/1000)
-[11:13:36] [rank0] INFO   existential_there_subject_raising              acc=0.8640  (864/1000)
-[11:13:37] [rank0] INFO   expletive_it_object_raising                    acc=0.7520  (752/1000)
-[11:13:38] [rank0] INFO   inchoative                                     acc=0.5270  (527/1000)
-[11:13:40] [rank0] INFO   intransitive                                   acc=0.6790  (679/1000)
-[11:13:41] [rank0] INFO   irregular_past_participle_adjectives           acc=0.9540  (954/1000)
-[11:13:42] [rank0] INFO   irregular_past_participle_verbs                acc=0.8130  (813/1000)
-[11:13:44] [rank0] INFO   irregular_plural_subject_verb_agreement_1      acc=0.8240  (824/1000)
-[11:13:45] [rank0] INFO   irregular_plural_subject_verb_agreement_2      acc=0.8030  (803/1000)
-[11:13:46] [rank0] INFO   left_branch_island_echo_question               acc=0.3750  (375/1000)
-[11:13:48] [rank0] INFO   left_branch_island_simple_question             acc=0.4620  (462/1000)
-[11:13:49] [rank0] INFO   matrix_question_npi_licensor_present           acc=0.2100  (210/1000)
-[11:13:50] [rank0] INFO   npi_present_1                                  acc=0.5140  (514/1000)
-[11:13:52] [rank0] INFO   npi_present_2                                  acc=0.5450  (545/1000)
-[11:13:53] [rank0] INFO   only_npi_licensor_present                      acc=0.2640  (264/1000)
-[11:13:55] [rank0] INFO   only_npi_scope                                 acc=0.1520  (152/1000)
-[11:13:56] [rank0] INFO   passive_1                                      acc=0.8700  (870/1000)
-[11:13:57] [rank0] INFO   passive_2                                      acc=0.8440  (844/1000)
-[11:13:59] [rank0] INFO   principle_A_c_command                          acc=0.4980  (498/1000)
-[11:14:00] [rank0] INFO   principle_A_case_1                             acc=0.9980  (998/1000)
-[11:14:01] [rank0] INFO   principle_A_case_2                             acc=0.8310  (831/1000)
-[11:14:03] [rank0] INFO   principle_A_domain_1                           acc=0.9190  (919/1000)
-[11:14:04] [rank0] INFO   principle_A_domain_2                           acc=0.7350  (735/1000)
-[11:14:05] [rank0] INFO   principle_A_domain_3                           acc=0.4930  (493/1000)
-[11:14:07] [rank0] INFO   principle_A_reconstruction                     acc=0.4140  (414/1000)
-[11:14:08] [rank0] INFO   regular_plural_subject_verb_agreement_1        acc=0.8520  (852/1000)
-[11:14:09] [rank0] INFO   regular_plural_subject_verb_agreement_2        acc=0.7990  (799/1000)
-[11:14:11] [rank0] INFO   sentential_negation_npi_licensor_present       acc=0.9870  (987/1000)
-[11:14:12] [rank0] INFO   sentential_negation_npi_scope                  acc=0.3130  (313/1000)
-[11:14:14] [rank0] INFO   sentential_subject_island                      acc=0.2990  (299/1000)
-[11:14:15] [rank0] INFO   superlative_quantifiers_1                      acc=0.6810  (681/1000)
-[11:14:16] [rank0] INFO   superlative_quantifiers_2                      acc=0.9660  (966/1000)
-[11:14:18] [rank0] INFO   tough_vs_raising_1                             acc=0.3640  (364/1000)
-[11:14:19] [rank0] INFO   tough_vs_raising_2                             acc=0.8670  (867/1000)
-[11:14:20] [rank0] INFO   transitive                                     acc=0.7940  (794/1000)
-[11:14:22] [rank0] INFO   wh_island                                      acc=0.4680  (468/1000)
-[11:14:23] [rank0] INFO   wh_questions_object_gap                        acc=0.6860  (686/1000)
-[11:14:24] [rank0] INFO   wh_questions_subject_gap                       acc=0.8520  (852/1000)
-[11:14:25] [rank0] INFO   wh_questions_subject_gap_long_distance         acc=0.9160  (916/1000)
-[11:14:27] [rank0] INFO   wh_vs_that_no_gap                              acc=0.9610  (961/1000)
-[11:14:28] [rank0] INFO   wh_vs_that_no_gap_long_distance                acc=0.9810  (981/1000)
-[11:14:29] [rank0] INFO   wh_vs_that_with_gap                            acc=0.4310  (431/1000)
-[11:14:30] [rank0] INFO   wh_vs_that_with_gap_long_distance              acc=0.1820  (182/1000)
-[11:14:30] [rank0] INFO   ── Mean BLiMP accuracy across 67 phenomena: 0.6934
-[11:14:30] [rank0] INFO   Model freed.
+[07:52:32] [rank0] INFO ============================================================
+[07:52:32] [rank0] INFO Model: RA-ALTA/fr-en-intermediate
+[07:52:33] [rank0] INFO   67/67 phenomena to evaluate.
+[07:52:33] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+[07:52:33] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/fr-en-intermediate/c4d062171eae48d2abefff5130a4a169dfd5c6b8/config.json "HTTP/1.1 200 OK"
+[07:52:33] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/fr-en-intermediate/c4d062171eae48d2abefff5130a4a169dfd5c6b8/config.json "HTTP/1.1 200 OK"
+[07:52:33] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/model.safetensors "HTTP/1.1 302 Found"
+[07:52:33] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/fr-en-intermediate/xet-read-token/c4d062171eae48d2abefff5130a4a169dfd5c6b8 "HTTP/1.1 200 OK"
+Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 3134.36it/s]
+[07:52:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
+[07:52:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/fr-en-intermediate/c4d062171eae48d2abefff5130a4a169dfd5c6b8/generation_config.json "HTTP/1.1 200 OK"
+[07:52:42] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/fr-en-intermediate/c4d062171eae48d2abefff5130a4a169dfd5c6b8/generation_config.json "HTTP/1.1 200 OK"
+[07:52:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
+[07:52:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
+[07:52:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/fr-en-intermediate/c4d062171eae48d2abefff5130a4a169dfd5c6b8/config.json "HTTP/1.1 200 OK"
+[07:52:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+[07:52:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/fr-en-intermediate/c4d062171eae48d2abefff5130a4a169dfd5c6b8/tokenizer_config.json "HTTP/1.1 200 OK"
+[07:52:43] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/fr-en-intermediate/c4d062171eae48d2abefff5130a4a169dfd5c6b8/tokenizer_config.json "HTTP/1.1 200 OK"
+[07:52:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
+[07:52:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/fr-en-intermediate/c4d062171eae48d2abefff5130a4a169dfd5c6b8/tokenizer_config.json "HTTP/1.1 200 OK"
+[07:52:43] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/fr-en-intermediate/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
+[07:52:43] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/fr-en-intermediate/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
+[07:52:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
+[07:52:43] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/fr-en-intermediate/c4d062171eae48d2abefff5130a4a169dfd5c6b8/tokenizer.json "HTTP/1.1 200 OK"
+[07:52:43] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/fr-en-intermediate/c4d062171eae48d2abefff5130a4a169dfd5c6b8/tokenizer.json "HTTP/1.1 200 OK"
+[07:52:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/tokenizer.model "HTTP/1.1 404 Not Found"
+[07:52:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
+[07:52:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
+[07:52:44] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/fr-en-intermediate/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
+[07:52:44] [rank0] INFO   Model loaded.
+[07:52:46] [rank0] INFO   adjunct_island                                 acc=0.8330  (833/1000)
+[07:52:47] [rank0] INFO   anaphor_gender_agreement                       acc=0.7970  (797/1000)
+[07:52:48] [rank0] INFO   anaphor_number_agreement                       acc=0.9430  (943/1000)
+[07:52:49] [rank0] INFO   animate_subject_passive                        acc=0.7080  (708/1000)
+[07:52:50] [rank0] INFO   animate_subject_trans                          acc=0.8830  (883/1000)
+[07:52:52] [rank0] INFO   causative                                      acc=0.6170  (617/1000)
+[07:52:53] [rank0] INFO   complex_NP_island                              acc=0.5330  (533/1000)
+[07:52:54] [rank0] INFO   coordinate_structure_constraint_complex_left_branch  acc=0.3670  (367/1000)
+[07:52:55] [rank0] INFO   coordinate_structure_constraint_object_extraction  acc=0.8010  (801/1000)
+[07:52:56] [rank0] INFO   determiner_noun_agreement_1                    acc=0.9620  (962/1000)
+[07:52:57] [rank0] INFO   determiner_noun_agreement_2                    acc=0.9430  (943/1000)
+[07:52:58] [rank0] INFO   determiner_noun_agreement_irregular_1          acc=0.8670  (867/1000)
+[07:52:59] [rank0] INFO   determiner_noun_agreement_irregular_2          acc=0.9220  (922/1000)
+[07:53:01] [rank0] INFO   determiner_noun_agreement_with_adj_2           acc=0.8960  (896/1000)
+[07:53:02] [rank0] INFO   determiner_noun_agreement_with_adj_irregular_1  acc=0.8230  (823/1000)
+[07:53:03] [rank0] INFO   determiner_noun_agreement_with_adj_irregular_2  acc=0.8750  (875/1000)
+[07:53:04] [rank0] INFO   determiner_noun_agreement_with_adjective_1     acc=0.9250  (925/1000)
+[07:53:05] [rank0] INFO   distractor_agreement_relational_noun           acc=0.7770  (777/1000)
+[07:53:07] [rank0] INFO   distractor_agreement_relative_clause           acc=0.5130  (513/1000)
+[07:53:08] [rank0] INFO   drop_argument                                  acc=0.7440  (744/1000)
+[07:53:09] [rank0] INFO   ellipsis_n_bar_1                               acc=0.7440  (744/1000)
+[07:53:11] [rank0] INFO   ellipsis_n_bar_2                               acc=0.8600  (860/1000)
+[07:53:12] [rank0] INFO   existential_there_object_raising               acc=0.7740  (774/1000)
+[07:53:13] [rank0] INFO   existential_there_quantifiers_1                acc=0.9730  (973/1000)
+[07:53:15] [rank0] INFO   existential_there_quantifiers_2                acc=0.1800  (180/1000)
+[07:53:16] [rank0] INFO   existential_there_subject_raising              acc=0.8510  (851/1000)
+[07:53:17] [rank0] INFO   expletive_it_object_raising                    acc=0.7490  (749/1000)
+[07:53:19] [rank0] INFO   inchoative                                     acc=0.5360  (536/1000)
+[07:53:20] [rank0] INFO   intransitive                                   acc=0.6760  (676/1000)
+[07:53:21] [rank0] INFO   irregular_past_participle_adjectives           acc=0.9810  (981/1000)
+[07:53:23] [rank0] INFO   irregular_past_participle_verbs                acc=0.8150  (815/1000)
+[07:53:24] [rank0] INFO   irregular_plural_subject_verb_agreement_1      acc=0.8280  (828/1000)
+[07:53:25] [rank0] INFO   irregular_plural_subject_verb_agreement_2      acc=0.8370  (837/1000)
+[07:53:27] [rank0] INFO   left_branch_island_echo_question               acc=0.4610  (461/1000)
+[07:53:28] [rank0] INFO   left_branch_island_simple_question             acc=0.3420  (342/1000)
+[07:53:29] [rank0] INFO   matrix_question_npi_licensor_present           acc=0.1870  (187/1000)
+[07:53:31] [rank0] INFO   npi_present_1                                  acc=0.2870  (287/1000)
+[07:53:32] [rank0] INFO   npi_present_2                                  acc=0.3470  (347/1000)
+[07:53:33] [rank0] INFO   only_npi_licensor_present                      acc=0.2670  (267/1000)
+[07:53:35] [rank0] INFO   only_npi_scope                                 acc=0.1040  (104/1000)
+[07:53:36] [rank0] INFO   passive_1                                      acc=0.8650  (865/1000)
+[07:53:37] [rank0] INFO   passive_2                                      acc=0.8630  (863/1000)
+[07:53:39] [rank0] INFO   principle_A_c_command                          acc=0.5730  (573/1000)
+[07:53:40] [rank0] INFO   principle_A_case_1                             acc=1.0000  (1000/1000)
+[07:53:41] [rank0] INFO   principle_A_case_2                             acc=0.9060  (906/1000)
+[07:53:43] [rank0] INFO   principle_A_domain_1                           acc=0.9490  (949/1000)
+[07:53:44] [rank0] INFO   principle_A_domain_2                           acc=0.7940  (794/1000)
+[07:53:45] [rank0] INFO   principle_A_domain_3                           acc=0.5850  (585/1000)
+[07:53:46] [rank0] INFO   principle_A_reconstruction                     acc=0.3160  (316/1000)
+[07:53:48] [rank0] INFO   regular_plural_subject_verb_agreement_1        acc=0.8330  (833/1000)
+[07:53:49] [rank0] INFO   regular_plural_subject_verb_agreement_2        acc=0.8430  (843/1000)
+[07:53:50] [rank0] INFO   sentential_negation_npi_licensor_present       acc=0.8930  (893/1000)
+[07:53:52] [rank0] INFO   sentential_negation_npi_scope                  acc=0.2920  (292/1000)
+[07:53:53] [rank0] INFO   sentential_subject_island                      acc=0.2660  (266/1000)
+[07:53:54] [rank0] INFO   superlative_quantifiers_1                      acc=0.7750  (775/1000)
+[07:53:56] [rank0] INFO   superlative_quantifiers_2                      acc=0.7630  (763/1000)
+[07:53:57] [rank0] INFO   tough_vs_raising_1                             acc=0.4150  (415/1000)
+[07:53:58] [rank0] INFO   tough_vs_raising_2                             acc=0.8950  (895/1000)
+[07:54:00] [rank0] INFO   transitive                                     acc=0.7740  (774/1000)
+[07:54:01] [rank0] INFO   wh_island                                      acc=0.6630  (663/1000)
+[07:54:02] [rank0] INFO   wh_questions_object_gap                        acc=0.5930  (593/1000)
+[07:54:04] [rank0] INFO   wh_questions_subject_gap                       acc=0.8410  (841/1000)
+[07:54:05] [rank0] INFO   wh_questions_subject_gap_long_distance         acc=0.8440  (844/1000)
+[07:54:06] [rank0] INFO   wh_vs_that_no_gap                              acc=0.9310  (931/1000)
+[07:54:08] [rank0] INFO   wh_vs_that_no_gap_long_distance                acc=0.9420  (942/1000)
+[07:54:09] [rank0] INFO   wh_vs_that_with_gap                            acc=0.3930  (393/1000)
+[07:54:10] [rank0] INFO   wh_vs_that_with_gap_long_distance              acc=0.2410  (241/1000)
+[07:54:10] [rank0] INFO   ── Mean BLiMP accuracy across 67 phenomena: 0.6952
+[07:54:10] [rank0] INFO   Model freed.
 
-[11:14:30] [rank0] INFO ============================================================
-[11:14:30] [rank0] INFO Model: RA-ALTA/zh-en-intermediate
-[11:14:30] [rank0] INFO   67/67 phenomena to evaluate.
-[11:14:31] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
-[11:14:31] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-intermediate/0b20f240478b03ee1950506b1c0eee3eb4976f06/config.json "HTTP/1.1 200 OK"
-[11:14:31] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-intermediate/0b20f240478b03ee1950506b1c0eee3eb4976f06/config.json "HTTP/1.1 200 OK"
-[11:14:31] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/model.safetensors "HTTP/1.1 302 Found"
-[11:14:31] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/zh-en-intermediate/xet-read-token/0b20f240478b03ee1950506b1c0eee3eb4976f06 "HTTP/1.1 200 OK"
-Loading weights:   0%|          | 0/292 [00:00<?, ?it/s]Loading weights: 100%|██████████| 292/292 [00:00<00:00, 4863.13it/s]
-[11:14:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/generation_config.json "HTTP/1.1 307 Temporary Redirect"
-[11:14:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-intermediate/0b20f240478b03ee1950506b1c0eee3eb4976f06/generation_config.json "HTTP/1.1 200 OK"
-[11:14:40] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-intermediate/0b20f240478b03ee1950506b1c0eee3eb4976f06/generation_config.json "HTTP/1.1 200 OK"
-[11:14:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/custom_generate/generate.py "HTTP/1.1 404 Not Found"
-[11:14:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/config.json "HTTP/1.1 307 Temporary Redirect"
-[11:14:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-intermediate/0b20f240478b03ee1950506b1c0eee3eb4976f06/config.json "HTTP/1.1 200 OK"
-[11:14:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
-[11:14:40] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-intermediate/0b20f240478b03ee1950506b1c0eee3eb4976f06/tokenizer_config.json "HTTP/1.1 200 OK"
-[11:14:41] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-intermediate/0b20f240478b03ee1950506b1c0eee3eb4976f06/tokenizer_config.json "HTTP/1.1 200 OK"
-[11:14:41] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/tokenizer_config.json "HTTP/1.1 307 Temporary Redirect"
-[11:14:41] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-intermediate/0b20f240478b03ee1950506b1c0eee3eb4976f06/tokenizer_config.json "HTTP/1.1 200 OK"
-[11:14:41] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/zh-en-intermediate/tree/main/additional_chat_templates?recursive=false&expand=false "HTTP/1.1 404 Not Found"
-[11:14:41] [rank0] INFO HTTP Request: GET https://huggingface.co/api/models/RA-ALTA/zh-en-intermediate/tree/main?recursive=true&expand=false "HTTP/1.1 200 OK"
-[11:14:41] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/tokenizer.json "HTTP/1.1 307 Temporary Redirect"
-[11:14:41] [rank0] INFO HTTP Request: HEAD https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-intermediate/0b20f240478b03ee1950506b1c0eee3eb4976f06/tokenizer.json "HTTP/1.1 200 OK"
-[11:14:41] [rank0] INFO HTTP Request: GET https://huggingface.co/api/resolve-cache/models/RA-ALTA/zh-en-intermediate/0b20f240478b03ee1950506b1c0eee3eb4976f06/tokenizer.json "HTTP/1.1 200 OK"
-[11:14:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/tokenizer.model "HTTP/1.1 404 Not Found"
-[11:14:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/added_tokens.json "HTTP/1.1 404 Not Found"
-[11:14:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/special_tokens_map.json "HTTP/1.1 404 Not Found"
-[11:14:42] [rank0] INFO HTTP Request: HEAD https://huggingface.co/RA-ALTA/zh-en-intermediate/resolve/main/chat_template.jinja "HTTP/1.1 404 Not Found"
-[11:14:42] [rank0] INFO   Model loaded.
-[11:14:43] [rank0] INFO   adjunct_island                                 acc=0.7430  (743/1000)
-[11:14:44] [rank0] INFO   anaphor_gender_agreement                       acc=0.6810  (681/1000)
-[11:14:45] [rank0] INFO   anaphor_number_agreement                       acc=0.8450  (845/1000)
-[11:14:47] [rank0] INFO   animate_subject_passive                        acc=0.7450  (745/1000)
-[11:14:48] [rank0] INFO   animate_subject_trans                          acc=0.8490  (849/1000)
-[11:14:49] [rank0] INFO   causative                                      acc=0.6840  (684/1000)
-[11:14:50] [rank0] INFO   complex_NP_island                              acc=0.4760  (476/1000)
-[11:14:51] [rank0] INFO   coordinate_structure_constraint_complex_left_branch  acc=0.3230  (323/1000)
-[11:14:52] [rank0] INFO   coordinate_structure_constraint_object_extraction  acc=0.8260  (826/1000)
-[11:14:53] [rank0] INFO   determiner_noun_agreement_1                    acc=0.9560  (956/1000)
-[11:14:54] [rank0] INFO   determiner_noun_agreement_2                    acc=0.9490  (949/1000)
-[11:14:55] [rank0] INFO   determiner_noun_agreement_irregular_1          acc=0.8540  (854/1000)
-[11:14:56] [rank0] INFO   determiner_noun_agreement_irregular_2          acc=0.8870  (887/1000)
-[11:14:57] [rank0] INFO   determiner_noun_agreement_with_adj_2           acc=0.8980  (898/1000)
-[11:14:58] [rank0] INFO   determiner_noun_agreement_with_adj_irregular_1  acc=0.7920  (792/1000)
-[11:14:59] [rank0] INFO   determiner_noun_agreement_with_adj_irregular_2  acc=0.8640  (864/1000)
-[11:15:00] [rank0] INFO   determiner_noun_agreement_with_adjective_1     acc=0.9060  (906/1000)
-[11:15:02] [rank0] INFO   distractor_agreement_relational_noun           acc=0.7810  (781/1000)
-[11:15:03] [rank0] INFO   distractor_agreement_relative_clause           acc=0.4840  (484/1000)
-[11:15:04] [rank0] INFO   drop_argument                                  acc=0.7460  (746/1000)
-[11:15:05] [rank0] INFO   ellipsis_n_bar_1                               acc=0.7830  (783/1000)
-[11:15:06] [rank0] INFO   ellipsis_n_bar_2                               acc=0.8570  (857/1000)
-[11:15:07] [rank0] INFO   existential_there_object_raising               acc=0.8140  (814/1000)
-[11:15:08] [rank0] INFO   existential_there_quantifiers_1                acc=0.9530  (953/1000)
-[11:15:09] [rank0] INFO   existential_there_quantifiers_2                acc=0.5730  (573/1000)
-[11:15:10] [rank0] INFO   existential_there_subject_raising              acc=0.8360  (836/1000)
-[11:15:12] [rank0] INFO   expletive_it_object_raising                    acc=0.7530  (753/1000)
-[11:15:13] [rank0] INFO   inchoative                                     acc=0.5510  (551/1000)
-[11:15:14] [rank0] INFO   intransitive                                   acc=0.6890  (689/1000)
-[11:15:15] [rank0] INFO   irregular_past_participle_adjectives           acc=0.9290  (929/1000)
-[11:15:16] [rank0] INFO   irregular_past_participle_verbs                acc=0.8200  (820/1000)
-[11:15:17] [rank0] INFO   irregular_plural_subject_verb_agreement_1      acc=0.8490  (849/1000)
-[11:15:18] [rank0] INFO   irregular_plural_subject_verb_agreement_2      acc=0.8970  (897/1000)
-[11:15:19] [rank0] INFO   left_branch_island_echo_question               acc=0.4310  (431/1000)
-[11:15:20] [rank0] INFO   left_branch_island_simple_question             acc=0.3530  (353/1000)
-[11:15:21] [rank0] INFO   matrix_question_npi_licensor_present           acc=0.1510  (151/1000)
-[11:15:22] [rank0] INFO   npi_present_1                                  acc=0.4250  (425/1000)
-[11:15:23] [rank0] INFO   npi_present_2                                  acc=0.4970  (497/1000)
-[11:15:24] [rank0] INFO   only_npi_licensor_present                      acc=0.4300  (430/1000)
-[11:15:26] [rank0] INFO   only_npi_scope                                 acc=0.4770  (477/1000)
-[11:15:27] [rank0] INFO   passive_1                                      acc=0.8710  (871/1000)
-[11:15:28] [rank0] INFO   passive_2                                      acc=0.8830  (883/1000)
-[11:15:29] [rank0] INFO   principle_A_c_command                          acc=0.6520  (652/1000)
-[11:15:30] [rank0] INFO   principle_A_case_1                             acc=1.0000  (1000/1000)
-[11:15:31] [rank0] INFO   principle_A_case_2                             acc=0.8340  (834/1000)
-[11:15:32] [rank0] INFO   principle_A_domain_1                           acc=0.9880  (988/1000)
-[11:15:33] [rank0] INFO   principle_A_domain_2                           acc=0.7710  (771/1000)
-[11:15:34] [rank0] INFO   principle_A_domain_3                           acc=0.4690  (469/1000)
-[11:15:35] [rank0] INFO   principle_A_reconstruction                     acc=0.2850  (285/1000)
-[11:15:36] [rank0] INFO   regular_plural_subject_verb_agreement_1        acc=0.8090  (809/1000)
-[11:15:37] [rank0] INFO   regular_plural_subject_verb_agreement_2        acc=0.8990  (899/1000)
-[11:15:39] [rank0] INFO   sentential_negation_npi_licensor_present       acc=0.9980  (998/1000)
-[11:15:40] [rank0] INFO   sentential_negation_npi_scope                  acc=0.4070  (407/1000)
-[11:15:41] [rank0] INFO   sentential_subject_island                      acc=0.3330  (333/1000)
-[11:15:42] [rank0] INFO   superlative_quantifiers_1                      acc=0.6190  (619/1000)
-[11:15:43] [rank0] INFO   superlative_quantifiers_2                      acc=0.6950  (695/1000)
-[11:15:44] [rank0] INFO   tough_vs_raising_1                             acc=0.3460  (346/1000)
-[11:15:45] [rank0] INFO   tough_vs_raising_2                             acc=0.9100  (910/1000)
-[11:15:46] [rank0] INFO   transitive                                     acc=0.8100  (810/1000)
-[11:15:47] [rank0] INFO   wh_island                                      acc=0.5860  (586/1000)
-[11:15:48] [rank0] INFO   wh_questions_object_gap                        acc=0.7020  (702/1000)
-[11:15:49] [rank0] INFO   wh_questions_subject_gap                       acc=0.9180  (918/1000)
-[11:15:50] [rank0] INFO   wh_questions_subject_gap_long_distance         acc=0.8630  (863/1000)
-[11:15:51] [rank0] INFO   wh_vs_that_no_gap                              acc=0.9610  (961/1000)
-[11:15:52] [rank0] INFO   wh_vs_that_no_gap_long_distance                acc=0.9710  (971/1000)
-[11:15:53] [rank0] INFO   wh_vs_that_with_gap                            acc=0.3880  (388/1000)
-[11:15:54] [rank0] INFO   wh_vs_that_with_gap_long_distance              acc=0.1790  (179/1000)
-[11:15:54] [rank0] INFO   ── Mean BLiMP accuracy across 67 phenomena: 0.7090
-[11:15:54] [rank0] INFO   Model freed.
-
-[11:15:54] [rank0] INFO Done. Results written to: /root/beetle-analyze/alta_blimp_results/blimp_results_alta.csv
+[07:54:10] [rank0] INFO Done. Results written to: /root/beetle-analyze/alta_blimp_results/blimp_results_alta.csv
