@@ -12,32 +12,27 @@ results/ppl/
 """
 
 from __future__ import annotations
+import _path  # noqa: F401  — adds repo root to sys.path
 
-import csv
-import os
 from pathlib import Path
 
 import pandas as pd
 
-from utils import (
+from ppl_utils import (
     GOLDFISH_TOKENS,
+    LOAD_FAILURES,
+    get_best_revision,
     load_flores_sentences,
     nll_to_ppl,
     score_sentences,
 )
+from models import MODEL_GROUPS
 
 # ---------------------------------------------------------------------------
 # Config
 # ---------------------------------------------------------------------------
 
 OUTPUT_DIR = Path("results/ppl")
-
-# Languages to evaluate and which model groups cover them.
-# Each entry: iso_code -> list of repos to score against that language.
-# Import from models.py to stay DRY.
-import sys
-sys.path.insert(0, str(Path(__file__).parent))
-from models import MODEL_GROUPS
 
 
 # ---------------------------------------------------------------------------
@@ -54,7 +49,8 @@ def evaluate_language(
     """
     Score all FLORES sentences for *iso_code* under every repo in *repos*.
 
-    Returns a DataFrame with columns [sentence_id, sentence, repo, nll, ppl].
+    Returns a DataFrame with columns
+      [sentence_id, sentence, repo, revision, iso_code, nll, ppl].
     Skips repo/language combos that already have a saved CSV unless overwrite=True.
     """
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -63,23 +59,28 @@ def evaluate_language(
     all_rows: list[dict] = []
 
     for repo in repos:
-        slug = repo.replace("/", "__")
+        slug     = repo.replace("/", "__")
         out_path = output_dir / f"ppl_{iso_code}_{slug}.csv"
 
         if out_path.exists() and not overwrite:
             print(f"[ppl_eval] Skipping {repo} ({iso_code}) — already exists.")
-            df = pd.read_csv(out_path)
-            all_rows.extend(df.to_dict("records"))
+            all_rows.extend(pd.read_csv(out_path).to_dict("records"))
             continue
 
-        print(f"[ppl_eval] Scoring {iso_code} under {repo} …")
+        revision = get_best_revision(repo)
+        print(f"[ppl_eval] Scoring {iso_code} under {repo} @ {revision} …")
         nlls = score_sentences(sentences, repo, goldfish_tokens=goldfish_tokens)
+
+        if nlls is None:
+            print(f"[ppl_eval] SKIPPED {repo} — model failed to load.")
+            continue
 
         rows = [
             {
                 "sentence_id": i,
                 "sentence":    sent,
                 "repo":        repo,
+                "revision":    revision,
                 "iso_code":    iso_code,
                 "nll":         nll,
                 "ppl":         nll_to_ppl(nll),
@@ -104,22 +105,15 @@ def run_all_languages(
     """
     Run PPL evaluation for all (or a subset of) languages.
 
-    Args:
-        lang_codes: ISO codes to evaluate. Defaults to all in MODEL_GROUPS.
-        overwrite:  Re-score even if CSVs already exist.
-
-    Returns:
-        Summary DataFrame with columns [repo, iso_code, mean_nll, mean_ppl,
-        median_ppl, std_ppl].
+    Returns summary DataFrame with columns
+      [repo, revision, iso_code, mean_nll, mean_ppl, median_ppl, std_ppl].
     """
     if lang_codes is None:
         lang_codes = list(MODEL_GROUPS.keys())
 
     all_frames: list[pd.DataFrame] = []
-
     for code in lang_codes:
-        repos = MODEL_GROUPS[code]
-        df = evaluate_language(code, repos, overwrite=overwrite)
+        df = evaluate_language(code, MODEL_GROUPS[code], overwrite=overwrite)
         all_frames.append(df)
 
     if not all_frames:
@@ -127,24 +121,31 @@ def run_all_languages(
 
     full = pd.concat(all_frames, ignore_index=True)
 
-    # Aggregate summary
     summary = (
         full
-        .groupby(["repo", "iso_code"])
+        .groupby(["repo", "revision", "iso_code"])
         .agg(
-            mean_nll  = ("nll",  "mean"),
-            mean_ppl  = ("ppl",  "mean"),
-            median_ppl= ("ppl",  "median"),
-            std_ppl   = ("ppl",  "std"),
-            n_sentences=("nll",  "count"),
+            mean_nll   = ("nll", "mean"),
+            mean_ppl   = ("ppl", "mean"),
+            median_ppl = ("ppl", "median"),
+            std_ppl    = ("ppl", "std"),
+            n_sentences= ("nll", "count"),
         )
         .reset_index()
     )
 
-    summary_path = OUTPUT_DIR / "ppl_summary.csv"
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    summary_path = OUTPUT_DIR / "ppl_summary.csv"
     summary.to_csv(summary_path, index=False)
     print(f"\n[ppl_eval] Summary saved → {summary_path}")
+
+    if LOAD_FAILURES:
+        print(f"\n[ppl_eval] {'='*56}")
+        print(f"[ppl_eval] SKIPPED {len(LOAD_FAILURES)} model(s) due to load errors:")
+        for repo, reason in LOAD_FAILURES.items():
+            print(f"  ✗  {repo}")
+            print(f"     {reason}")
+        print(f"[ppl_eval] {'='*56}")
 
     return summary
 
@@ -153,12 +154,22 @@ def run_all_languages(
 # Convenience: score a single sentence interactively
 # ---------------------------------------------------------------------------
 
-def score_one(sentence: str, repo: str, goldfish_tokens: int | None = GOLDFISH_TOKENS) -> dict:
-    """Quick helper for interactive/notebook use."""
-    from utils import load_model_and_tokenizer, sentence_log_likelihood, nll_to_ppl
+def score_one(
+    sentence: str,
+    repo: str,
+    goldfish_tokens: int | None = GOLDFISH_TOKENS,
+) -> dict:
+    """Quick helper for interactive / notebook use."""
+    from ppl_utils import load_model_and_tokenizer, sentence_log_likelihood
     model, tokenizer = load_model_and_tokenizer(repo)
     nll = sentence_log_likelihood(sentence, model, tokenizer, goldfish_tokens)
-    return {"repo": repo, "sentence": sentence, "nll": nll, "ppl": nll_to_ppl(nll)}
+    return {
+        "repo":     repo,
+        "revision": get_best_revision(repo),
+        "sentence": sentence,
+        "nll":      nll,
+        "ppl":      nll_to_ppl(nll),
+    }
 
 
 if __name__ == "__main__":

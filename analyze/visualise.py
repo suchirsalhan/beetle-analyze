@@ -16,6 +16,7 @@ Plots
 """
 
 from __future__ import annotations
+import _path  # noqa: F401  — adds repo root to sys.path
 
 import sys
 from pathlib import Path

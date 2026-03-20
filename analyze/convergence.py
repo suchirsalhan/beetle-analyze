@@ -9,20 +9,8 @@ Mirrors the checkpoint infrastructure from eval_model.py:
 Three tracking signals across training steps
 --------------------------------------------
 1. PPL TRAJECTORY
-   FLORES mean PPL at every step-N checkpoint → convergence curves.
-   For bilingual models: track BOTH L1 and L2 PPL simultaneously to see
-   when/if the L1-forgetting inflection point occurs.
-
 2. EMBEDDING DRIFT (per checkpoint)
-   For each checkpoint, compute cosine distance of probe-word embeddings
-   relative to the STEP-0 / main checkpoint of the SAME model.
-   This shows how fast and how far representations move during training,
-   rather than comparing to the mono baseline.
-
 3. REPRESENTATIONAL SIMILARITY ACROSS STEPS (CKA trajectory)
-   CKA between consecutive checkpoints — measures how much the representation
-   changes per training step. A flat CKA ≈ 1 means training has converged;
-   a drop signals a phase transition.
 
 Outputs
 -------
@@ -34,13 +22,11 @@ results/convergence/
 """
 
 from __future__ import annotations
+import _path  # noqa: F401  — adds repo root to sys.path
 
 import gc
 import logging
-import os
 import re
-import sys
-import time
 from pathlib import Path
 from typing import Optional
 
@@ -50,9 +36,8 @@ import torch
 from torch.nn.functional import cosine_similarity
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-sys.path.insert(0, str(Path(__file__).parent))
 from models import MODEL_GROUPS, get_bilingual_type, get_lang_pair
-from utils import (
+from ppl_utils import (
     FLORES_LANG_MAP,
     GOLDFISH_TOKENS,
     load_flores_sentences,
@@ -69,16 +54,16 @@ logging.basicConfig(level=logging.INFO, format="[%(asctime)s] %(levelname)s %(me
 # Config
 # ---------------------------------------------------------------------------
 
-OUTPUT_DIR   = Path("results/convergence")
-DEVICE       = "cuda" if torch.cuda.is_available() else "cpu"
+OUTPUT_DIR      = Path("results/convergence")
+DEVICE          = "cuda" if torch.cuda.is_available() else "cpu"
+PPL_SAMPLE_SIZE = 200
 
-# How many FLORES sentences to use for the PPL trajectory.
-# Full devtest (1012) is accurate; 200 is fast for iteration.
-PPL_SAMPLE_SIZE: int = 200
+# Registry of (repo, revision) pairs that failed to load.
+CONVERGENCE_FAILURES: dict[str, str] = {}   # key = "repo@revision"
 
 
 # ---------------------------------------------------------------------------
-# Checkpoint listing (mirrors eval_model.py — no dependency on it)
+# Checkpoint listing
 # ---------------------------------------------------------------------------
 
 def _step_number(name: str) -> Optional[int]:
@@ -87,12 +72,6 @@ def _step_number(name: str) -> Optional[int]:
 
 
 def list_checkpoints(repo: str, hf_token: Optional[str] = None) -> list[str]:
-    """
-    Return all branch/revision names for *repo* that match 'step-N',
-    sorted by step number (ascending). Includes 'main' as step 0.
-
-    Uses the HuggingFace Hub API — no model weights are downloaded.
-    """
     try:
         from huggingface_hub import list_repo_refs
         refs = list_repo_refs(repo, token=hf_token)
@@ -100,7 +79,6 @@ def list_checkpoints(repo: str, hf_token: Optional[str] = None) -> list[str]:
             [r.name for r in refs.branches if _step_number(r.name) is not None],
             key=lambda n: _step_number(n),
         )
-        # Prepend 'main' as the step-0 anchor
         return ["main"] + step_branches
     except Exception as e:
         logger.warning(f"[list_checkpoints] {repo}: {e} — returning ['main'] only")
@@ -108,13 +86,12 @@ def list_checkpoints(repo: str, hf_token: Optional[str] = None) -> list[str]:
 
 
 def step_label(revision: str) -> int:
-    """Convert 'main' → 0, 'step-N' → N."""
     n = _step_number(revision)
     return n if n is not None else 0
 
 
 # ---------------------------------------------------------------------------
-# Checkpoint loading (same RAM contract as eval_model.py)
+# Checkpoint loading — returns None on failure, records in CONVERGENCE_FAILURES
 # ---------------------------------------------------------------------------
 
 def _load_checkpoint(
@@ -122,8 +99,12 @@ def _load_checkpoint(
     revision: str,
     hf_token: Optional[str] = None,
     device: str = DEVICE,
-) -> tuple:
-    """Load (model, tokenizer) for one checkpoint. Caller must del both."""
+) -> tuple | None:
+    """
+    Load (model, tokenizer) for one checkpoint.
+    Returns None and records the error if loading fails.
+    Caller must del both when done.
+    """
     load_kw = dict(
         revision          = revision,
         trust_remote_code = True,
@@ -133,20 +114,31 @@ def _load_checkpoint(
     if hf_token:
         load_kw["token"] = hf_token
 
-    model = (
-        AutoModelForCausalLM
-        .from_pretrained(repo, **load_kw)
-        .to(device)
-        .eval()
-    )
-    tokenizer = AutoTokenizer.from_pretrained(repo, **load_kw)
-    if tokenizer.pad_token is None:
-        tokenizer.pad_token = tokenizer.eos_token
-    return model, tokenizer
+    try:
+        try:
+            tokenizer = AutoTokenizer.from_pretrained(repo, **load_kw, use_fast=True)
+        except (ValueError, ImportError):
+            tokenizer = AutoTokenizer.from_pretrained(repo, **load_kw, use_fast=False)
+        if tokenizer.pad_token is None:
+            tokenizer.pad_token = tokenizer.eos_token
+
+        model = (
+            AutoModelForCausalLM
+            .from_pretrained(repo, **load_kw)
+            .to(device)
+            .eval()
+        )
+        return model, tokenizer
+
+    except Exception as exc:
+        msg = str(exc).split("\n")[0]
+        key = f"{repo}@{revision}"
+        logger.error(f"  SKIP {key}: {msg}")
+        CONVERGENCE_FAILURES[key] = msg
+        return None
 
 
 def _free(model, tokenizer) -> None:
-    """Deterministic GPU/CPU memory release — mirrors eval_model.py."""
     del model, tokenizer
     gc.collect()
     if torch.cuda.is_available():
@@ -157,17 +149,8 @@ def _free(model, tokenizer) -> None:
 # Signal 1: PPL trajectory
 # ---------------------------------------------------------------------------
 
-def _ppl_for_checkpoint(
-    model,
-    tokenizer,
-    sentences: list[str],
-    goldfish_tokens: int | None = GOLDFISH_TOKENS,
-) -> float:
-    """Mean NLL across sentences for a loaded model."""
-    nlls = [
-        sentence_log_likelihood(s, model, tokenizer, goldfish_tokens)
-        for s in sentences
-    ]
+def _ppl_for_checkpoint(model, tokenizer, sentences, goldfish_tokens=GOLDFISH_TOKENS):
+    nlls = [sentence_log_likelihood(s, model, tokenizer, goldfish_tokens) for s in sentences]
     return float(np.mean([n for n in nlls if n < float("inf")]))
 
 
@@ -178,15 +161,6 @@ def compute_ppl_trajectory(
     sample_size: int = PPL_SAMPLE_SIZE,
     overwrite: bool = False,
 ) -> pd.DataFrame:
-    """
-    For each checkpoint of *repo*, compute mean PPL for each language in
-    *lang_codes*.
-
-    lang_codes should include BOTH the L1 and L2 languages of the model so
-    that forgetting inflection points are visible.
-
-    Returns DataFrame: [step, revision, lang, mean_nll, mean_ppl]
-    """
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     slug     = repo.replace("/", "__")
     out_path = OUTPUT_DIR / f"ppl_traj_{slug}.csv"
@@ -195,42 +169,37 @@ def compute_ppl_trajectory(
         logger.info(f"[ppl_traj] Loading cached {out_path}")
         return pd.read_csv(out_path)
 
-    # Pre-load sentences (outside the checkpoint loop)
     sentences_by_lang: dict[str, list[str]] = {}
     for code in lang_codes:
         if code not in FLORES_LANG_MAP:
             logger.warning(f"[ppl_traj] No FLORES mapping for {code!r} — skipping")
             continue
         all_sents = load_flores_sentences(code)
-        # Deterministic subsample
         step = max(1, len(all_sents) // sample_size)
         sentences_by_lang[code] = all_sents[::step][:sample_size]
-        logger.info(f"[ppl_traj] {code}: using {len(sentences_by_lang[code])} sentences")
+        logger.info(f"[ppl_traj] {code}: {len(sentences_by_lang[code])} sentences")
 
     checkpoints = list_checkpoints(repo, hf_token)
     logger.info(f"[ppl_traj] {repo}: {len(checkpoints)} checkpoints × {len(sentences_by_lang)} langs")
 
     rows: list[dict] = []
-
     for revision in checkpoints:
-        step = step_label(revision)
-        logger.info(f"  step {step:>6d} ({revision}) …")
-
-        try:
-            model, tokenizer = _load_checkpoint(repo, revision, hf_token)
-        except Exception as e:
-            logger.error(f"  Load failed @ {revision}: {e}")
+        step   = step_label(revision)
+        result = _load_checkpoint(repo, revision, hf_token)
+        if result is None:
+            logger.warning(f"  SKIPPED step {step} ({revision}) — load failed.")
             continue
+        model, tokenizer = result
 
         for code, sentences in sentences_by_lang.items():
             mean_nll = _ppl_for_checkpoint(model, tokenizer, sentences)
             rows.append({
-                "repo":      repo,
-                "revision":  revision,
-                "step":      step,
-                "lang":      code,
-                "mean_nll":  round(mean_nll, 4),
-                "mean_ppl":  round(nll_to_ppl(mean_nll), 2),
+                "repo":     repo,
+                "revision": revision,
+                "step":     step,
+                "lang":     code,
+                "mean_nll": round(mean_nll, 4),
+                "mean_ppl": round(nll_to_ppl(mean_nll), 2),
             })
             logger.info(f"    {code}: PPL={nll_to_ppl(mean_nll):.1f}")
 
@@ -246,22 +215,11 @@ def compute_ppl_trajectory(
 # Signal 2: Probe-word embedding drift across checkpoints
 # ---------------------------------------------------------------------------
 
-def _probe_vecs_for_checkpoint(
-    model,
-    tokenizer,
-    probe_words: list[str],
-) -> dict[str, np.ndarray]:
-    """
-    Extract embedding vector for each probe word (single-token only).
-    Returns {word: vector [hidden_dim]} for words that tokenise to 1 token.
-    """
+def _probe_vecs_for_checkpoint(model, tokenizer, probe_words):
     emb_weight = model.get_input_embeddings().weight.detach().float().cpu()
     probe_map  = token_ids_for_words(probe_words, tokenizer)
-    result: dict[str, np.ndarray] = {}
-    for word, ids in probe_map.items():
-        if len(ids) == 1:
-            result[word] = emb_weight[ids[0]].numpy()
-    return result
+    return {word: emb_weight[ids[0]].numpy()
+            for word, ids in probe_map.items() if len(ids) == 1}
 
 
 def compute_drift_trajectory(
@@ -270,15 +228,6 @@ def compute_drift_trajectory(
     hf_token: Optional[str] = None,
     overwrite: bool = False,
 ) -> pd.DataFrame:
-    """
-    For each checkpoint, compute cosine distance of each probe word's embedding
-    relative to its embedding at step 0 (the 'main' / earliest checkpoint).
-
-    This gives you the per-word drift curve across training.
-
-    Returns DataFrame: [step, revision, word, cosine_dist_from_step0,
-                        cosine_dist_from_prev]
-    """
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     slug     = repo.replace("/", "__")
     out_path = OUTPUT_DIR / f"drift_traj_{slug}.csv"
@@ -287,56 +236,47 @@ def compute_drift_trajectory(
         logger.info(f"[drift_traj] Loading cached {out_path}")
         return pd.read_csv(out_path)
 
-    probe_words  = PROBE_WORDS.get(iso_code, [])
-    checkpoints  = list_checkpoints(repo, hf_token)
+    probe_words = PROBE_WORDS.get(iso_code, [])
+    checkpoints = list_checkpoints(repo, hf_token)
     logger.info(f"[drift_traj] {repo}: {len(checkpoints)} checkpoints, {len(probe_words)} probe words")
 
-    # Step-0 anchor: extract embeddings at 'main'
-    logger.info(f"  Loading step-0 anchor (main) …")
-    try:
-        model0, tok0 = _load_checkpoint(repo, "main", hf_token)
-        step0_vecs   = _probe_vecs_for_checkpoint(model0, tok0, probe_words)
-        _free(model0, tok0)
-    except Exception as e:
-        logger.error(f"  Could not load step-0 anchor: {e}")
+    logger.info("  Loading step-0 anchor (main) …")
+    result0 = _load_checkpoint(repo, "main", hf_token)
+    if result0 is None:
+        logger.error(f"  SKIPPED {repo} drift — step-0 anchor failed to load.")
         return pd.DataFrame()
+    model0, tok0 = result0
+    step0_vecs   = _probe_vecs_for_checkpoint(model0, tok0, probe_words)
+    _free(model0, tok0)
 
     rows: list[dict] = []
-    prev_vecs: dict[str, np.ndarray] = step0_vecs.copy()
+    prev_vecs = step0_vecs.copy()
 
     for revision in checkpoints:
-        step = step_label(revision)
-        logger.info(f"  step {step:>6d} ({revision}) …")
-
-        try:
-            model, tokenizer = _load_checkpoint(repo, revision, hf_token)
-            ckpt_vecs = _probe_vecs_for_checkpoint(model, tokenizer, probe_words)
-            _free(model, tokenizer)
-        except Exception as e:
-            logger.error(f"  Load failed @ {revision}: {e}")
+        step   = step_label(revision)
+        result = _load_checkpoint(repo, revision, hf_token)
+        if result is None:
+            logger.warning(f"  SKIPPED step {step} ({revision}) — load failed.")
             continue
+        model, tokenizer = result
+        ckpt_vecs = _probe_vecs_for_checkpoint(model, tokenizer, probe_words)
+        _free(model, tokenizer)
 
         for word in step0_vecs:
             if word not in ckpt_vecs:
                 continue
-
-            v0   = torch.tensor(step0_vecs[word]).unsqueeze(0)
-            vt   = torch.tensor(ckpt_vecs[word]).unsqueeze(0)
-            vprev= torch.tensor(prev_vecs.get(word, step0_vecs[word])).unsqueeze(0)
-
-            dist_from_step0 = 1.0 - cosine_similarity(v0, vt).item()
-            dist_from_prev  = 1.0 - cosine_similarity(vprev, vt).item()
-
+            v0    = torch.tensor(step0_vecs[word]).unsqueeze(0)
+            vt    = torch.tensor(ckpt_vecs[word]).unsqueeze(0)
+            vprev = torch.tensor(prev_vecs.get(word, step0_vecs[word])).unsqueeze(0)
             rows.append({
-                "repo":                repo,
-                "iso_code":            iso_code,
-                "revision":            revision,
-                "step":                step,
-                "word":                word,
-                "cosine_dist_step0":   round(dist_from_step0, 5),
-                "cosine_dist_prev":    round(dist_from_prev, 5),
+                "repo":              repo,
+                "iso_code":          iso_code,
+                "revision":          revision,
+                "step":              step,
+                "word":              word,
+                "cosine_dist_step0": round(1.0 - cosine_similarity(v0, vt).item(), 5),
+                "cosine_dist_prev":  round(1.0 - cosine_similarity(vprev, vt).item(), 5),
             })
-
         prev_vecs = ckpt_vecs
 
     df = pd.DataFrame(rows)
@@ -350,18 +290,15 @@ def compute_drift_trajectory(
 # ---------------------------------------------------------------------------
 
 def _linear_cka(X: np.ndarray, Y: np.ndarray) -> float:
-    """Linear CKA between two representation matrices [n_probes, hidden_dim]."""
     X = X - X.mean(axis=0)
     Y = Y - Y.mean(axis=0)
     K_X = X @ X.T
     K_Y = Y @ Y.T
     n   = K_X.shape[0]
     H   = np.eye(n) - np.ones((n, n)) / n
-    cK_X = H @ K_X @ H
-    cK_Y = H @ K_Y @ H
-    num  = np.sum(cK_X * cK_Y)
-    den  = (np.linalg.norm(cK_X, "fro") * np.linalg.norm(cK_Y, "fro")) + 1e-10
-    return float(num / den)
+    cKX = H @ K_X @ H
+    cKY = H @ K_Y @ H
+    return float(np.sum(cKX * cKY) / (np.linalg.norm(cKX, "fro") * np.linalg.norm(cKY, "fro") + 1e-10))
 
 
 def compute_cka_trajectory(
@@ -370,15 +307,6 @@ def compute_cka_trajectory(
     hf_token: Optional[str] = None,
     overwrite: bool = False,
 ) -> pd.DataFrame:
-    """
-    Compute CKA between every pair of consecutive checkpoints.
-
-    A CKA close to 1 between step-N and step-N+k means representations are
-    stable (converged). A sudden drop indicates a phase transition.
-
-    Returns DataFrame: [step_a, step_b, revision_a, revision_b, cka,
-                        delta_step]
-    """
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     slug     = repo.replace("/", "__")
     out_path = OUTPUT_DIR / f"cka_traj_{slug}.csv"
@@ -390,32 +318,26 @@ def compute_cka_trajectory(
     probe_words = PROBE_WORDS.get(iso_code, [])
     checkpoints = list_checkpoints(repo, hf_token)
 
-    # Collect probe vectors checkpoint-by-checkpoint.
-    # Only keep ONE checkpoint's vectors in memory at a time.
     rows: list[dict] = []
-
     prev_vecs: dict[str, np.ndarray] | None = None
-    prev_step  = None
-    prev_rev   = None
+    prev_step = None
+    prev_rev  = None
 
     for revision in checkpoints:
-        step = step_label(revision)
-        logger.info(f"  step {step:>6d} ({revision}) …")
-
-        try:
-            model, tokenizer = _load_checkpoint(repo, revision, hf_token)
-            ckpt_vecs        = _probe_vecs_for_checkpoint(model, tokenizer, probe_words)
-            _free(model, tokenizer)
-        except Exception as e:
-            logger.error(f"  Load failed @ {revision}: {e}")
+        step   = step_label(revision)
+        result = _load_checkpoint(repo, revision, hf_token)
+        if result is None:
+            logger.warning(f"  SKIPPED step {step} ({revision}) — load failed.")
             continue
+        model, tokenizer = result
+        ckpt_vecs = _probe_vecs_for_checkpoint(model, tokenizer, probe_words)
+        _free(model, tokenizer)
 
         if prev_vecs is not None:
-            # Compute CKA over shared probe words only
             shared = sorted(set(prev_vecs.keys()) & set(ckpt_vecs.keys()))
             if len(shared) >= 2:
-                X = np.stack([prev_vecs[w]  for w in shared])
-                Y = np.stack([ckpt_vecs[w] for w in shared])
+                X   = np.stack([prev_vecs[w]  for w in shared])
+                Y   = np.stack([ckpt_vecs[w]  for w in shared])
                 cka = _linear_cka(X, Y)
                 rows.append({
                     "repo":       repo,
@@ -426,7 +348,6 @@ def compute_cka_trajectory(
                     "step_b":     step,
                     "delta_step": step - prev_step,
                     "cka":        round(cka, 5),
-                    # 1 - CKA = representational change per unit step
                     "change":     round(1.0 - cka, 5),
                 })
                 logger.info(f"    CKA({prev_step}→{step}) = {cka:.4f}")
@@ -442,31 +363,20 @@ def compute_cka_trajectory(
 
 
 # ---------------------------------------------------------------------------
-# Batch runner: all three signals for a list of repos
+# Batch runner
 # ---------------------------------------------------------------------------
 
 def _iso_codes_for_repo(repo: str) -> list[str]:
-    """Return the ISO code(s) a repo belongs to (from MODEL_GROUPS)."""
     return [code for code, models in MODEL_GROUPS.items() if repo in models]
 
 
 def _lang_pair_codes(repo: str) -> list[str]:
-    """
-    Parse L1 and L2 ISO codes from the repo name so we can track both
-    in the PPL trajectory.
-
-    e.g. beetlelm_eng-nld_balanced → ['eng', 'nld']
-         beetlelm_nld_mono         → ['nld']
-    """
     name  = repo.split("/")[-1].replace("beetlelm_", "")
     for tag in ("_mono", "_balanced", "_simultaneous", "_sequential",
                 "_part_time", "_late", "_heritage"):
         name = name.replace(tag, "")
-    # name is now e.g. "eng-nld" or "nld_L1-eng_L2" or "nld"
-    # Normalise L1/L2 labels and extract raw iso codes
-    name = re.sub(r"_L[12]", "", name)          # strip _L1 _L2 suffixes
+    name  = re.sub(r"_L[12]", "", name)
     codes = re.split(r"[-_]", name)
-    # Keep only recognised 3-letter codes
     known = set(FLORES_LANG_MAP.keys())
     return [c for c in codes if c in known]
 
@@ -477,29 +387,16 @@ def run_convergence_analysis(
     overwrite: bool = False,
     signals: list[str] = ("ppl", "drift", "cka"),
 ) -> dict[str, dict[str, pd.DataFrame]]:
-    """
-    Run all convergence signals for a list of repos.
-
-    Args:
-        repos:    HuggingFace repo strings (from models.py).
-        signals:  Subset of ('ppl', 'drift', 'cka') to compute.
-        overwrite: Re-compute even if CSVs exist.
-
-    Returns:
-        { repo: { 'ppl': df, 'drift': df, 'cka': df } }
-    """
     results: dict[str, dict] = {}
 
     for repo in repos:
-        iso_codes = _iso_codes_for_repo(repo)
-        lang_pair = _lang_pair_codes(repo)
+        iso_codes   = _iso_codes_for_repo(repo)
+        lang_pair   = _lang_pair_codes(repo)
         primary_iso = iso_codes[0] if iso_codes else (lang_pair[0] if lang_pair else None)
 
         logger.info(f"\n{'='*60}")
         logger.info(f"Convergence: {repo}")
-        logger.info(f"  ISO groups : {iso_codes}")
-        logger.info(f"  PPL langs  : {lang_pair}")
-        logger.info(f"  Primary iso: {primary_iso}")
+        logger.info(f"  ISO groups : {iso_codes}  |  PPL langs: {lang_pair}  |  Primary: {primary_iso}")
 
         results[repo] = {}
 
@@ -518,23 +415,30 @@ def run_convergence_analysis(
                 repo, primary_iso, hf_token=hf_token, overwrite=overwrite
             )
 
-    # Concatenate all PPL trajectories into a single overview CSV
-    ppl_frames = [v["ppl"] for v in results.values() if "ppl" in v and not v["ppl"].empty]
+    # Concatenate all PPL trajectories
+    ppl_frames = [v["ppl"] for v in results.values()
+                  if "ppl" in v and isinstance(v["ppl"], pd.DataFrame) and not v["ppl"].empty]
     if ppl_frames:
-        combined = pd.concat(ppl_frames, ignore_index=True)
         combined_path = OUTPUT_DIR / "all_ppl_trajectories.csv"
-        combined.to_csv(combined_path, index=False)
+        pd.concat(ppl_frames, ignore_index=True).to_csv(combined_path, index=False)
         logger.info(f"\n[convergence] All PPL trajectories → {combined_path}")
+
+    if CONVERGENCE_FAILURES:
+        logger.info(f"\n[convergence] {'='*56}")
+        logger.info(f"[convergence] SKIPPED {len(CONVERGENCE_FAILURES)} checkpoint(s) due to load errors:")
+        for key, reason in CONVERGENCE_FAILURES.items():
+            logger.info(f"  ✗  {key}")
+            logger.info(f"     {reason}")
+        logger.info(f"[convergence] {'='*56}")
 
     return results
 
 
 # ---------------------------------------------------------------------------
-# Convenience: run for the key comparison models from the research questions
+# Focus repo sets for the key research questions
 # ---------------------------------------------------------------------------
 
 FOCUS_REPOS = {
-    # L1 forgetting focus (deu, nld, zho)
     "forgetting_focus": [
         "BeetleLM/beetlelm_nld_mono",
         "BeetleLM/beetlelm_eng-nld_simultaneous",
@@ -547,11 +451,10 @@ FOCUS_REPOS = {
         "BeetleLM/beetlelm_zho-eng_balanced",
         "BeetleLM/beetlelm_zho_L1-eng_L2_simultaneous",
     ],
-    # Reading time / L2 focus
     "rt_focus": [
-        "BeetleLM/beetlelm_eng-nld_simultaneous",      # simultaneous → L2 RT
+        "BeetleLM/beetlelm_eng-nld_simultaneous",
         "BeetleLM/beetlelm_nld_L1-eng_L2_simultaneous",
-        "BeetleLM/beetlelm_zho-eng_balanced",           # Chinese/English balanced
+        "BeetleLM/beetlelm_zho-eng_balanced",
         "BeetleLM/beetlelm_zho_L1-eng_L2_balanced",
     ],
 }
@@ -561,21 +464,14 @@ if __name__ == "__main__":
     import argparse
 
     parser = argparse.ArgumentParser(description="Run checkpoint convergence analysis.")
-    parser.add_argument("--repos",     nargs="+",
-                        help="Explicit repo list (default: forgetting_focus set)")
-    parser.add_argument("--focus",     choices=list(FOCUS_REPOS.keys()),
-                        default="forgetting_focus")
-    parser.add_argument("--signals",   nargs="+",
-                        choices=["ppl", "drift", "cka"],
+    parser.add_argument("--repos",     nargs="+")
+    parser.add_argument("--focus",     choices=list(FOCUS_REPOS.keys()), default="forgetting_focus")
+    parser.add_argument("--signals",   nargs="+", choices=["ppl", "drift", "cka"],
                         default=["ppl", "drift", "cka"])
     parser.add_argument("--hf_token",  default=None)
     parser.add_argument("--overwrite", action="store_true")
     args = parser.parse_args()
 
     repos = args.repos if args.repos else FOCUS_REPOS[args.focus]
-    run_convergence_analysis(
-        repos,
-        hf_token  = args.hf_token,
-        overwrite = args.overwrite,
-        signals   = args.signals,
-    )
+    run_convergence_analysis(repos, hf_token=args.hf_token,
+                             overwrite=args.overwrite, signals=args.signals)
