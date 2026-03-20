@@ -4,19 +4,19 @@ run_pipeline.py — Master runner for the BeetleLM analysis pipeline.
 Usage examples
 --------------
 # Run everything (all languages, all analyses):
-python run_pipeline.py --all
+python run.py --all
 
 # Just PPL + forgetting for deu/nld/zho:
-python run_pipeline.py --ppl --forgetting --langs deu nld zho
+python run.py --ppl --forgetting --langs deu nld zho
 
 # Embedding drift for Chinese only:
-python run_pipeline.py --embeddings --langs zho
+python run.py --embeddings --langs zho
 
 # Generate all figures from existing results:
-python run_pipeline.py --figures --langs deu nld zho
+python run.py --figures --langs deu nld zho
 
 # Re-run everything, overwriting cached results:
-python run_pipeline.py --all --overwrite
+python run.py --all --overwrite
 """
 
 from __future__ import annotations
