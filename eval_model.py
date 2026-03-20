@@ -25,18 +25,18 @@ never more than one model in any form of memory at any time.
 
 Usage
 -----
-  # single GPU debug (all bilingual models)
+  # single GPU, all models
   python eval_model.py --rank 0 --world_size 1 --output_dir /path/to/beetle-analyze
 
-  # one slice on GPU N of 8 (called by launch_all.sh)
+  # one slice on GPU N of 8
   CUDA_VISIBLE_DEVICES=N python eval_model.py \\
       --rank N --world_size 8 --output_dir /path/to/beetle-analyze
 
-  # trilingual models only (called by launch_trilingual.sh)
+  # trilingual EWC/MAML models only (uses ALL_TRILINGUAL_MODELS pool)
   CUDA_VISIBLE_DEVICES=N python eval_model.py \\
       --rank N --world_size 8 --output_dir /path/to/beetle-analyze --trilingual_only
 
-  # evaluate only the highest step-N checkpoint per model
+  # only the highest step-N checkpoint per model
   CUDA_VISIBLE_DEVICES=N python eval_model.py \\
       --rank N --world_size 8 --output_dir /path/to/beetle-analyze --latest_only
 """
@@ -75,7 +75,7 @@ from models import (
     ALL_MODELS, ALL_TRILINGUAL_MODELS, MODEL_GROUPS,
     get_bilingual_type, get_lang_pair,
 )
-from utils  import already_done, append_result, list_checkpoints
+from utils import already_done, append_result, list_checkpoints
 
 # ── Silence HF / datasets HTTP noise ─────────────────────────────────────────
 for _lib in ("datasets", "huggingface_hub", "huggingface_hub.file_download",
@@ -93,10 +93,11 @@ logger = logging.getLogger(__name__)
 # ═════════════════════════════════════════════════════════════════════════════
 # BENCHMARK DEFINITIONS
 #
-# relevant_groups maps each benchmark language to the MODEL_GROUPS keys that
-# should be evaluated on it.  The "tri" key covers all trilingual eng–nld–zho
-# models; they are tested on every benchmark that covers any of those three
-# languages.
+# relevant_groups maps each benchmark language to the MODEL_GROUPS keys whose
+# models should be evaluated on it.
+#
+# "tri" covers the trilingual eng–nld–zho EWC/MAML models; they are tested on
+# every benchmark that covers any of those three languages.
 # ═════════════════════════════════════════════════════════════════════════════
 
 BENCHMARKS: Dict[str, dict] = {
@@ -121,7 +122,7 @@ BENCHMARKS: Dict[str, dict] = {
         good_col        = "sentence_good",
         bad_col         = "sentence_bad",
         langs           = {"eng": "English"},
-        # Trilingual models contain English → evaluate here too
+        # trilingual models contain English
         relevant_groups = {"eng": ["eng", "tri"]},
     ),
 
@@ -132,7 +133,7 @@ BENCHMARKS: Dict[str, dict] = {
         good_col        = "sentence_good",
         bad_col         = "sentence_bad",
         langs           = {"zho": "Chinese"},
-        # Trilingual models contain Chinese → evaluate here too
+        # trilingual models contain Chinese
         relevant_groups = {"zho": ["zho", "tri"]},
     ),
 
@@ -143,7 +144,7 @@ BENCHMARKS: Dict[str, dict] = {
         good_col        = "sentence_good",
         bad_col         = "sentence_bad",
         langs           = {"nld": "Dutch"},
-        # Trilingual models contain Dutch → evaluate here too
+        # trilingual models contain Dutch
         relevant_groups = {"nld": ["nld", "tri"]},
     ),
 
@@ -157,7 +158,7 @@ BENCHMARKS: Dict[str, dict] = {
                            "zho": "Chinese", "fas": "Persian"},
         lang_split_map  = {"fra": "comps_fr", "deu": "comps_de", "ukr": "comps_uk",
                            "zho": "comps_zh", "fas": "comps_fa"},
-        # Trilingual models contain Chinese → run xcomps/zho on them
+        # trilingual models contain Chinese
         relevant_groups = {
             "fra": ["fra"], "deu": ["deu"], "zho": ["zho", "tri"],
             "fas": ["fas"],
@@ -171,7 +172,7 @@ BENCHMARKS: Dict[str, dict] = {
         config_mode     = "per_lang",
         langs           = {"en": "English", "fr": "French", "de": "German",
                            "zh": "Chinese", "bg": "Bulgarian"},
-        # Trilingual models contain English and Chinese → run xnli/en and xnli/zh
+        # trilingual models contain English and Chinese
         relevant_groups = {
             "en": ["eng", "tri"],
             "fr": ["fra"],
@@ -348,13 +349,12 @@ def select_checkpoints(all_ckpts: List[str], latest_only: bool) -> List[str]:
 # ═════════════════════════════════════════════════════════════════════════════
 # SCORING
 #
-# FIX 1: PicoDecoderHF.forward does not use attention_mask — it builds its own
-# causal mask internally and silently drops unknown kwargs.  Passing
-# attention_mask to the model therefore has no effect on the forward pass, but
-# the padding mask is still needed AFTER the forward to zero out padding
-# token contributions before summing log-probs.  We separate the two concerns:
-#   • model forward: no attention_mask argument
-#   • log-prob aggregation: mask_shifted applied as before
+# FIX: PicoDecoderHF.forward does not accept or use attention_mask — it builds
+# its own causal mask internally and silently drops unknown kwargs via **kwargs.
+# Passing attention_mask to the model has no effect on the forward pass, but
+# padding tokens would pollute log-prob sums if not zeroed out.
+# Solution: omit attention_mask from the model call; apply the padding mask
+# manually to the token log-probs before summing.
 # ═════════════════════════════════════════════════════════════════════════════
 
 @torch.no_grad()
@@ -368,16 +368,16 @@ def score_sentences(model, tokenizer, sentences: List[str],
         input_ids      = enc["input_ids"].to(device).clamp(0, model.config.vocab_size - 1)
         attention_mask = enc["attention_mask"].to(device)
 
-        # FIX 1: do NOT pass attention_mask to the model — PicoDecoderHF ignores
-        # it silently, which means padded positions would pollute scores.
-        # We apply the mask manually to the log-probs below.
+        # Do NOT pass attention_mask to the model: PicoDecoderHF ignores it
+        # silently via **kwargs, so it has no effect on the forward pass.
+        # We apply the mask ourselves below to exclude padding from score sums.
         outputs   = model(input_ids=input_ids)
         log_probs = F.log_softmax(outputs.logits, dim=-1)
         del outputs
 
         lp_shifted   = log_probs[:, :-1, :]
         ids_shifted  = input_ids[:, 1:]
-        mask_shifted = attention_mask[:, 1:].float()   # still used here — correctly
+        mask_shifted = attention_mask[:, 1:].float()
         token_lp     = lp_shifted.gather(-1, ids_shifted.unsqueeze(-1)).squeeze(-1)
         sent_lp      = (token_lp * mask_shifted).sum(dim=-1)
         all_scores.append(sent_lp.cpu())
@@ -396,6 +396,7 @@ def run_minimal_pairs(model, tokenizer, pairs: List[Tuple[str, str]],
 
 def run_xnli(model, tokenizer, triples: List[Tuple[str, str, int]],
              device: torch.device, batch_size: int) -> Tuple[float, int, int]:
+    # Binary: entailment (label=0) vs contradiction (label=2); skip neutral (1)
     pairs = [(p, h, l) for p, h, l in triples if l in (0, 2)]
     pos   = [p + XNLI_SEP + h          for p, h, _ in pairs]
     neg   = [p + XNLI_SEP + "not " + h for p, h, _ in pairs]
@@ -466,8 +467,8 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--latest_only",     action="store_true",
                    help="Evaluate only the single highest step-N checkpoint per model.")
     p.add_argument("--trilingual_only", action="store_true",
-                   help="Restrict evaluation to trilingual (eng–nld–zho) models only. "
-                        "Uses ALL_TRILINGUAL_MODELS for rank slicing instead of ALL_MODELS.")
+                   help="Restrict evaluation to trilingual EWC/MAML models only. "
+                        "Uses ALL_TRILINGUAL_MODELS for rank slicing.")
     return p.parse_args()
 
 
@@ -521,20 +522,19 @@ def main() -> None:
     # ── Helper: which (benchmark, lang) pairs apply to this model? ────────
     def applicable(repo: str) -> List[Tuple[str, str, str, str]]:
         """
-        Return [(bm_name, lang_code, lang_name, csv_path), ...] for every
-        benchmark × language that should be run on this repo.
+        Return [(bm_name, lang_code, lang_name, csv_path), ...].
 
-        FIX 4: lang_code (stable ISO tag e.g. "eng") is now carried through
-        alongside lang_name (display string e.g. "English") so that
-        already_done() is keyed on lang_code, making resume stable even if
-        display strings ever change.
+        Uses SET UNION across ALL MODEL_GROUPS the repo belongs to, so a model
+        in multiple groups (e.g. Dutch-English model in both DUTCH_MODELS and
+        ENGLISH_MODELS) gets the full superset of applicable benchmarks.
+        Deduplicates on (bm_name, lang_code) to avoid running the same task twice.
         """
         groups = {g for g, ms in MODEL_GROUPS.items() if repo in ms}
         seen   = set()
         result = []
         for bm_name, cfg in BENCHMARKS.items():
-            for lang_code, relevant in cfg["relevant_groups"].items():
-                if groups & set(relevant) and lang_code in all_data.get(bm_name, {}):
+            for lang_code, relevant_groups in cfg["relevant_groups"].items():
+                if groups & set(relevant_groups) and lang_code in all_data.get(bm_name, {}):
                     key = (bm_name, lang_code)
                     if key not in seen:
                         seen.add(key)
@@ -544,8 +544,8 @@ def main() -> None:
         return result
 
     # ── Separate kwargs for model vs tokenizer ────────────────────────────
-    # FIX 2: torch_dtype and low_cpu_mem_usage are model-only kwargs;
-    # passing them to AutoTokenizer produces warnings or errors.
+    # torch_dtype and low_cpu_mem_usage are model-only kwargs; passing them to
+    # AutoTokenizer causes warnings or errors in newer transformers versions.
     def _model_kwargs(ckpt: str) -> dict:
         return dict(
             revision          = ckpt,
@@ -586,8 +586,8 @@ def main() -> None:
 
         model_had_new_results = False
 
-        # FIX 3: track whether every checkpoint for this repo failed to load
-        # so we can emit a clear error rather than silently producing zero rows.
+        # Track load failures: surface a loud error if ALL checkpoints fail,
+        # rather than silently finishing with zero rows written for this model.
         n_ckpts_attempted = 0
         n_ckpts_loaded    = 0
 
@@ -596,7 +596,8 @@ def main() -> None:
 
             needed = []
             for bm_name, lang_code, lang_name, csv_path in tasks:
-                # FIX 4: key already_done on lang_code, not lang_name
+                # Key resume on lang_code (stable ISO tag e.g. "eng"), not
+                # lang_name (display string e.g. "English") which could change.
                 if args.resume and already_done(csv_path, repo, ckpt, lang_code, bm_name):
                     pass
                 else:
@@ -646,8 +647,7 @@ def main() -> None:
                         "bilingual_type": bil_type,
                         "checkpoint"    : ckpt,
                         "eval_language" : lang_name,
-                        # FIX 4: also store lang_code for stable resume keying
-                        "lang_code"     : lang_code,
+                        "lang_code"     : lang_code,  # stable key for resume
                         "accuracy"      : round(acc, 6),
                         "n_correct"     : n_correct,
                         "n_total"       : n_total,
@@ -661,7 +661,6 @@ def main() -> None:
             torch.cuda.empty_cache()
             logger.info(f"  {ckpt}: model freed.")
 
-        # FIX 3: surface a loud error if every attempted load failed
         if n_ckpts_attempted > 0 and n_ckpts_loaded == 0:
             logger.error(
                 f"  !! ZERO checkpoints loaded for {repo} "
