@@ -347,6 +347,14 @@ def select_checkpoints(all_ckpts: List[str], latest_only: bool) -> List[str]:
 
 # ═════════════════════════════════════════════════════════════════════════════
 # SCORING
+#
+# FIX 1: PicoDecoderHF.forward does not use attention_mask — it builds its own
+# causal mask internally and silently drops unknown kwargs.  Passing
+# attention_mask to the model therefore has no effect on the forward pass, but
+# the padding mask is still needed AFTER the forward to zero out padding
+# token contributions before summing log-probs.  We separate the two concerns:
+#   • model forward: no attention_mask argument
+#   • log-prob aggregation: mask_shifted applied as before
 # ═════════════════════════════════════════════════════════════════════════════
 
 @torch.no_grad()
@@ -360,15 +368,18 @@ def score_sentences(model, tokenizer, sentences: List[str],
         input_ids      = enc["input_ids"].to(device).clamp(0, model.config.vocab_size - 1)
         attention_mask = enc["attention_mask"].to(device)
 
-        outputs   = model(input_ids=input_ids, attention_mask=attention_mask)
+        # FIX 1: do NOT pass attention_mask to the model — PicoDecoderHF ignores
+        # it silently, which means padded positions would pollute scores.
+        # We apply the mask manually to the log-probs below.
+        outputs   = model(input_ids=input_ids)
         log_probs = F.log_softmax(outputs.logits, dim=-1)
         del outputs
 
-        lp_shifted  = log_probs[:, :-1, :]
-        ids_shifted = input_ids[:, 1:]
-        mask_shifted= attention_mask[:, 1:].float()
-        token_lp    = lp_shifted.gather(-1, ids_shifted.unsqueeze(-1)).squeeze(-1)
-        sent_lp     = (token_lp * mask_shifted).sum(dim=-1)
+        lp_shifted   = log_probs[:, :-1, :]
+        ids_shifted  = input_ids[:, 1:]
+        mask_shifted = attention_mask[:, 1:].float()   # still used here — correctly
+        token_lp     = lp_shifted.gather(-1, ids_shifted.unsqueeze(-1)).squeeze(-1)
+        sent_lp      = (token_lp * mask_shifted).sum(dim=-1)
         all_scores.append(sent_lp.cpu())
 
     return torch.cat(all_scores)
@@ -497,8 +508,6 @@ def main() -> None:
     logger.info(f"Trilingual only : {args.trilingual_only}")
 
     # ── Model slice for this rank ─────────────────────────────────────────
-    # --trilingual_only slices from ALL_TRILINGUAL_MODELS so each GPU gets
-    # a fair share of the 37 trilingual repos regardless of world_size.
     model_pool = ALL_TRILINGUAL_MODELS if args.trilingual_only else ALL_MODELS
     my_models  = model_pool[args.rank :: args.world_size]
     logger.info(f"Models          : {len(my_models)} / {len(model_pool)} "
@@ -510,15 +519,15 @@ def main() -> None:
     logger.info("Datasets ready.\n")
 
     # ── Helper: which (benchmark, lang) pairs apply to this model? ────────
-    def applicable(repo: str) -> List[Tuple[str, str, str]]:
+    def applicable(repo: str) -> List[Tuple[str, str, str, str]]:
         """
-        Return [(bm_name, lang_code, csv_path), ...] for every benchmark ×
-        language that should be run on this repo.
+        Return [(bm_name, lang_code, lang_name, csv_path), ...] for every
+        benchmark × language that should be run on this repo.
 
-        A model may belong to multiple MODEL_GROUPS (e.g. a trilingual repo
-        sits in 'tri'; a bilingual repo may appear in overlapping lists).
-        We collect ALL groups that contain the repo, then union the relevant
-        benchmarks — avoiding duplicates with a seen set.
+        FIX 4: lang_code (stable ISO tag e.g. "eng") is now carried through
+        alongside lang_name (display string e.g. "English") so that
+        already_done() is keyed on lang_code, making resume stable even if
+        display strings ever change.
         """
         groups = {g for g, ms in MODEL_GROUPS.items() if repo in ms}
         seen   = set()
@@ -529,9 +538,29 @@ def main() -> None:
                     key = (bm_name, lang_code)
                     if key not in seen:
                         seen.add(key)
-                        csv_path = os.path.join(result_dir, f"{bm_name}_results.csv")
-                        result.append((bm_name, lang_code, csv_path))
+                        lang_name = cfg["langs"].get(lang_code, lang_code)
+                        csv_path  = os.path.join(result_dir, f"{bm_name}_results.csv")
+                        result.append((bm_name, lang_code, lang_name, csv_path))
         return result
+
+    # ── Separate kwargs for model vs tokenizer ────────────────────────────
+    # FIX 2: torch_dtype and low_cpu_mem_usage are model-only kwargs;
+    # passing them to AutoTokenizer produces warnings or errors.
+    def _model_kwargs(ckpt: str) -> dict:
+        return dict(
+            revision          = ckpt,
+            trust_remote_code = True,
+            torch_dtype       = torch.float16,
+            low_cpu_mem_usage = True,
+            token             = args.hf_token,
+        )
+
+    def _tok_kwargs(ckpt: str) -> dict:
+        return dict(
+            revision          = ckpt,
+            trust_remote_code = True,
+            token             = args.hf_token,
+        )
 
     # ══════════════════════════════════════════════════════════════════════
     # OUTER LOOP — one model repo at a time
@@ -557,44 +586,44 @@ def main() -> None:
 
         model_had_new_results = False
 
+        # FIX 3: track whether every checkpoint for this repo failed to load
+        # so we can emit a clear error rather than silently producing zero rows.
+        n_ckpts_attempted = 0
+        n_ckpts_loaded    = 0
+
         # ── INNER LOOP — one checkpoint at a time ─────────────────────────
         for ckpt in checkpoints:
 
             needed = []
-            for bm_name, lang_code, csv_path in tasks:
-                lang_name = BENCHMARKS[bm_name]["langs"][lang_code]
-                if args.resume and already_done(csv_path, repo, ckpt, lang_name, bm_name):
+            for bm_name, lang_code, lang_name, csv_path in tasks:
+                # FIX 4: key already_done on lang_code, not lang_name
+                if args.resume and already_done(csv_path, repo, ckpt, lang_code, bm_name):
                     pass
                 else:
-                    needed.append((bm_name, lang_code, csv_path, lang_name))
+                    needed.append((bm_name, lang_code, lang_name, csv_path))
 
             if not needed:
                 logger.info(f"  {ckpt}: all done — skipping model load.")
                 continue
 
             logger.info(f"  Loading @ {ckpt} …")
+            n_ckpts_attempted += 1
             try:
-                load_kw = dict(
-                    revision          = ckpt,
-                    trust_remote_code = True,
-                    torch_dtype       = torch.float16,
-                    low_cpu_mem_usage = True,
-                    token             = args.hf_token,
-                )
                 model = (
                     AutoModelForCausalLM
-                    .from_pretrained(repo, **load_kw)
+                    .from_pretrained(repo, **_model_kwargs(ckpt))
                     .to(device)
                     .eval()
                 )
-                tokenizer = AutoTokenizer.from_pretrained(repo, **load_kw)
+                tokenizer = AutoTokenizer.from_pretrained(repo, **_tok_kwargs(ckpt))
                 if tokenizer.pad_token is None:
                     tokenizer.pad_token = tokenizer.eos_token
+                n_ckpts_loaded += 1
             except Exception as e:
                 logger.error(f"  Load failed: {e}")
                 continue
 
-            for bm_name, lang_code, csv_path, lang_name in needed:
+            for bm_name, lang_code, lang_name, csv_path in needed:
                 cfg  = BENCHMARKS[bm_name]
                 data = all_data[bm_name][lang_code]
                 try:
@@ -617,6 +646,8 @@ def main() -> None:
                         "bilingual_type": bil_type,
                         "checkpoint"    : ckpt,
                         "eval_language" : lang_name,
+                        # FIX 4: also store lang_code for stable resume keying
+                        "lang_code"     : lang_code,
                         "accuracy"      : round(acc, 6),
                         "n_correct"     : n_correct,
                         "n_total"       : n_total,
@@ -629,6 +660,14 @@ def main() -> None:
             gc.collect()
             torch.cuda.empty_cache()
             logger.info(f"  {ckpt}: model freed.")
+
+        # FIX 3: surface a loud error if every attempted load failed
+        if n_ckpts_attempted > 0 and n_ckpts_loaded == 0:
+            logger.error(
+                f"  !! ZERO checkpoints loaded for {repo} "
+                f"(attempted {n_ckpts_attempted}) — "
+                f"all loads failed, no results written for this model."
+            )
 
         if model_had_new_results and not args.no_push:
             git_push(repo_root, repo, args.rank)
