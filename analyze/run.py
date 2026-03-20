@@ -149,7 +149,7 @@ def main():
     args   = parser.parse_args()
 
     if not any([args.all, args.ppl, args.forgetting,
-                args.embeddings, args.reading_time, args.convergence, args.figures]):
+                args.embeddings, args.convergence, args.figures]):
         parser.print_help()
         sys.exit(0)
 
