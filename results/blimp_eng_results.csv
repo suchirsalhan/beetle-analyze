@@ -244,3 +244,6 @@ blimp_eng,BeetleLM/beetlelm_nld_L1-zho_L2-eng_L3_heritage,nld_L1-zho_L2-eng_L3,h
 blimp_eng,BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_heritage,eng_L1-nld_L2-zho_L3,heritage,step-30000,English,0.588493,39429,67000
 blimp_eng,BeetleLM/beetlelm_zho_L1-eng_L2-nld_L3_heritage,zho_L1-eng_L2-nld_L3,heritage,step-1000,English,0.498731,33415,67000
 blimp_eng,BeetleLM/beetlelm_eng_L1-zho_L2-nld_L3_heritage,eng_L1-zho_L2-nld_L3,heritage,step-30000,English,0.593791,39784,67000
+blimp_eng,BeetleLM/beetlelm_nld_L1-eng_L2-zho_L3_heritage,nld_L1-eng_L2-zho_L3,heritage,step-2000,English,0.527119,35317,67000
+blimp_eng,BeetleLM/beetlelm_zho_L1-nld_L2-eng_L3_heritage,zho_L1-nld_L2-eng_L3,heritage,step-1000,English,0.498746,33416,67000
+blimp_eng,BeetleLM/beetlelm_nld_L1-zho_L2-eng_L3_heritage,nld_L1-zho_L2-eng_L3,heritage,step-2000,English,0.527179,35321,67000
