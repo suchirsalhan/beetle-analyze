@@ -784,3 +784,5 @@ zhoblimp,BeetleLM/beetlelm_nld_L1-zho_L2-eng_L3_balanced,nld_L1-zho_L2-eng_L3,ba
 zhoblimp,BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_balanced,eng_L1-nld_L2-zho_L3,balanced,step-30000,Chinese,0.644605,22819,35400
 zhoblimp,BeetleLM/beetlelm_zho_L1-nld_L2-eng_L3_balanced,zho_L1-nld_L2-eng_L3,balanced,step-30000,Chinese,0.649407,22989,35400
 zhoblimp,BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_heritage,eng_L1-nld_L2-zho_L3,heritage,step-29000,Chinese,0.605141,21422,35400
+zhoblimp,BeetleLM/beetlelm_nld_L1-eng_L2-zho_L3_balanced,nld_L1-eng_L2-zho_L3,balanced,step-30000,Chinese,0.651243,23054,35400
+zhoblimp,BeetleLM/beetlelm_eng_L1-zho_L2-nld_L3_heritage,eng_L1-zho_L2-nld_L3,heritage,step-29000,Chinese,0.600085,21243,35400
