@@ -1,9 +1,13 @@
 """
 models.py — Central registry of all BeetleLM model repos.
 
-MODEL_GROUPS  : dict  lang_code -> list of repo strings
-ALL_MODELS    : list  deduplicated across all groups, stable order
+MODEL_GROUPS       : dict  lang_code -> list of repo strings
+ALL_MODELS         : list  deduplicated across all groups, stable order
+TRILINGUAL_MODELS  : list  all trilingual repos (balanced + sequential variants)
+ALL_TRILINGUAL_MODELS : list  deduplicated trilingual-only list for rank slicing
 """
+
+import re
 
 DUTCH_MODELS = [
     "BeetleLM/beetlelm_nld_mono",
@@ -220,7 +224,6 @@ BULGARIAN_MODELS = [
 ]
 
 # English: all models that contain English in the language pair.
-# Used for blimp_eng evaluation.
 ENGLISH_MODELS = [
     # Balanced
     "BeetleLM/beetlelm_eng-nld_balanced",
@@ -251,6 +254,67 @@ ENGLISH_MODELS = [
     "BeetleLM/beetlelm_eng-bul_heritage",
 ]
 
+# ─────────────────────────────────────────────────────────────────────────────
+# TRILINGUAL MODELS
+# All trilingual models involve the eng / nld / zho triad and are evaluated
+# on the blimp_eng, blimp_nl, zhoblimp, xcomps (zho), and xnli (en, zh)
+# benchmarks.  They live under the "tri" group key.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Balanced and Heritage trilinguals
+TRILINGUAL_BALANCED_MODELS = [
+    "BeetleLM/beetlelm_eng_L1-zho_L2-nld_L3_balanced",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_balanced",
+    "BeetleLM/beetlelm_nld_L1-eng_L2-zho_L3_balanced",
+    "BeetleLM/beetlelm_nld_L1-zho_L2-eng_L3_balanced",
+    "BeetleLM/beetlelm_zho_L1-nld_L2-eng_L3_balanced",
+    "BeetleLM/beetlelm_zho_L1-eng_L2-nld_L3_balanced",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_heritage",
+    "BeetleLM/beetlelm_eng_L1-zho_L2-nld_L3_heritage",
+    "BeetleLM/beetlelm_nld_L1-eng_L2-zho_L3_heritage",
+    "BeetleLM/beetlelm_nld_L1-zho_L2-eng_L3_heritage",
+    "BeetleLM/beetlelm_zho_L1-eng_L2-nld_L3_heritage",
+    "BeetleLM/beetlelm_zho_L1-nld_L2-eng_L3_heritage",
+]
+
+# Sequential variants: MAML, EWC, combined, and baseline
+TRILINGUAL_SEQUENTIAL_MODELS = [
+    # EWC + MAML combined
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l5_maml_h25",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l5_maml_h50",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l5_maml_h100",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l20_maml_h25",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l20_maml_h50",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l20_maml_h75",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l20_maml_h100",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l50_maml_h25",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l50_maml_h50",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l50_maml_h75",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l50_maml_h100",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l150_maml_h25",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l150_maml_h50",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l150_maml_h75",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l150_maml_h100",
+    # EWC only
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l5",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l20",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l50",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l150",
+    # MAML only
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_maml_h25",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_maml_h50",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_maml_h75",
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_maml_h100",
+    # Baseline
+    "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_baseline",
+]
+
+TRILINGUAL_MODELS = TRILINGUAL_BALANCED_MODELS + TRILINGUAL_SEQUENTIAL_MODELS
+
+# ─────────────────────────────────────────────────────────────────────────────
+# GROUP REGISTRY
+# ─────────────────────────────────────────────────────────────────────────────
+
 MODEL_GROUPS = {
     "nld": DUTCH_MODELS,
     "deu": GERMAN_MODELS,
@@ -259,25 +323,64 @@ MODEL_GROUPS = {
     "fas": PERSIAN_MODELS,
     "bul": BULGARIAN_MODELS,
     "eng": ENGLISH_MODELS,
+    # Trilingual eng–nld–zho triad.  Evaluated on blimp_eng, blimp_nl,
+    # zhoblimp, xcomps (zho), and xnli (en, zh).
+    "tri": TRILINGUAL_MODELS,
 }
 
-# Flat deduplicated list — stable order, used for rank::world_size slicing.
+# Flat deduplicated lists — stable order, used for rank::world_size slicing.
 ALL_MODELS = list(dict.fromkeys(
     m for group in MODEL_GROUPS.values() for m in group
 ))
 
+ALL_TRILINGUAL_MODELS = list(dict.fromkeys(TRILINGUAL_MODELS))
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HELPERS
+# ─────────────────────────────────────────────────────────────────────────────
 
 def get_bilingual_type(repo: str) -> str:
+    """
+    Return a canonical type string for a repo.
+
+    Trilingual sequential variants carry compound suffixes such as
+    'sequential_ewc_l50_maml_h75' or 'sequential_baseline'.  We check the
+    most-specific patterns first so that combined EWC+MAML repos are not
+    mis-labelled as plain EWC.
+    """
+    name = repo.split("/")[-1]
+
+    # ── Trilingual sequential sub-types (check before plain "sequential") ──
+    if "sequential_ewc" in name and "maml" in name:
+        return "sequential_ewc_maml"
+    if "sequential_ewc" in name:
+        return "sequential_ewc"
+    if "sequential_maml" in name:
+        return "sequential_maml"
+    if "sequential_baseline" in name:
+        return "sequential_baseline"
+
+    # ── Standard bilingual types ───────────────────────────────────────────
     for tag in ("mono", "balanced", "simultaneous", "sequential",
                 "part_time", "late", "heritage"):
-        if tag in repo:
+        if tag in name:
             return tag
+
     return "unknown"
 
 
 def get_lang_pair(repo: str) -> str:
+    """
+    Extract the language-pair identifier from a repo name.
+
+    Uses a regex anchor on the first known type suffix so that compound
+    trilingual sequential suffixes (e.g. '_sequential_ewc_l5_maml_h25')
+    are all stripped correctly, leaving 'eng_L1-nld_L2-zho_L3'.
+    """
     name = repo.split("/")[-1].replace("beetlelm_", "")
-    for tag in ("_mono", "_balanced", "_simultaneous", "_sequential",
-                "_part_time", "_late", "_heritage"):
-        name = name.replace(tag, "")
-    return name
+    m = re.match(
+        r"^(.+?)_(mono|balanced|simultaneous|sequential|part_time|late|heritage)\b",
+        name,
+    )
+    return m.group(1) if m else name
