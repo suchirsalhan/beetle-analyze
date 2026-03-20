@@ -25,12 +25,16 @@ never more than one model in any form of memory at any time.
 
 Usage
 -----
-  # single GPU debug
+  # single GPU debug (all bilingual models)
   python eval_model.py --rank 0 --world_size 1 --output_dir /path/to/beetle-analyze
 
   # one slice on GPU N of 8 (called by launch_all.sh)
   CUDA_VISIBLE_DEVICES=N python eval_model.py \\
       --rank N --world_size 8 --output_dir /path/to/beetle-analyze
+
+  # trilingual models only (called by launch_trilingual.sh)
+  CUDA_VISIBLE_DEVICES=N python eval_model.py \\
+      --rank N --world_size 8 --output_dir /path/to/beetle-analyze --trilingual_only
 
   # evaluate only the highest step-N checkpoint per model
   CUDA_VISIBLE_DEVICES=N python eval_model.py \\
@@ -48,9 +52,6 @@ import time
 from typing import Dict, List, Optional, Tuple
 
 # ── Pin HF cache BEFORE any HuggingFace import ───────────────────────────────
-# datasets reads HF_DATASETS_CACHE at import time, not at load_dataset() time.
-# We set it here from --output_dir so it is always consistent, regardless of
-# whether the parent shell exported HF_DATASETS_CACHE correctly.
 def _pin_hf_cache() -> None:
     for i, arg in enumerate(sys.argv):
         if arg == "--output_dir" and i + 1 < len(sys.argv):
@@ -58,7 +59,6 @@ def _pin_hf_cache() -> None:
             os.makedirs(cache, exist_ok=True)
             os.environ["HF_DATASETS_CACHE"] = cache
             os.environ["HF_HOME"]           = cache
-            # Also expose the pkl cache dir so loaders can find it
             os.environ["PKL_DIR"] = os.path.join(
                 sys.argv[i + 1], "results", ".pkl_cache"
             )
@@ -71,7 +71,10 @@ from datasets import get_dataset_config_names, load_dataset
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from models import ALL_MODELS, MODEL_GROUPS, get_bilingual_type, get_lang_pair
+from models import (
+    ALL_MODELS, ALL_TRILINGUAL_MODELS, MODEL_GROUPS,
+    get_bilingual_type, get_lang_pair,
+)
 from utils  import already_done, append_result, list_checkpoints
 
 # ── Silence HF / datasets HTTP noise ─────────────────────────────────────────
@@ -89,6 +92,11 @@ logger = logging.getLogger(__name__)
 
 # ═════════════════════════════════════════════════════════════════════════════
 # BENCHMARK DEFINITIONS
+#
+# relevant_groups maps each benchmark language to the MODEL_GROUPS keys that
+# should be evaluated on it.  The "tri" key covers all trilingual eng–nld–zho
+# models; they are tested on every benchmark that covers any of those three
+# languages.
 # ═════════════════════════════════════════════════════════════════════════════
 
 BENCHMARKS: Dict[str, dict] = {
@@ -96,11 +104,12 @@ BENCHMARKS: Dict[str, dict] = {
     "multiblimp": dict(
         type            = "minimal_pair",
         hf_id           = "jumelet/multiblimp",
-        config_mode     = "per_lang",      # load_dataset(hf_id, lang, split="train")
+        config_mode     = "per_lang",
         good_col        = "sen",
         bad_col         = "wrong_sen",
         langs           = {"nld": "Dutch", "deu": "German", "fra": "French",
                            "fas": "Persian", "bul": "Bulgarian"},
+        # "tri" omitted: multiblimp has no eng or zho configs
         relevant_groups = {"nld": ["nld"], "deu": ["deu"], "fra": ["fra"],
                            "fas": ["fas"], "bul": ["bul"]},
     ),
@@ -108,21 +117,23 @@ BENCHMARKS: Dict[str, dict] = {
     "blimp_eng": dict(
         type            = "minimal_pair",
         hf_id           = "nyu-mll/blimp",
-        config_mode     = "all_configs",   # one config per phenomenon, same as zhoblimp/blimp_nl
+        config_mode     = "all_configs",
         good_col        = "sentence_good",
         bad_col         = "sentence_bad",
         langs           = {"eng": "English"},
-        relevant_groups = {"eng": ["eng"]},
+        # Trilingual models contain English → evaluate here too
+        relevant_groups = {"eng": ["eng", "tri"]},
     ),
 
     "zhoblimp": dict(
         type            = "minimal_pair",
         hf_id           = "Junrui1202/zhoblimp",
-        config_mode     = "all_configs",   # one config per phenomenon — concat all
+        config_mode     = "all_configs",
         good_col        = "sentence_good",
         bad_col         = "sentence_bad",
         langs           = {"zho": "Chinese"},
-        relevant_groups = {"zho": ["zho"]},
+        # Trilingual models contain Chinese → evaluate here too
+        relevant_groups = {"zho": ["zho", "tri"]},
     ),
 
     "blimp_nl": dict(
@@ -132,21 +143,24 @@ BENCHMARKS: Dict[str, dict] = {
         good_col        = "sentence_good",
         bad_col         = "sentence_bad",
         langs           = {"nld": "Dutch"},
-        relevant_groups = {"nld": ["nld"]},
+        # Trilingual models contain Dutch → evaluate here too
+        relevant_groups = {"nld": ["nld", "tri"]},
     ),
 
     "xcomps": dict(
         type            = "minimal_pair",
         hf_id           = "fpadovani/xcomps-dataset",
-        config_mode     = "split_per_lang",  # each lang is a named split
+        config_mode     = "split_per_lang",
         good_col        = "acceptable_sent",
         bad_col         = "unacceptable_sent",
         langs           = {"fra": "French", "deu": "German", "ukr": "Ukrainian",
                            "zho": "Chinese", "fas": "Persian"},
         lang_split_map  = {"fra": "comps_fr", "deu": "comps_de", "ukr": "comps_uk",
                            "zho": "comps_zh", "fas": "comps_fa"},
+        # Trilingual models contain Chinese → run xcomps/zho on them
         relevant_groups = {
-            "fra": ["fra"], "deu": ["deu"], "zho": ["zho"], "fas": ["fas"],
+            "fra": ["fra"], "deu": ["deu"], "zho": ["zho", "tri"],
+            "fas": ["fas"],
             "ukr": ["nld", "deu", "zho", "fra", "fas", "bul"],
         },
     ),
@@ -154,11 +168,17 @@ BENCHMARKS: Dict[str, dict] = {
     "xnli": dict(
         type            = "xnli",
         hf_id           = "xnli",
-        config_mode     = "per_lang",       # load_dataset("xnli", lang, split="validation")
+        config_mode     = "per_lang",
         langs           = {"en": "English", "fr": "French", "de": "German",
                            "zh": "Chinese", "bg": "Bulgarian"},
-        relevant_groups = {"en": ["eng"], "fr": ["fra"], "de": ["deu"],
-                           "zh": ["zho"], "bg": ["bul"]},
+        # Trilingual models contain English and Chinese → run xnli/en and xnli/zh
+        relevant_groups = {
+            "en": ["eng", "tri"],
+            "fr": ["fra"],
+            "de": ["deu"],
+            "zh": ["zho", "tri"],
+            "bg": ["bul"],
+        },
     ),
 }
 
@@ -167,8 +187,6 @@ XNLI_SEP = " [SEP] "
 
 # ═════════════════════════════════════════════════════════════════════════════
 # DATASET LOADING
-# All loaders del the HF Dataset object immediately after extracting tuples,
-# so no Arrow tables remain in memory after the function returns.
 # ═════════════════════════════════════════════════════════════════════════════
 
 def _load_pairs_single(hf_id: str, good: str, bad: str,
@@ -187,7 +205,6 @@ def _load_pairs_per_lang(hf_id: str, lang: str, good: str, bad: str,
     return pairs
 
 
-# Maps hf_id → pkl filename written by prefetch_datasets.py
 _PKL_MAP = {
     "Junrui1202/zhoblimp" : "zhoblimp.pkl",
     "juletxara/blimp-nl"  : "blimp_nl.pkl",
@@ -196,13 +213,6 @@ _PKL_MAP = {
 
 
 def _load_pairs_all_configs(hf_id: str, good: str, bad: str) -> List[Tuple[str, str]]:
-    """
-    Load from a pre-fetched pickle file if available (preferred — zero HTTP),
-    otherwise fall back to live HF download with throttling.
-
-    The pickle files are created by prefetch_datasets.py which is called once
-    by launch_all.sh before any worker process starts.
-    """
     import pickle
 
     pkl_dir  = os.environ.get("PKL_DIR", "")
@@ -215,7 +225,6 @@ def _load_pairs_all_configs(hf_id: str, good: str, bad: str) -> List[Tuple[str, 
         logger.info(f"  Loaded {len(pairs):,} pairs from pkl cache ({pkl_file})")
         return pairs
 
-    # ── Fallback: live download (should not normally be reached) ──────────
     logger.warning(
         f"  pkl cache not found for {hf_id} — falling back to live HF download. "
         f"Expected: {pkl_path or 'PKL_DIR not set'}"
@@ -269,7 +278,6 @@ def preload_all_datasets(logger_) -> Dict[str, Dict[str, list]]:
     """
     Load every benchmark dataset into plain Python lists.
     No HF Dataset / Arrow objects survive after this function returns.
-    Estimated total RAM: ~100 MB for all benchmarks combined.
     """
     all_data: Dict[str, Dict[str, list]] = {}
 
@@ -316,19 +324,11 @@ def preload_all_datasets(logger_) -> Dict[str, Dict[str, list]]:
 # ═════════════════════════════════════════════════════════════════════════════
 
 def _step_number(name: str) -> Optional[int]:
-    """Return the integer from a 'step-N' branch name, or None."""
     m = re.match(r"^step-(\d+)$", name)
     return int(m.group(1)) if m else None
 
 
 def select_checkpoints(all_ckpts: List[str], latest_only: bool) -> List[str]:
-    """
-    If latest_only is True, return a single-element list containing only the
-    checkpoint with the highest step number.  Falls back to ['main'] when no
-    step-N branches exist.
-
-    If latest_only is False, return all_ckpts unchanged (original behaviour).
-    """
     if not latest_only:
         return all_ckpts
 
@@ -362,8 +362,7 @@ def score_sentences(model, tokenizer, sentences: List[str],
 
         outputs   = model(input_ids=input_ids, attention_mask=attention_mask)
         log_probs = F.log_softmax(outputs.logits, dim=-1)
-        del outputs              # free [B,T,V] logits BEFORE log_probs is used
-                                 # otherwise both tensors live simultaneously
+        del outputs
 
         lp_shifted  = log_probs[:, :-1, :]
         ids_shifted = input_ids[:, 1:]
@@ -386,7 +385,6 @@ def run_minimal_pairs(model, tokenizer, pairs: List[Tuple[str, str]],
 
 def run_xnli(model, tokenizer, triples: List[Tuple[str, str, int]],
              device: torch.device, batch_size: int) -> Tuple[float, int, int]:
-    # Binary: entailment (0) vs contradiction (2) — skip neutral (1)
     pairs = [(p, h, l) for p, h, l in triples if l in (0, 2)]
     pos   = [p + XNLI_SEP + h          for p, h, _ in pairs]
     neg   = [p + XNLI_SEP + "not " + h for p, h, _ in pairs]
@@ -399,24 +397,9 @@ def run_xnli(model, tokenizer, triples: List[Tuple[str, str, int]],
 
 # ═════════════════════════════════════════════════════════════════════════════
 # GIT PUSH
-# Each GPU process pushes independently after finishing one model.
-# Only *.csv files are staged — the pkl/HF caches are never touched by git,
-# so git never has to read or object-pack gigabytes of binary cache data.
 # ═════════════════════════════════════════════════════════════════════════════
 
 def git_push(repo_root: str, model_name: str, rank: int) -> None:
-    """
-    From repo_root:
-        git add results/*.csv     (ONLY the CSV result files — not the caches)
-        git commit -m "…"
-        git push origin main      (retry up to 5× on non-fast-forward)
-
-    Staging only CSVs prevents git from reading the pickle / HF cache
-    directories into its object store, which previously caused an OOM crash.
-
-    Multiple parallel processes may call this concurrently; git's remote
-    ref-lock serialises the actual push. We handle the race with rebase+retry.
-    """
     short = model_name.split("/")[-1]
 
     def run(cmd: List[str], check: bool = True) -> subprocess.CompletedProcess:
@@ -424,20 +407,14 @@ def git_push(repo_root: str, model_name: str, rank: int) -> None:
                               text=True, check=check)
 
     try:
-        # Stage ONLY the CSV result files.
-        # Using shell glob expansion via subprocess requires shell=True, which
-        # is a security risk; instead we enumerate the files in Python and pass
-        # them explicitly so no shell is involved.
         import glob
         csv_files = glob.glob(os.path.join(repo_root, "results", "*.csv"))
         if not csv_files:
             logger.info(f"  git [{rank}]: no CSV files found to stage for {short}")
             return
 
-        # git add takes multiple paths in one call — efficient and atomic.
         run(["git", "add", "--"] + csv_files)
 
-        # Nothing staged? Nothing to do.
         if run(["git", "diff", "--cached", "--quiet"], check=False).returncode == 0:
             logger.info(f"  git [{rank}]: nothing new to commit for {short}")
             return
@@ -453,7 +430,6 @@ def git_push(repo_root: str, model_name: str, rank: int) -> None:
                 f"  git [{rank}]: push failed (attempt {attempt+1}/5) — "
                 f"{result.stderr.strip()}"
             )
-            # Non-fast-forward: rebase on top of what's on remote, then retry
             run(["git", "pull", "--rebase", "origin", "main"], check=False)
             time.sleep(4 + attempt * 3)
 
@@ -469,22 +445,18 @@ def git_push(repo_root: str, model_name: str, rank: int) -> None:
 
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser()
-    p.add_argument("--rank",        type=int, default=0,
-                   help="Index of this process (0-indexed)")
-    p.add_argument("--world_size",  type=int, default=1,
-                   help="Total number of parallel processes")
-    p.add_argument("--output_dir",  required=True,
-                   help="Absolute path to the beetle-analyze repo root "
-                        "(results/ will be created inside it)")
-    p.add_argument("--batch_size",  type=int, default=64)
-    p.add_argument("--hf_token",    default=None)
-    p.add_argument("--resume",      action="store_true", default=True)
-    p.add_argument("--no_push",     action="store_true",
-                   help="Skip git push (useful for dry runs)")
-    p.add_argument("--latest_only", action="store_true",
-                   help="Evaluate only the single highest step-N checkpoint per "
-                        "model, instead of all checkpoints. Falls back to 'main' "
-                        "when no step-N branches exist.")
+    p.add_argument("--rank",            type=int, default=0)
+    p.add_argument("--world_size",      type=int, default=1)
+    p.add_argument("--output_dir",      required=True)
+    p.add_argument("--batch_size",      type=int, default=64)
+    p.add_argument("--hf_token",        default=None)
+    p.add_argument("--resume",          action="store_true", default=True)
+    p.add_argument("--no_push",         action="store_true")
+    p.add_argument("--latest_only",     action="store_true",
+                   help="Evaluate only the single highest step-N checkpoint per model.")
+    p.add_argument("--trilingual_only", action="store_true",
+                   help="Restrict evaluation to trilingual (eng–nld–zho) models only. "
+                        "Uses ALL_TRILINGUAL_MODELS for rank slicing instead of ALL_MODELS.")
     return p.parse_args()
 
 
@@ -492,8 +464,6 @@ def main() -> None:
     args = parse_args()
 
     # ── Device ────────────────────────────────────────────────────────────
-    # CUDA_VISIBLE_DEVICES is set by launch_all.sh to a single GPU, which
-    # CUDA renumbers as cuda:0. We always use cuda:0 inside the process.
     if torch.cuda.is_available():
         if torch.cuda.device_count() != 1:
             logger.warning(
@@ -515,37 +485,52 @@ def main() -> None:
     logging.setLogRecordFactory(record_factory)
 
     # ── Paths ─────────────────────────────────────────────────────────────
-    repo_root  = os.path.abspath(args.output_dir)  # beetle-analyze/
+    repo_root  = os.path.abspath(args.output_dir)
     result_dir = os.path.join(repo_root, "results")
     os.makedirs(result_dir, exist_ok=True)
 
-    logger.info(f"Rank         : {args.rank} / {args.world_size}")
-    logger.info(f"Device       : {device}")
-    logger.info(f"Repo root    : {repo_root}")
-    logger.info(f"Results dir  : {result_dir}")
-    logger.info(f"Latest only  : {args.latest_only}")
+    logger.info(f"Rank            : {args.rank} / {args.world_size}")
+    logger.info(f"Device          : {device}")
+    logger.info(f"Repo root       : {repo_root}")
+    logger.info(f"Results dir     : {result_dir}")
+    logger.info(f"Latest only     : {args.latest_only}")
+    logger.info(f"Trilingual only : {args.trilingual_only}")
 
     # ── Model slice for this rank ─────────────────────────────────────────
-    my_models = ALL_MODELS[args.rank :: args.world_size]
-    logger.info(f"Models       : {len(my_models)} / {len(ALL_MODELS)} total\n")
+    # --trilingual_only slices from ALL_TRILINGUAL_MODELS so each GPU gets
+    # a fair share of the 37 trilingual repos regardless of world_size.
+    model_pool = ALL_TRILINGUAL_MODELS if args.trilingual_only else ALL_MODELS
+    my_models  = model_pool[args.rank :: args.world_size]
+    logger.info(f"Models          : {len(my_models)} / {len(model_pool)} "
+                f"({'trilingual pool' if args.trilingual_only else 'full pool'})\n")
 
     # ── Pre-load ALL benchmark data ───────────────────────────────────────
-    # Runs once. All HF Dataset objects are deleted after pair extraction.
-    # Total RAM for all benchmarks: ~100 MB as plain Python string lists.
     logger.info("Pre-loading benchmark datasets …")
     all_data = preload_all_datasets(logger)
     logger.info("Datasets ready.\n")
 
     # ── Helper: which (benchmark, lang) pairs apply to this model? ────────
     def applicable(repo: str) -> List[Tuple[str, str, str]]:
-        """Returns [(bm_name, lang_code, csv_path), ...]"""
-        group = next((g for g, ms in MODEL_GROUPS.items() if repo in ms), None)
+        """
+        Return [(bm_name, lang_code, csv_path), ...] for every benchmark ×
+        language that should be run on this repo.
+
+        A model may belong to multiple MODEL_GROUPS (e.g. a trilingual repo
+        sits in 'tri'; a bilingual repo may appear in overlapping lists).
+        We collect ALL groups that contain the repo, then union the relevant
+        benchmarks — avoiding duplicates with a seen set.
+        """
+        groups = {g for g, ms in MODEL_GROUPS.items() if repo in ms}
+        seen   = set()
         result = []
         for bm_name, cfg in BENCHMARKS.items():
             for lang_code, relevant in cfg["relevant_groups"].items():
-                if group in relevant and lang_code in all_data.get(bm_name, {}):
-                    csv_path = os.path.join(result_dir, f"{bm_name}_results.csv")
-                    result.append((bm_name, lang_code, csv_path))
+                if groups & set(relevant) and lang_code in all_data.get(bm_name, {}):
+                    key = (bm_name, lang_code)
+                    if key not in seen:
+                        seen.add(key)
+                        csv_path = os.path.join(result_dir, f"{bm_name}_results.csv")
+                        result.append((bm_name, lang_code, csv_path))
         return result
 
     # ══════════════════════════════════════════════════════════════════════
@@ -553,12 +538,11 @@ def main() -> None:
     # ══════════════════════════════════════════════════════════════════════
     for repo in my_models:
         all_checkpoints = list_checkpoints(repo, args.hf_token)
-        # ── Optionally restrict to the single highest step-N checkpoint ───
-        checkpoints = select_checkpoints(all_checkpoints, args.latest_only)
+        checkpoints     = select_checkpoints(all_checkpoints, args.latest_only)
 
-        bil_type    = get_bilingual_type(repo)
-        lang_pair   = get_lang_pair(repo)
-        tasks       = applicable(repo)
+        bil_type  = get_bilingual_type(repo)
+        lang_pair = get_lang_pair(repo)
+        tasks     = applicable(repo)
 
         logger.info(f"{'='*60}")
         logger.info(f"Model    : {repo}")
@@ -576,12 +560,11 @@ def main() -> None:
         # ── INNER LOOP — one checkpoint at a time ─────────────────────────
         for ckpt in checkpoints:
 
-            # Which tasks still need evaluation for this checkpoint?
             needed = []
             for bm_name, lang_code, csv_path in tasks:
                 lang_name = BENCHMARKS[bm_name]["langs"][lang_code]
                 if args.resume and already_done(csv_path, repo, ckpt, lang_name, bm_name):
-                    pass  # already recorded, skip silently
+                    pass
                 else:
                     needed.append((bm_name, lang_code, csv_path, lang_name))
 
@@ -589,10 +572,6 @@ def main() -> None:
                 logger.info(f"  {ckpt}: all done — skipping model load.")
                 continue
 
-            # ── Load model ONCE ───────────────────────────────────────────
-            # low_cpu_mem_usage=True: weights allocated directly into their
-            # final location — no extra CPU copy before .to(device).
-            # Peak CPU RAM = ~1× model size, drops to ~0 after .to(device).
             logger.info(f"  Loading @ {ckpt} …")
             try:
                 load_kw = dict(
@@ -615,7 +594,6 @@ def main() -> None:
                 logger.error(f"  Load failed: {e}")
                 continue
 
-            # ── Score on every needed benchmark × language ─────────────────
             for bm_name, lang_code, csv_path, lang_name in needed:
                 cfg  = BENCHMARKS[bm_name]
                 data = all_data[bm_name][lang_code]
@@ -647,13 +625,11 @@ def main() -> None:
                 except Exception as e:
                     logger.error(f"  Eval failed [{bm_name}/{lang_code}]: {e}")
 
-            # ── FREE model — guaranteed before next checkpoint loads ───────
             del model, tokenizer
             gc.collect()
             torch.cuda.empty_cache()
             logger.info(f"  {ckpt}: model freed.")
 
-        # ── After all checkpoints for this model: push to GitHub ──────────
         if model_had_new_results and not args.no_push:
             git_push(repo_root, repo, args.rank)
 
