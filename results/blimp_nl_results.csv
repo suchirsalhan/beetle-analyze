@@ -808,3 +808,4 @@ blimp_nl,BeetleLM/beetlelm_eng_L1-zho_L2-nld_L3_heritage,eng_L1-zho_L2-nld_L3,he
 blimp_nl,BeetleLM/beetlelm_zho_L1-eng_L2-nld_L3_balanced,zho_L1-eng_L2-nld_L3,balanced,step-29000,Dutch,0.646889,5822,9000
 blimp_nl,BeetleLM/beetlelm_eng_L1-zho_L2-nld_L3_balanced,eng_L1-zho_L2-nld_L3,balanced,step-30000,Dutch,0.664,5976,9000
 blimp_nl,BeetleLM/beetlelm_nld_L1-zho_L2-eng_L3_balanced,nld_L1-zho_L2-eng_L3,balanced,step-29000,Dutch,0.685667,6171,9000
+blimp_nl,BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_balanced,eng_L1-nld_L2-zho_L3,balanced,step-30000,Dutch,0.661889,5957,9000

@@ -2958,3 +2958,7 @@ xnli,BeetleLM/beetlelm_zho_L1-eng_L2-nld_L3_balanced,zho_L1-eng_L2-nld_L3,balanc
 xnli,BeetleLM/beetlelm_zho_L1-eng_L2-nld_L3_balanced,zho_L1-eng_L2-nld_L3,balanced,step-29000,Chinese,0.5,830,1660
 xnli,BeetleLM/beetlelm_eng_L1-zho_L2-nld_L3_balanced,eng_L1-zho_L2-nld_L3,balanced,step-30000,English,0.5,830,1660
 xnli,BeetleLM/beetlelm_eng_L1-zho_L2-nld_L3_balanced,eng_L1-zho_L2-nld_L3,balanced,step-30000,Chinese,0.5,830,1660
+xnli,BeetleLM/beetlelm_nld_L1-zho_L2-eng_L3_balanced,nld_L1-zho_L2-eng_L3,balanced,step-29000,English,0.5,830,1660
+xnli,BeetleLM/beetlelm_nld_L1-zho_L2-eng_L3_balanced,nld_L1-zho_L2-eng_L3,balanced,step-29000,Chinese,0.5,830,1660
+xnli,BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_balanced,eng_L1-nld_L2-zho_L3,balanced,step-30000,English,0.5,830,1660
+xnli,BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_balanced,eng_L1-nld_L2-zho_L3,balanced,step-30000,Chinese,0.5,830,1660

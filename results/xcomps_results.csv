@@ -5154,3 +5154,4 @@ xcomps,BeetleLM/beetlelm_eng_L1-zho_L2-nld_L3_heritage,eng_L1-zho_L2-nld_L3,heri
 xcomps,BeetleLM/beetlelm_zho_L1-eng_L2-nld_L3_balanced,zho_L1-eng_L2-nld_L3,balanced,step-29000,Chinese,0.521576,7494,14368
 xcomps,BeetleLM/beetlelm_eng_L1-zho_L2-nld_L3_balanced,eng_L1-zho_L2-nld_L3,balanced,step-30000,Chinese,0.518374,7448,14368
 xcomps,BeetleLM/beetlelm_nld_L1-zho_L2-eng_L3_balanced,nld_L1-zho_L2-eng_L3,balanced,step-29000,Chinese,0.516008,7414,14368
+xcomps,BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_balanced,eng_L1-nld_L2-zho_L3,balanced,step-30000,Chinese,0.511345,7347,14368
