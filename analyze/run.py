@@ -164,9 +164,6 @@ def main():
     if args.all or args.embeddings:
         _run_embeddings(args)
 
-    if args.all or args.reading_time:
-        _run_reading_time(args)
-
     if args.all or args.convergence:
         _run_convergence(args)
 
