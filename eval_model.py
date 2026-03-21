@@ -508,23 +508,51 @@ def main() -> None:
     logger.info(f"Latest only     : {args.latest_only}")
     logger.info(f"Trilingual only : {args.trilingual_only}")
 
-    # ── Model slice for this rank ─────────────────────────────────────────
+    # ── Model pool for this rank ──────────────────────────────────────────
+    # Priority: MODEL_LIST env var > --trilingual_only flag > full ALL_MODELS.
+    #
+    # When MODEL_LIST is used, models not already in MODEL_GROUPS are
+    # auto-registered based on language codes found in their name so that
+    # applicable() can resolve their benchmark assignments correctly.
+    # Without this step, any model absent from MODEL_GROUPS gets groups={}
+    # and applicable() returns nothing, silently skipping it.
     model_pool = ALL_TRILINGUAL_MODELS if args.trilingual_only else ALL_MODELS
-    
-    # 🔧 NEW: allow override via MODEL_LIST env var
+
     model_env = os.environ.get("MODEL_LIST")
     if model_env:
-        model_pool = model_env.split(",")
+        model_pool = [m.strip() for m in model_env.split(",") if m.strip()]
         logger.info(f"MODEL_LIST override active: {len(model_pool)} models")
-    
-    my_models  = model_pool[args.rank :: args.world_size]
-    
+
+        # Auto-register any model not yet in MODEL_GROUPS.
+        # We check which language codes appear in the repo name and assign:
+        #   ≥3 known language codes  →  "tri"  (trilingual)
+        #   exactly 1 known code     →  that code's group
+        # This ensures applicable() resolves correctly for models that were
+        # added to MODEL_LIST but not yet listed in models.py.
+        _KNOWN_LANGS = {"nld", "deu", "fra", "fas", "bul", "zho", "eng"}
+        for _m in model_pool:
+            if not any(_m in ms for ms in MODEL_GROUPS.values()):
+                _name  = _m.split("/")[-1].lower()
+                _found = [l for l in _KNOWN_LANGS if l in _name]
+                _grp   = "tri" if len(_found) >= 3 else (_found[0] if _found else None)
+                if _grp:
+                    MODEL_GROUPS.setdefault(_grp, []).append(_m)
+                    logger.info(f"  Auto-registered '{_m}' → group '{_grp}'")
+                else:
+                    logger.warning(
+                        f"  Could not infer group for '{_m}' — "
+                        f"no known language codes found in name. "
+                        f"It will have no applicable benchmarks."
+                    )
+
+    my_models = model_pool[args.rank :: args.world_size]
+
     pool_name = (
-        "custom MODEL_LIST"
+        "MODEL_LIST"
         if model_env else
         ("trilingual pool" if args.trilingual_only else "full pool")
     )
-    
+
     logger.info(f"Models          : {len(my_models)} / {len(model_pool)} ({pool_name})\n")
 
     # ── Helper: which (benchmark, lang) pairs apply to this model? ────────
