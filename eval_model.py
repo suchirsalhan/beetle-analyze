@@ -510,14 +510,22 @@ def main() -> None:
 
     # ── Model slice for this rank ─────────────────────────────────────────
     model_pool = ALL_TRILINGUAL_MODELS if args.trilingual_only else ALL_MODELS
+    
+    # 🔧 NEW: allow override via MODEL_LIST env var
+    model_env = os.environ.get("MODEL_LIST")
+    if model_env:
+        model_pool = model_env.split(",")
+        logger.info(f"MODEL_LIST override active: {len(model_pool)} models")
+    
     my_models  = model_pool[args.rank :: args.world_size]
-    logger.info(f"Models          : {len(my_models)} / {len(model_pool)} "
-                f"({'trilingual pool' if args.trilingual_only else 'full pool'})\n")
-
-    # ── Pre-load ALL benchmark data ───────────────────────────────────────
-    logger.info("Pre-loading benchmark datasets …")
-    all_data = preload_all_datasets(logger)
-    logger.info("Datasets ready.\n")
+    
+    pool_name = (
+        "custom MODEL_LIST"
+        if model_env else
+        ("trilingual pool" if args.trilingual_only else "full pool")
+    )
+    
+    logger.info(f"Models          : {len(my_models)} / {len(model_pool)} ({pool_name})\n")
 
     # ── Helper: which (benchmark, lang) pairs apply to this model? ────────
     def applicable(repo: str) -> List[Tuple[str, str, str, str]]:
