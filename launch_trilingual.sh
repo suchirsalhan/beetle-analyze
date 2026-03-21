@@ -1,206 +1,188 @@
 #!/usr/bin/env bash
-# =============================================================================
-# launch_trilingual.sh — Launch BeetleLM trilingual evaluation sweep.
-#
-# Evaluates ONLY the 37 trilingual eng–nld–zho model repos across the
-# benchmarks that cover those three languages:
-#
-#   blimp_eng  (English)
-#   blimp_nl   (Dutch)
-#   zhoblimp   (Chinese)
-#   xcomps/zho (Chinese)
-#   xnli/en    (English)
-#   xnli/zh    (Chinese)
-#
-# By default uses all 8 GPUs, but this can be overridden with --world_size.
-# The 37 trilingual models are distributed across GPUs via rank::world_size
-# slicing of ALL_TRILINGUAL_MODELS.
-#
-# Usage:
-#   cd /path/to/beetle-analyze
-#   bash eval/launch_trilingual.sh                   # 8 GPUs, full checkpoint history
-#   bash eval/launch_trilingual.sh --latest_only     # highest step-N ckpt only
-#   bash eval/launch_trilingual.sh --no_push         # skip git push (debug / dry run)
-#   bash eval/launch_trilingual.sh --world_size 4    # use 4 GPUs
-#   bash eval/launch_trilingual.sh --mode slurm      # submit via SLURM
-# =============================================================================
-
 set -euo pipefail
 
-# ── Defaults ──────────────────────────────────────────────────────────────────
-MODE="${MODE:-local}"
+# ════════════════════════════════════════════════════════════════════════════
+# run_tri_seq_eval.sh — evaluate trilingual-sequential BeetleLM models
+#
+# ── CHECKPOINT MODE TOGGLE ───────────────────────────────────────────────────
+#
+#   Set EVAL_MODE to one of:
+#
+#     all            Evaluate every available checkpoint branch for each model.
+#
+#     final_only     Evaluate only the single checkpoint with the highest step
+#                    number (i.e. the fully-trained final checkpoint).
+#                    Passes --final_only to eval_model.py.
+#
+#     specific_steps Evaluate only the step checkpoints listed in
+#                    SPECIFIC_STEPS below.
+#                    Passes --steps <SPECIFIC_STEPS> to eval_model.py.
+#
+#     final_and_steps  Union of the above two: the listed step checkpoints
+#                    PLUS the final (highest) checkpoint.
+#                    Passes --final_only --steps <SPECIFIC_STEPS>.
+#
+EVAL_MODE="final_and_steps"   # all | final_only | specific_steps | final_and_steps
+
+# Comma-separated step numbers used when EVAL_MODE is "specific_steps"
+# or "final_and_steps".  Edit as needed.
+SPECIFIC_STEPS="10000,20000,30000"
+
+# ════════════════════════════════════════════════════════════════════════════
+
+# ── Config ────────────────────────────────────────────────────────────────
 N_GPUS=8
 BATCH_SIZE=64
-NO_PUSH_FLAG=""
-LATEST_ONLY_FLAG=""
-
 REPO_ROOT="$(pwd)"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LOG_DIR="${REPO_ROOT}/results/logs_trilingual"
+LOG_DIR="${REPO_ROOT}/results/logs_tri_seq"
 HF_TOKEN="${HF_TOKEN:-}"
+mkdir -p "${LOG_DIR}" "${REPO_ROOT}/results"
 
-# ── Parse flags ───────────────────────────────────────────────────────────────
-for arg in "$@"; do
-  case $arg in
-    --mode=*)       MODE="${arg#*=}"        ;;
-    --mode)         shift; MODE="$1"        ;;
-    --no_push)      NO_PUSH_FLAG="--no_push"    ;;
-    --latest_only)  LATEST_ONLY_FLAG="--latest_only" ;;
-    --world_size=*) N_GPUS="${arg#*=}"      ;;
-    --world_size)   shift; N_GPUS="$1"      ;;
-  esac
-done
+# ── Define ONLY TRILINGUAL_SEQUENTIAL_MODELS ──────────────────────────────
+MODELS=(
+  # EWC + MAML combined
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l5_maml_h25"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l5_maml_h50"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l5_maml_h100"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l20_maml_h25"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l20_maml_h50"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l20_maml_h75"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l20_maml_h100"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l50_maml_h25"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l50_maml_h50"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l50_maml_h75"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l50_maml_h100"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l150_maml_h25"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l150_maml_h50"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l150_maml_h75"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l150_maml_h100"
+  # EWC only
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l5"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l20"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l50"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_ewc_l150"
+  # MAML only
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_maml_h25"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_maml_h50"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_maml_h75"
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_maml_h100"
+  # Baseline
+  "BeetleLM/beetlelm_eng_L1-nld_L2-zho_L3_sequential_baseline"
+)
 
-mkdir -p "${REPO_ROOT}/results" "${LOG_DIR}"
+# ── Export model list as a comma-separated string ─────────────────────────
+MODEL_LIST=$(IFS=,; echo "${MODELS[*]}")
+export MODEL_LIST
 
-# ── Git sanity check ──────────────────────────────────────────────────────────
-echo "Checking git remote …"
-if ! git -C "${REPO_ROOT}" remote get-url origin &>/dev/null; then
-  echo "ERROR: no git remote 'origin' found in ${REPO_ROOT}."
-  echo "       Run: git remote add origin git@github.com:suchirsalhan/beetle-analyze.git"
-  exit 1
-fi
-REMOTE_URL="$(git -C "${REPO_ROOT}" remote get-url origin)"
-echo "  Remote : ${REMOTE_URL}"
+# ── Translate EVAL_MODE into eval_model.py flags ─────────────────────────
+# These are the only flags that change checkpoint-selection behaviour.
+# All other flags (--rank, --world_size, etc.) are appended below.
+case "${EVAL_MODE}" in
+  all)
+    CKPT_FLAGS=""
+    CKPT_DESC="all available checkpoints"
+    ;;
+  final_only)
+    CKPT_FLAGS="--final_only"
+    CKPT_DESC="final (highest step) checkpoint only"
+    ;;
+  specific_steps)
+    CKPT_FLAGS="--steps ${SPECIFIC_STEPS}"
+    CKPT_DESC="specific steps: ${SPECIFIC_STEPS}"
+    ;;
+  final_and_steps)
+    CKPT_FLAGS="--final_only --steps ${SPECIFIC_STEPS}"
+    CKPT_DESC="final checkpoint + steps: ${SPECIFIC_STEPS}"
+    ;;
+  *)
+    echo "ERROR: unknown EVAL_MODE '${EVAL_MODE}'." >&2
+    echo "       Valid values: all | final_only | specific_steps | final_and_steps" >&2
+    exit 1
+    ;;
+esac
 
-if [[ -z "${NO_PUSH_FLAG}" ]]; then
-  echo "  Pulling latest from origin/main …"
-  git -C "${REPO_ROOT}" pull --rebase origin main 2>/dev/null || true
-fi
-echo ""
-
-# ── Shared HF dataset cache ───────────────────────────────────────────────────
+# ── Shared HF dataset cache ───────────────────────────────────────────────
+# Must be exported so every rank writes to the same place and avoids
+# redundant downloads. _pin_hf_cache() in eval_model.py also sets this via
+# --output_dir, but explicit export here guarantees it for the prefetch step.
 HF_DATASETS_CACHE="${REPO_ROOT}/results/.hf_cache"
 export HF_DATASETS_CACHE
 mkdir -p "${HF_DATASETS_CACHE}"
 
-# ── Pre-fetch all_configs datasets → .pkl ─────────────────────────────────────
-# The trilingual models are evaluated on blimp_eng, blimp_nl, and zhoblimp —
-# all three are all_configs datasets that need pre-fetching.
+# ── Pre-fetch all_configs datasets → .pkl ─────────────────────────────────
+# CRITICAL: blimp_eng, blimp_nl, and zhoblimp all use config_mode=all_configs.
+# eval_model.py reads these from .pkl files (one per benchmark). Without the
+# pkl files, every rank falls back to a simultaneous live HF download, hits
+# rate limits, fails silently, and leaves all_data empty for those benchmarks
+# → applicable() returns no tasks → no evaluation, no CSV writes.
+#
+# This single prefetch runs once before any GPU work and writes:
+#   results/.pkl_cache/blimp_eng.pkl
+#   results/.pkl_cache/blimp_nl.pkl
+#   results/.pkl_cache/zhoblimp.pkl
 PKL_DIR="${REPO_ROOT}/results/.pkl_cache"
+export PKL_DIR
 mkdir -p "${PKL_DIR}"
 
 echo "Pre-fetching all_configs datasets → ${PKL_DIR} …"
-PKL_DIR="${PKL_DIR}" python3 "${SCRIPT_DIR}/prefetch_datasets.py"
+PKL_DIR="${PKL_DIR}" \
+HF_DATASETS_CACHE="${HF_DATASETS_CACHE}" \
+  python3 "${SCRIPT_DIR}/prefetch_datasets.py"
 echo ""
 
 echo "================================================================"
-echo "  BeetleLM TRILINGUAL evaluation"
-echo "  Mode        : ${MODE}"
+echo "  BeetleLM TRILINGUAL SEQUENTIAL evaluation"
 echo "  GPUs        : ${N_GPUS}"
+echo "  Models      : ${#MODELS[@]}"
+echo "  Checkpoint  : ${CKPT_DESC}"
 echo "  Repo root   : ${REPO_ROOT}"
 echo "  Results     : ${REPO_ROOT}/results/"
 echo "  Logs        : ${LOG_DIR}/"
-echo "  Benchmarks  : blimp_eng · blimp_nl · zhoblimp · xcomps/zho · xnli/en · xnli/zh"
-[[ -n "${LATEST_ONLY_FLAG}" ]] && \
-echo "  Checkpoints : latest step-N only"
+echo "  Benchmarks  : blimp_eng (eng) · blimp_nl (nld) · zhoblimp (zho)"
+echo "                xcomps/zho · xnli/en · xnli/zh"
+echo "  Note        : Only benchmarks whose relevant_groups include 'tri'"
+echo "                are evaluated.  multiblimp and xnli/fr/de/bg are"
+echo "                skipped automatically for these models."
 echo "================================================================"
 echo ""
 
-# =============================================================================
-# LOCAL MODE
-# =============================================================================
-if [[ "${MODE}" == "local" ]]; then
+# ── Launch one process per GPU ────────────────────────────────────────────
+PIDS=()
+for (( rank=0; rank<N_GPUS; rank++ )); do
+  log="${LOG_DIR}/rank${rank}.log"
 
-  PIDS=()
+  CUDA_VISIBLE_DEVICES="${rank}" \
+  MODEL_LIST="${MODEL_LIST}" \
+  HF_DATASETS_CACHE="${HF_DATASETS_CACHE}" \
+  PKL_DIR="${PKL_DIR}" \
+    python3 "${SCRIPT_DIR}/eval_model.py" \
+      --rank        "${rank}" \
+      --world_size  "${N_GPUS}" \
+      --output_dir  "${REPO_ROOT}" \
+      --batch_size  "${BATCH_SIZE}" \
+      --resume \
+      ${CKPT_FLAGS} \
+      ${HF_TOKEN:+--hf_token "${HF_TOKEN}"} \
+      > "${log}" 2>&1 &
 
-  for (( rank=0; rank<N_GPUS; rank++ )); do
-    log="${LOG_DIR}/rank${rank}.log"
+  PIDS+=($!)
+  sleep 3   # stagger startup to avoid simultaneous HF metadata fetches
+done
 
-    CMD=(
-      python3 "${SCRIPT_DIR}/eval_model.py"
-        --rank           "${rank}"
-        --world_size     "${N_GPUS}"
-        --output_dir     "${REPO_ROOT}"
-        --batch_size     "${BATCH_SIZE}"
-        --resume
-        --trilingual_only          # ← key flag: restricts model pool to trilingual repos
-    )
-    [[ -n "${NO_PUSH_FLAG}"     ]] && CMD+=(--no_push)
-    [[ -n "${LATEST_ONLY_FLAG}" ]] && CMD+=(--latest_only)
-    [[ -n "${HF_TOKEN}"         ]] && CMD+=(--hf_token "${HF_TOKEN}")
+echo "Launched ${#PIDS[@]} jobs  [EVAL_MODE=${EVAL_MODE}  flags: ${CKPT_FLAGS:-<none>}]"
+echo "  Monitor live:  tail -f ${LOG_DIR}/rank*.log"
+echo "  Count results: watch -n 10 'wc -l ${REPO_ROOT}/results/*.csv 2>/dev/null'"
+echo ""
 
-    echo "  Launching rank=${rank} → ${log}"
+FAIL=0
+for pid in "${PIDS[@]}"; do
+  wait "${pid}" || FAIL=1
+done
 
-    CUDA_VISIBLE_DEVICES="${rank}" \
-    HF_DATASETS_CACHE="${HF_DATASETS_CACHE}" \
-      "${CMD[@]}" > "${log}" 2>&1 &
-
-    PIDS+=($!)
-    (( rank < N_GPUS - 1 )) && sleep 4
-  done
-
-  echo ""
-  echo "All ${#PIDS[@]} processes running."
-  echo ""
-  echo "  Monitor live:   tail -f ${LOG_DIR}/rank*.log"
-  echo "  Count results:  watch -n 10 'wc -l ${REPO_ROOT}/results/*.csv 2>/dev/null'"
-  echo ""
-
-  FAIL=0
-  for pid in "${PIDS[@]}"; do
-    if ! wait "${pid}"; then
-      echo "WARNING: PID ${pid} exited non-zero"
-      FAIL=1
-    fi
-  done
-
-  if [[ "${FAIL}" -eq 0 ]]; then
-    echo "All trilingual evaluations completed successfully."
-  else
-    echo "Some processes failed. Check logs in ${LOG_DIR}/"
-    exit 1
-  fi
-
-# =============================================================================
-# SLURM MODE
-# =============================================================================
-elif [[ "${MODE}" == "slurm" ]]; then
-
-  jobscript="${LOG_DIR}/job_beetlelm_trilingual.sh"
-
-  cat > "${jobscript}" << SLURM
-#!/usr/bin/env bash
-#SBATCH --job-name=beetlelm_tri
-#SBATCH --nodes=1
-#SBATCH --ntasks-per-node=${N_GPUS}
-#SBATCH --gres=gpu:${N_GPUS}
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=256G
-#SBATCH --time=24:00:00
-#SBATCH --output=${LOG_DIR}/slurm_%j_%t.log
-#SBATCH --error=${LOG_DIR}/slurm_%j_%t.err
-
-module load cuda/12.1
-source activate beetlelm    # ← update to match your environment
-
-export HF_TOKEN="${HF_TOKEN}"
-export HF_DATASETS_CACHE="${HF_DATASETS_CACHE}"
-
-srun --ntasks=${N_GPUS} --ntasks-per-node=${N_GPUS} bash -c "
-  rank=\${SLURM_LOCALID}
-  sleep \$((rank * 4))
-  CUDA_VISIBLE_DEVICES=\${rank} \\
-  HF_DATASETS_CACHE='${HF_DATASETS_CACHE}' \\
-  python3 '${SCRIPT_DIR}/eval_model.py' \\
-    --rank \${rank} \\
-    --world_size ${N_GPUS} \\
-    --output_dir '${REPO_ROOT}' \\
-    --batch_size ${BATCH_SIZE} \\
-    --resume \\
-    --trilingual_only \\
-    ${NO_PUSH_FLAG} \\
-    ${LATEST_ONLY_FLAG} \\
-    \$([ -n '${HF_TOKEN}' ] && echo '--hf_token ${HF_TOKEN}')
-"
-SLURM
-
-  job_id=$(sbatch --parsable "${jobscript}")
-  echo "Submitted → job ${job_id}"
-  echo "Monitor:  squeue -u \$USER"
-  echo "Logs:     ${LOG_DIR}/slurm_${job_id}_*.log"
-
+if [[ "${FAIL}" -eq 0 ]]; then
+  echo "All trilingual sequential evaluations completed successfully."
 else
-  echo "Unknown MODE='${MODE}'. Use: local | slurm"
+  echo "Some processes failed — check logs in ${LOG_DIR}/"
   exit 1
 fi
