@@ -570,6 +570,10 @@ def main() -> None:
             token             = args.hf_token,
         )
 
+    logger.info("Preloading all benchmark datasets …")
+    all_data = preload_all_datasets(logger)
+    logger.info("All datasets loaded.\n")
+
     # ══════════════════════════════════════════════════════════════════════
     # OUTER LOOP — one model repo at a time
     # ══════════════════════════════════════════════════════════════════════
